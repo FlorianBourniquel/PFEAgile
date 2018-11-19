@@ -3,11 +3,11 @@ package fr.unice.polytech.dto;
 public class StoryDTO {
 
     private String text;
-    private int number;
+    private String name;
 
-    public StoryDTO(String text, int number) {
+    public StoryDTO(String text, String name) {
         this.text = text;
-        this.number = number;
+        this.name = name;
     }
 
     public String getText() {
@@ -18,16 +18,20 @@ public class StoryDTO {
         this.text = text;
     }
 
-    public int getNumber() {
-        return number;
+    public String getName() {
+        return name;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getNumber() {
+        return Integer.valueOf(name.replace("US",""));
     }
 
     @Override
     public String toString() {
-        return "[" + number + "] " + text;
+        return "[" + getNumber() + "] " + text;
     }
 }
