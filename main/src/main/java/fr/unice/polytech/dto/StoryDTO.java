@@ -28,9 +28,6 @@ public class StoryDTO {
 
     @Override
     public String toString() {
-        return "StoryDTO{" +
-                "text='" + text + '\'' +
-                ", number=" + number +
-                '}';
+        return "[" + number + "] " + text;
     }
 }
