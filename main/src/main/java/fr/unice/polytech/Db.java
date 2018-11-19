@@ -31,4 +31,7 @@ public class Db implements AutoCloseable
         }
     }
 
+    public Driver getDriver() {
+        return driver;
+    }
 }
