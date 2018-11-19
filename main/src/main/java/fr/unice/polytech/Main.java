@@ -1,6 +1,7 @@
 package fr.unice.polytech;
 
 import fr.unice.polytech.cli.commands.Bye;
+import fr.unice.polytech.cli.commands.CreateSprint;
 import fr.unice.polytech.cli.commands.InitBacklog;
 import fr.unice.polytech.cli.commands.ListStories;
 import fr.unice.polytech.cli.framework.Shell;
@@ -25,6 +26,8 @@ public class Main  extends Shell<Environment>
         this.invite  = "Agile";
         register(
                 Bye.class,
+                InitBacklog.class,
+                CreateSprint.class,
                 InitBacklog.class,
                 ListStories.class
         );
