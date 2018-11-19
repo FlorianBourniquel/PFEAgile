@@ -1,0 +1,21 @@
+version: '3'
+services:
+
+  main:
+    container_name: main
+    build:
+      context: ./main
+    volumes:
+    - ./data:/data
+    - ./input:/usr/src/app/output
+    depends_on:
+    - neodb
+
+  neodb:
+    container_name: noedb
+    image: 'neo4j:latest'
+    ports:
+    - '7474:7474'
+    - '7687:7687'
+    environment:
+    - NEO4J_AUTH=none
