@@ -77,7 +77,7 @@ public class CreateSprint extends Command<Environment> {
 
         for (int i = 0; i < this.storyIds.size(); i++) {
 
-            resBuilder.append("(s").append(i + 1).append(":Story {name:US").append(this.storyIds.get(i)).append("})");
+            resBuilder.append("(s").append(i + 1).append(":Story {name:\"US").append(this.storyIds.get(i)).append("\"})");
 
             if(i != (this.storyIds.size() - 1)){
                 resBuilder.append(",");
