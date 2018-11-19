@@ -1,16 +1,14 @@
 package fr.unice.polytech.cli.commands;
 
-import fr.unice.polytech.StreamGobbler;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.xml.sax.SAXException;
+
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.Executors;
 
 
 public class InitBacklog extends Command<Environment> {
@@ -20,16 +18,9 @@ public class InitBacklog extends Command<Environment> {
 
 	@Override
 	public void execute() throws IOException, OWLOntologyStorageException, ParserConfigurationException, URISyntaxException, SAXException, OWLOntologyCreationException, InterruptedException {
-
-
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command("sh", "-c", "echo","yo");
-        builder.directory(new File(System.getProperty("user.home")));
-        Process process = builder.start();
-        StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
-        Executors.newSingleThreadExecutor().submit(streamGobbler);
-        int exitCode = process.waitFor();
-        System.out.println(exitCode);
+		String command = "echo yo";
+		String output = executeCommand(command);
+		System.out.println(output);
 
         /*
 		List<Path> filesInFolder = Files.walk(Paths.get("/data"))
