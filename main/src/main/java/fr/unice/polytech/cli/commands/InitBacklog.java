@@ -1,9 +1,8 @@
 package fr.unice.polytech.cli.commands;
 
-import fr.unice.polytech.Inserter;
 import fr.unice.polytech.StreamGobbler;
 import fr.unice.polytech.cli.framework.Command;
-import fr.unice.polytech.env.Env;
+import fr.unice.polytech.environment.Environment;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.xml.sax.SAXException;
@@ -14,7 +13,7 @@ import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 
 
-public class InitBacklog extends Command<Env> {
+public class InitBacklog extends Command<Environment> {
 
 	@Override
 	public String identifier() { return "init_backlog"; }
