@@ -71,7 +71,7 @@
                   </execution>
               </executions>
               <configuration>
-                  <mainClass>fr.unice.polytech.App</mainClass>
+                  <mainClass>fr.unice.polytech.Main</mainClass>
               </configuration>
           </plugin>
 
@@ -90,7 +90,7 @@
                           <archive>
                               <manifest>
                                   <mainClass>
-                                      fr.unice.polytech.App
+                                      fr.unice.polytech.Main
                                   </mainClass>
                               </manifest>
                           </archive>
