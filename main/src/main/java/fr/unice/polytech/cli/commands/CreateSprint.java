@@ -4,6 +4,7 @@ import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.repository.dto.StoryDTO;
 import fr.unice.polytech.environment.Environment;
 import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.StatementResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,8 +55,6 @@ public class CreateSprint extends Command<Environment> {
         return false;
     }
 
-
-
     private void initCmd() {
         this.storyIds.clear();
         this.sprintName = "";
@@ -64,7 +63,9 @@ public class CreateSprint extends Command<Environment> {
     @Override
     public void execute() throws IOException {
         if(this.sprintName.isEmpty()){
-            throw new IOException("Please specify a name for the sprint");
+            throw new IOException("Please specify a name for the sprint.");
+        } else if(this.checkSprintExistancy()){
+            throw new IOException("The sprint named " + this.sprintName + " already exists.");
         }
 
         System.out.println("User requested to create a sprint named " + this.sprintName + " and containing " + this.storyIds.size() + " stories.");
@@ -95,10 +96,22 @@ public class CreateSprint extends Command<Environment> {
         }
     }
 
+    private boolean checkSprintExistancy() {
+        try (Session session = shell.system.getDb().getDriver().session()) {
+            StringBuilder resBuilder = new StringBuilder();
+
+            resBuilder.append("MATCH (s:Sprint {name:\"").append(this.sprintName).append("\"}) return s");
+
+            StatementResult result = session.writeTransaction(tx -> tx.run(resBuilder.toString()));
+
+            return result.hasNext();
+        }
+    }
+
     @Override
     public String describe() {
         return "Create a sprint based on specified stories\n" +
-                "      - name:String\n" +
-                "      - stories:List<Integer>";
+                "       - name:String\n" +
+                "       - stories:List<Integer>";
     }
 }

@@ -291,3 +291,5 @@ $RECYCLE.BIN/
 /data/System-user_stories1.json
 /input/story.txt
 /input/System/
+/data/*.svg
+/data/*.dot

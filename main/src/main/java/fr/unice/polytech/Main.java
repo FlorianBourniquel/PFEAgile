@@ -43,7 +43,7 @@ public class Main  extends Shell<Environment>
 
 
     public static void main( String[] args ) throws IOException, URISyntaxException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException, InterruptedException {
-        Thread.sleep(5000);
+        Thread.sleep(10000);
         Main main = new Main();
         main.run();
     }

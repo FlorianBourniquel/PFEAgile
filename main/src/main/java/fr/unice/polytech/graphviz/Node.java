@@ -1,5 +1,7 @@
 package fr.unice.polytech.graphviz;
 
+import org.neo4j.driver.v1.Session;
+
 import java.util.Objects;
 
 public abstract class Node {
@@ -17,6 +19,8 @@ public abstract class Node {
     public void setName(String name) {
         this.name = name;
     }
+
+    public abstract void fill(Session session);
 
     @Override
     public boolean equals(Object o) {
