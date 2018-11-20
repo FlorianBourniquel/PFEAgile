@@ -43,9 +43,27 @@ public class VizualiseModel extends Command<Environment> {
 
                 sprint.setStoryList(stories);
 
-                System.out.println(sprint.getStoryList().size());
+                for (UserStory story :
+                        stories) {
+                    System.out.println("------------");
+
+                    StatementResult findClasses = session.writeTransaction(
+                            tx -> tx.run(
+                                    "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
+
+                    List<Class> classes = findClasses.list(classElement -> new Class(new ArrayList<>(), classElement.get("c").get("name").asString()));
+
+                    story.setClasses(classes);
+
+                    StatementResult findMethods = session.writeTransaction(
+                            tx -> tx.run(
+                                    "MATCH (c:RelationShip)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
+
+                    List<Method> methods = findMethods.list(methodElement -> new Method(new ArrayList<>(), methodElement.get("c").get("name").asString()));
+
+                    story.setMethods(methods);
+                }
             }
-            System.out.println(sprintList);
         }
 
         //place here the call to the viz function
