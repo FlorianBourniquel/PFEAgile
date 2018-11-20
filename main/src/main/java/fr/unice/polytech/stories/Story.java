@@ -61,7 +61,7 @@ public class Story extends Node{
 
     @Override
     public String toNode(String var) {
-        return "("+var+":Story {name: \"US" + number + "\"}) ";
+        return "("+var+":Story {name: \"US" + number + "\", text:\""+text+"\"}) ";
     }
 
 

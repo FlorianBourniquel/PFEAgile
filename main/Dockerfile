@@ -8,6 +8,6 @@ RUN mkdir /data
 
 COPY target/main-1.0-SNAPSHOT-jar-with-dependencies.jar .
 
-COPY script.sh .
+COPY parse_stories.sh .
 
-ENTRYPOINT ["./script.sh"]
+ENTRYPOINT ["java", "-jar", "main-1.0-SNAPSHOT-jar-with-dependencies.jar"]

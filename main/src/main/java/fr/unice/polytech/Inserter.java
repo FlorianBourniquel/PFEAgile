@@ -27,15 +27,14 @@ public class Inserter {
 
     private Db db;
     private OWLOntologyManager manager;
-    private OWLOntology ontologyDocument;
 
-    public Inserter() {
+    public Inserter(Db db) {
         manager = OWLManager.createOWLOntologyManager();
-        //db = new Db();
+        this.db = db;
     }
 
 
-    public void insert(Path storiesFile, File modelsFile, int storyNumber) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException, URISyntaxException {
+    public void insert(Path storiesFile, File modelsFile, int storyNumber) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
 
 
         String data = new String(Files.readAllBytes(storiesFile));
