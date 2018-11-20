@@ -16,14 +16,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class VizualiseModel extends Command<Environment> {
+public class VisualiseModel extends Command<Environment> {
 
     @Override
     public String identifier() { return "vizualise_domain"; }
 
     @Override
     public void execute() throws IOException {
-        List<Sprint> sprintList = new ArrayList<>();
+        List<Sprint> sprintList;
 
         try (Session session = shell.system.getDb().getDriver().session()) {
 
@@ -33,54 +33,19 @@ public class VizualiseModel extends Command<Environment> {
 
             sprintList = findSprints.list(sprint -> new Sprint(new ArrayList<>(), sprint.get("s").get("name").asString()));
 
-            for (Sprint sprint :
-                    sprintList) {
-                StatementResult findStories = session.writeTransaction(
-                        tx -> tx.run(
-                                "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
+            for (Sprint sprint : sprintList) {
+                sprint.fill(session);
 
-                List<UserStory> stories = findStories.list(story -> new UserStory(new ArrayList<>(), new ArrayList<>(), story.get("s").get("name").asString()));
+                for (UserStory story : sprint.getStoryList()) {
 
-                sprint.setStoryList(stories);
+                    story.fill(session);
 
-                for (UserStory story :
-                        stories) {
-                    StatementResult findClasses = session.writeTransaction(
-                            tx -> tx.run(
-                                    "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
-
-                    List<Class> classes = findClasses.list(classElement -> new Class(new ArrayList<>(), classElement.get("c").get("name").asString()));
-
-                    story.setClasses(classes);
-
-                    StatementResult findMethods = session.writeTransaction(
-                            tx -> tx.run(
-                                    "MATCH (c:RelationShip)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
-
-                    List<Method> methods = findMethods.list(methodElement -> new Method(new ArrayList<>(), methodElement.get("c").get("name").asString()));
-
-                    story.setMethods(methods);
-
-                    for (Class classElement :
-                            classes) {
-                        StatementResult findRelationShip = session.writeTransaction(
-                                tx -> tx.run(
-                                        "MATCH (r:RelationShip)<-[:CAN]-(n:Class {name:\"" + classElement.getName() + "\"}) RETURN r"));
-
-                        List<Method> methodsRelation = findRelationShip.list(methodElement -> new Method(new ArrayList<>(), methodElement.get("r").get("name").asString()));
-
-                        classElement.setMethodList(methodsRelation);
+                    for (Class classElement : story.getClasses()) {
+                        classElement.fill(session);
                     }
 
-                    for (Method methodElement :
-                            methods) {
-                        StatementResult findRelationShip = session.writeTransaction(
-                                tx -> tx.run(
-                                        "MATCH (r:Class)<-[:TARGET]-(n:RelationShip {name:\"" + methodElement.getName() + "\"}) RETURN r"));
-
-                        List<Class> classesRelation = findRelationShip.list(classElement -> new Class(new ArrayList<>(), classElement.get("r").get("name").asString()));
-
-                        methodElement.setClassList(classesRelation);
+                    for (Method methodElement : story.getMethods()) {
+                        methodElement.fill(session);
                     }
                 }
             }
