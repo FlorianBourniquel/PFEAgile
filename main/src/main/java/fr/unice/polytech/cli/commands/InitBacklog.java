@@ -27,9 +27,9 @@ public class InitBacklog extends Command<Environment> {
 	public void execute() throws IOException, OWLOntologyStorageException, ParserConfigurationException, URISyntaxException, SAXException, OWLOntologyCreationException, InterruptedException {
 
 		String command = "./parse_stories.sh";
-        System.out.println("Parsing stories .... this may take a lot of times ...");
+        System.out.println("Parsing stories .... this may take a lot of time ...");
 		executeCommand(command);
-        System.out.println("Inserting  stories into the DB.... this may take a lot of times ...");
+        System.out.println("Inserting  stories into the DB.... this may take a lot of time ...");
 		List<Path> filesInFolder = Files.walk(Paths.get("/data"))
 				.filter(Files::isRegularFile)
 				.collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class InitBacklog extends Command<Environment> {
 				.sorted(Comparator.comparing(Path::getFileName))
 				.map(Path::toFile)
 				.collect(Collectors.toList());
-		Inserter inserter = new Inserter();
+		Inserter inserter = new Inserter(this.shell.system.getDb());
 
 		for (int i = 0; i < stories.size(); i++) {
 			inserter.insert(stories.get(i),models.get(i),i);
