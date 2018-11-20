@@ -3,8 +3,6 @@ package fr.unice.polytech.cli.commands;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.repository.dto.StoryDTO;
 import fr.unice.polytech.environment.Environment;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,27 +17,16 @@ public class ListStories extends Command<Environment> {
 
     @Override
     public void execute() {
-        try (Session session = shell.system.getDb().getDriver().session()) {
-
-            StatementResult s = session.writeTransaction(
-                    tx -> tx.run(
-                            "match (s:Story) WHERE NOT (s)<-[:CONTAINS]-(:Sprint) return s"));
-
-            List<StoryDTO> stories = s.list(r -> new StoryDTO(r.get("s").get("text").asString(), r.get("s").get("name").asString()));
-            stories.sort(Comparator.comparing(StoryDTO::getNumber));
-            for (StoryDTO story : stories) {
-
-                System.out.println(story);
-            }
-
-            shell.system.setStories(stories);
-        }
-
+        List<StoryDTO> stories = shell.system.getRepository().getStoriesRemainingInBacklog();
+        stories.sort(Comparator.comparing(StoryDTO::getNumber));
+        System.out.println();
+        stories.forEach(System.out::println);
+        shell.system.setStories(stories);
     }
 
     @Override
     public String describe() {
-        return "init backlog";
+        return "Display remaining stories inside backlog";
     }
 
     @Override

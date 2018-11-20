@@ -18,6 +18,9 @@ public class DTORepository {
         this.db = db;
     }
 
+    public void executeQuery(final String query ){
+        this.db.executeQuery(query);
+    }
 
     public SprintWithStoriesDTO getSprintWithStories(String sprintName) {
         try (Session session = db.getDriver().session()) {
@@ -65,6 +68,15 @@ public class DTORepository {
                                     "RETURN sum(s.business_value) as bv, sum(s.story_points) as sp"));
             Record r = s.next();
             return  new SprintStatDTO(r.get("bv").asInt(), r.get("sp").asInt());
+        }
+    }
+
+
+
+    public List<StoryDTO> getStoriesRemainingInBacklog(){
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(tx -> tx.run("MATCH (s:Story) WHERE NOT (s)<-[:CONTAINS]-(:Sprint) return s"));
+            return s.list(r -> new StoryDTO(r.get("s")));
         }
     }
 
