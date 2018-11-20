@@ -31,7 +31,7 @@ public class Main  extends Shell<Environment>
                 CreateSprint.class,
                 InitBacklog.class,
                 ListStories.class,
-                VizualiseModel.class
+                VisualiseModel.class
         );
 
     }

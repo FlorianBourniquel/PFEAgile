@@ -55,8 +55,6 @@ public class CreateSprint extends Command<Environment> {
         return false;
     }
 
-
-
     private void initCmd() {
         this.storyIds.clear();
         this.sprintName = "";
@@ -113,7 +111,7 @@ public class CreateSprint extends Command<Environment> {
     @Override
     public String describe() {
         return "Create a sprint based on specified stories\n" +
-                "      - name:String\n" +
-                "      - stories:List<Integer>";
+                "       - name:String\n" +
+                "       - stories:List<Integer>";
     }
 }
