@@ -19,7 +19,9 @@ import java.util.*;
 public class VizualiseModel extends Command<Environment> {
 
     @Override
-    public String identifier() { return "vizualise_domain"; }
+    public String identifier() {
+        return "visualise_domain";
+    }
 
     @Override
     public void execute() throws IOException {
@@ -33,8 +35,7 @@ public class VizualiseModel extends Command<Environment> {
 
             sprintList = findSprints.list(sprint -> new Sprint(new ArrayList<>(), sprint.get("s").get("name").asString()));
 
-            for (Sprint sprint :
-                    sprintList) {
+            for (Sprint sprint : sprintList) {
                 StatementResult findStories = session.writeTransaction(
                         tx -> tx.run(
                                 "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
@@ -43,8 +44,7 @@ public class VizualiseModel extends Command<Environment> {
 
                 sprint.setStoryList(stories);
 
-                for (UserStory story :
-                        stories) {
+                for (UserStory story : stories) {
                     StatementResult findClasses = session.writeTransaction(
                             tx -> tx.run(
                                     "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
@@ -61,8 +61,7 @@ public class VizualiseModel extends Command<Environment> {
 
                     story.setMethods(methods);
 
-                    for (Class classElement :
-                            classes) {
+                    for (Class classElement : classes) {
                         StatementResult findRelationShip = session.writeTransaction(
                                 tx -> tx.run(
                                         "MATCH (r:RelationShip)<-[:CAN]-(n:Class {name:\"" + classElement.getName() + "\"}) RETURN r"));
@@ -72,8 +71,7 @@ public class VizualiseModel extends Command<Environment> {
                         classElement.setMethodList(methodsRelation);
                     }
 
-                    for (Method methodElement :
-                            methods) {
+                    for (Method methodElement : methods) {
                         StatementResult findRelationShip = session.writeTransaction(
                                 tx -> tx.run(
                                         "MATCH (r:Class)<-[:TARGET]-(n:RelationShip {name:\"" + methodElement.getName() + "\"}) RETURN r"));
@@ -96,7 +94,11 @@ public class VizualiseModel extends Command<Environment> {
     }
 
     public void parse(List<Sprint> sprints) throws IOException {
-        List<String> lines = new LinkedList<>();
+        List<String> linesCompleteGraph = new LinkedList<>();
+        List<String> linesSimpleGraph = new LinkedList<>();
+        List<String> linesMethodClass = new LinkedList<>();
+        List<String> sprintUserStoryNodes = new LinkedList<>();
+        List<String> classMethodNodes = new LinkedList<>();
         int clustercpt = 0;
 
 
@@ -104,7 +106,7 @@ public class VizualiseModel extends Command<Environment> {
         subGraphSprint.add("subgraph cluster_0 {");
         subGraphSprint.add("style=filled;");
         subGraphSprint.add("color=lightgrey;");
-        subGraphSprint.add("node [style=filled,color=white];");
+        subGraphSprint.add("node [style=filled,color=orange2];");
         subGraphSprint.add("label = \"Sprint\";");
 
         List<String> subGraphUserStory = new LinkedList<>();
@@ -126,7 +128,7 @@ public class VizualiseModel extends Command<Environment> {
         subGraphMethod.add("style=filled;");
         subGraphMethod.add("color=lightgrey;");
         subGraphMethod.add("node [style=filled,color=darkorchid1];");
-        subGraphMethod.add("label = \"Class\";");
+        subGraphMethod.add("label = \"Method\";");
 
         List<List<String>> subGraph = new LinkedList<>();
         subGraph.add(subGraphSprint);
@@ -134,28 +136,30 @@ public class VizualiseModel extends Command<Environment> {
         subGraph.add(subGraphClass);
         subGraph.add(subGraphMethod);
 
+        linesCompleteGraph.add("digraph G {");
+
         //Fill sprint subGraph
-        lines.add("digraph G {");
-        lines.addAll(subGraph.get(clustercpt++));
-        for (Sprint sprint: sprints) {
-            lines.add(sprint.getName()+";");
+        linesCompleteGraph.addAll(subGraph.get(clustercpt++));
+        for (Sprint sprint : sprints) {
+            sprintUserStoryNodes.add(sprint.getName() +  "[style = filled,color=orange2];");
+            linesCompleteGraph.add(sprint.getName() + ";");
         }
-        lines.add("}");
+        linesCompleteGraph.add("}");
 
         //Fill story subGraph
-        lines.add("digraph G {");
-        lines.addAll(subGraph.get(clustercpt++));
-        for (Sprint sprint: sprints) {
+        linesCompleteGraph.addAll(subGraph.get(clustercpt++));
+        for (Sprint sprint : sprints) {
             for (UserStory userStory : sprint.getStoryList()) {
-                lines.add(userStory.getName() + ";");
+                sprintUserStoryNodes.add(userStory.getName() + "[style = filled,color=chartreuse3];");
+                linesCompleteGraph.add(userStory.getName() + ";");
             }
         }
-        lines.add("}");
+        linesCompleteGraph.add("}");
 
         //Fill set Class and Method
         Set<Class> classes = new HashSet<>();
         Set<Method> methods = new HashSet<>();
-        for (Sprint sprint: sprints) {
+        for (Sprint sprint : sprints) {
             for (UserStory userStory : sprint.getStoryList()) {
                 classes.addAll(userStory.getClasses());
                 methods.addAll(userStory.getMethods());
@@ -163,41 +167,71 @@ public class VizualiseModel extends Command<Environment> {
         }
 
         //Fill class subGraph
-        lines.add("digraph G {");
-        lines.addAll(subGraph.get(clustercpt++));
-        for (Class aClass: classes) {
-            lines.add(aClass.getName() + ";");
+        linesCompleteGraph.addAll(subGraph.get(clustercpt++));
+        for (Class aClass : classes) {
+            classMethodNodes.add(aClass.getName() + "[style = filled,color=crimson];");
+            linesCompleteGraph.add(aClass.getName() + ";");
         }
-        lines.add("}");
+        linesCompleteGraph.add("}");
 
         //Fill method subGraph
-        lines.add("digraph G {");
-        lines.addAll(subGraph.get(clustercpt++));
-        for (Method method: methods) {
-            lines.add(method.getName() + ";");
+        linesCompleteGraph.addAll(subGraph.get(clustercpt++));
+        for (Method method : methods) {
+            classMethodNodes.add(method.getName() + "[style = filled,color=darkorchid1];");
+            linesCompleteGraph.add(method.getName() + ";");
         }
-        lines.add("}");
+        linesCompleteGraph.add("}");
 
-        for (Sprint sprint: sprints) {
+        for (Sprint sprint : sprints) {
             for (UserStory userStory : sprint.getStoryList()) {
-                lines.add(sprint.getName() + "->" + userStory.getName() + "[color=lightgrey];");
-                for (Class aClass:classes) {
-                    lines.add(userStory.getName() + "->" + aClass.getName() + "[color=cadetblue];");
-                    for (Method method : aClass.getMethodList()) {
-                        lines.add(aClass.getName() + "->" + method.getName() + "[label=\"can\",color=midnightblue];");
-                    }
+                linesSimpleGraph.add(sprint.getName() + "->" + userStory.getName() + "[color=pink4];");
+                for (Class aClass : userStory.getClasses()) {
+                    linesSimpleGraph.add(userStory.getName() + "->" + aClass.getName() + "[color=cadetblue];");
                 }
-                for (Method method :methods) {
-                    lines.add(userStory.getName() + "->" + method.getName() + "[color=seagreen];");
-                    for (Class aClass : method.getClassList()) {
-                        lines.add(method.getName() + "->" + aClass.getName() + "[label=\"target\",color=olivedrab3];");
-                    }
+                for (Method method : userStory.getMethods()) {
+                    linesSimpleGraph.add(userStory.getName() + "->" + method.getName() + "[color=deeppink3];");
                 }
             }
         }
+        for (Class aClass : classes) {
+            for (Method method : aClass.getMethodList()) {
+                linesMethodClass.add(aClass.getName() + "->" + method.getName() + "[label=\"can\",color=midnightblue];");
+            }
+        }
+        for (Method method : methods) {
+            for (Class aClass : method.getClassList()) {
+                linesMethodClass.add(method.getName() + "->" + aClass.getName() + "[label=\"target\",color=olivedrab3];");
+            }
+        }
+        linesMethodClass.add("overlap=false;");
+        linesMethodClass.add("splines = true;");
+        linesMethodClass.add("}");
 
-        lines.add("}");
-        Path file = Paths.get("graph.dot");
-        Files.write(file, lines, Charset.forName("UTF-8"));
+        linesSimpleGraph.addAll(linesMethodClass);
+        linesCompleteGraph.addAll(linesSimpleGraph);
+
+        linesMethodClass.add(0,"digraph G {");
+        linesMethodClass.addAll(1,classMethodNodes);
+        linesSimpleGraph.add(0,"digraph G {");
+        linesSimpleGraph.addAll(1,sprintUserStoryNodes);
+        linesSimpleGraph.addAll(2,classMethodNodes);
+
+        Path fileComplete = Paths.get("/data/graphComplete.dot");
+        Files.write(fileComplete, linesCompleteGraph, Charset.forName("UTF-8"));
+        String svg = executeCommand("fdp -Tsvg /data/graphComplete.dot");
+        Path fileSvg = Paths.get("/data/graphComplete.svg");
+        Files.write(fileSvg, Collections.singleton(svg), Charset.forName("UTF-8"));
+
+        Path fileNoCluster = Paths.get("/data/graphNoCluster.dot");
+        Files.write(fileNoCluster, linesSimpleGraph, Charset.forName("UTF-8"));
+        String svgNoCluster = executeCommand("fdp -Tsvg /data/graphNoCluster.dot");
+        Path fileSvgNoCluster = Paths.get("/data/graphNoCluster.svg");
+        Files.write(fileSvgNoCluster, Collections.singleton(svgNoCluster), Charset.forName("UTF-8"));
+
+        Path fileMethodClass = Paths.get("/data/graphMethodClass.dot");
+        Files.write(fileMethodClass, linesMethodClass, Charset.forName("UTF-8"));
+        String svgMethodClass = executeCommand("fdp -Tsvg /data/graphMethodClass.dot");
+        Path fileSvgMethodClass = Paths.get("/data/graphMethodClass.svg");
+        Files.write(fileSvgMethodClass, Collections.singleton(svgMethodClass), Charset.forName("UTF-8"));
     }
 }
