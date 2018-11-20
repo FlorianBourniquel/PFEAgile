@@ -45,8 +45,6 @@ public class VizualiseModel extends Command<Environment> {
 
                 for (UserStory story :
                         stories) {
-                    System.out.println("------------");
-
                     StatementResult findClasses = session.writeTransaction(
                             tx -> tx.run(
                                     "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
@@ -62,6 +60,28 @@ public class VizualiseModel extends Command<Environment> {
                     List<Method> methods = findMethods.list(methodElement -> new Method(new ArrayList<>(), methodElement.get("c").get("name").asString()));
 
                     story.setMethods(methods);
+
+                    for (Class classElement :
+                            classes) {
+                        StatementResult findRelationShip = session.writeTransaction(
+                                tx -> tx.run(
+                                        "MATCH (r:RelationShip)<-[:CAN]-(n:Class {name:\"" + classElement.getName() + "\"}) RETURN r"));
+
+                        List<Method> methodsRelation = findRelationShip.list(methodElement -> new Method(new ArrayList<>(), methodElement.get("r").get("name").asString()));
+
+                        classElement.setMethodList(methodsRelation);
+                    }
+
+                    for (Method methodElement :
+                            methods) {
+                        StatementResult findRelationShip = session.writeTransaction(
+                                tx -> tx.run(
+                                        "MATCH (r:Class)<-[:TARGET]-(n:RelationShip {name:\"" + methodElement.getName() + "\"}) RETURN r"));
+
+                        List<Class> classesRelation = findRelationShip.list(classElement -> new Class(new ArrayList<>(), classElement.get("r").get("name").asString()));
+
+                        methodElement.setClassList(classesRelation);
+                    }
                 }
             }
         }
