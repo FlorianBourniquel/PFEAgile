@@ -2,11 +2,12 @@ package fr.unice.polytech.graphviz;
 
 import java.util.List;
 
-public class Class {
+public class Class extends Node {
 
     private List<Method> methodList;
 
-    public Class(List<Method> methodList) {
+    public Class(List<Method> methodList, String name) {
+        super(name);
         this.methodList = methodList;
     }
 

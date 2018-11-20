@@ -2,11 +2,13 @@ package fr.unice.polytech.graphviz;
 
 import java.util.List;
 
-public class Sprint {
+public class Sprint extends Node{
 
     private List<UserStory> storyList;
 
-    public Sprint(List<UserStory> storyList) {
+    public Sprint(List<UserStory> storyList, String name) {
+        super(name);
+
         this.storyList = storyList;
     }
 

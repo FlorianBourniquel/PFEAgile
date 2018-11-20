@@ -1,9 +1,6 @@
 package fr.unice.polytech;
 
-import fr.unice.polytech.cli.commands.Bye;
-import fr.unice.polytech.cli.commands.CreateSprint;
-import fr.unice.polytech.cli.commands.InitBacklog;
-import fr.unice.polytech.cli.commands.ListStories;
+import fr.unice.polytech.cli.commands.*;
 import fr.unice.polytech.cli.framework.Shell;
 import fr.unice.polytech.environment.Environment;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -29,9 +26,9 @@ public class Main  extends Shell<Environment>
                 InitBacklog.class,
                 CreateSprint.class,
                 InitBacklog.class,
-                ListStories.class
+                ListStories.class,
+                VizualiseModel.class
         );
-
     }
 
 
