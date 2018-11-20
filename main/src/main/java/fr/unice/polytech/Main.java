@@ -1,5 +1,9 @@
 package fr.unice.polytech;
 
+import fr.unice.polytech.cli.commands.Bye;
+import fr.unice.polytech.cli.commands.CreateSprint;
+import fr.unice.polytech.cli.commands.initbacklog.InitBacklog;
+import fr.unice.polytech.cli.commands.ListStories;
 import fr.unice.polytech.cli.commands.*;
 import fr.unice.polytech.cli.framework.Shell;
 import fr.unice.polytech.environment.Environment;
@@ -29,6 +33,7 @@ public class Main  extends Shell<Environment>
                 ListStories.class,
                 VizualiseModel.class
         );
+
     }
 
 

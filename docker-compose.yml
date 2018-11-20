@@ -14,7 +14,7 @@ services:
     tty: true
 
   neodb:
-    container_name: noedb
+    container_name: neodb
     image: 'neo4j:latest'
     ports:
     - '7474:7474'

@@ -9,6 +9,8 @@ public class Story extends Node{
 
     private String text;
     private int number;
+    private int storyPoints;
+    private int businessValue;
     private Role role;
     private StoryMean means;
     private List<Class> classes = new ArrayList<>();
@@ -61,7 +63,12 @@ public class Story extends Node{
 
     @Override
     public String toNode(String var) {
-        return "("+var+":Story {name: \"US" + number + "\", text:\""+text+"\"}) ";
+        return "("+var+":Story {" +
+                "name:"+ss("US" + number ) +
+                ",text:"+ss(text) +
+                ",business_value:"+ ss(String.valueOf(businessValue)) +
+                ",story_points:"+ ss(String.valueOf(storyPoints))+
+                "}) ";
     }
 
 
@@ -129,5 +136,25 @@ public class Story extends Node{
 
     public void setRelationShips(List<RelationShip> relationShips) {
         this.relationShips = relationShips;
+    }
+
+    public int getStoryPoints() {
+        return storyPoints;
+    }
+
+    public void setStoryPoints(int storyPoints) {
+        this.storyPoints = storyPoints;
+    }
+
+    public int getBusinessValue() {
+        return businessValue;
+    }
+
+    public void setBusinessValue(int businessValue) {
+        this.businessValue = businessValue;
+    }
+
+    public String ss(String content){
+        return "\""+content+"\"";
     }
 }

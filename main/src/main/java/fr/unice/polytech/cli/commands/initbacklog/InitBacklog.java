@@ -1,6 +1,7 @@
-package fr.unice.polytech.cli.commands;
+package fr.unice.polytech.cli.commands.initbacklog;
 
-import fr.unice.polytech.Inserter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -26,6 +27,10 @@ public class InitBacklog extends Command<Environment> {
 	@Override
 	public void execute() throws IOException, OWLOntologyStorageException, ParserConfigurationException, URISyntaxException, SAXException, OWLOntologyCreationException, InterruptedException {
 
+        String data = new String(Files.readAllBytes(Paths.get("./output/entries.txt")));
+        List<StoryEntry> entries = new Gson().fromJson(data, new TypeToken<List<StoryEntry>>(){}.getType());
+        String vnInput = entries.stream().map(StoryEntry::getText).collect(Collectors.joining("\n")).concat("\n");
+        Files.write(Paths.get("./output/stories.txt"), vnInput.getBytes());
 		String command = "./parse_stories.sh";
         System.out.println("Parsing stories .... this may take a lot of time ...");
 		executeCommand(command);
@@ -47,7 +52,7 @@ public class InitBacklog extends Command<Environment> {
 		Inserter inserter = new Inserter(this.shell.system.getDb());
 
 		for (int i = 0; i < stories.size(); i++) {
-			inserter.insert(stories.get(i),models.get(i),i);
+			inserter.insert(stories.get(i),models.get(i),i, entries.get(i));
 		}
 		System.out.println("Stories successfuly inserted");
 	}
