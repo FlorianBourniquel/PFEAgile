@@ -1,7 +1,7 @@
 package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.framework.Command;
-import fr.unice.polytech.dto.StoryDTO;
+import fr.unice.polytech.repository.dto.StoryDTO;
 import fr.unice.polytech.environment.Environment;
 import org.neo4j.driver.v1.Session;
 

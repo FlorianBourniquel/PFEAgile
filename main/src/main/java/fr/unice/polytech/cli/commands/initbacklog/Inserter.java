@@ -1,7 +1,7 @@
 package fr.unice.polytech.cli.commands.initbacklog;
 
 import com.google.gson.Gson;
-import fr.unice.polytech.Db;
+import fr.unice.polytech.repository.Db;
 import fr.unice.polytech.models.Class;
 import fr.unice.polytech.models.RelationShip;
 import fr.unice.polytech.stories.Story;

@@ -1,4 +1,4 @@
-package fr.unice.polytech;
+package fr.unice.polytech.repository;
 
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
@@ -14,7 +14,7 @@ public class Db implements AutoCloseable
 
     public Db()
     {
-        driver = GraphDatabase.driver( "bolt://neodb:7687" , AuthTokens.basic( "neo4j", "password" ) );
+        driver = GraphDatabase.driver( "bolt://localhost:7687" , AuthTokens.basic( "neo4j", "password" ) );
     }
 
     @Override

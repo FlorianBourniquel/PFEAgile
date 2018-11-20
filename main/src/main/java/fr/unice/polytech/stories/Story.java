@@ -66,8 +66,8 @@ public class Story extends Node{
         return "("+var+":Story {" +
                 "name:"+ss("US" + number ) +
                 ",text:"+ss(text) +
-                ",business_value:"+ ss(String.valueOf(businessValue)) +
-                ",story_points:"+ ss(String.valueOf(storyPoints))+
+                ",business_value:" + businessValue +
+                ",story_points:"+ storyPoints +
                 "}) ";
     }
 

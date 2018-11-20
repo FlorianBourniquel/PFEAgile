@@ -31,10 +31,9 @@ public class InitBacklog extends Command<Environment> {
         List<StoryEntry> entries = new Gson().fromJson(data, new TypeToken<List<StoryEntry>>(){}.getType());
         String vnInput = entries.stream().map(StoryEntry::getText).collect(Collectors.joining("\n")).concat("\n");
         Files.write(Paths.get("./output/stories.txt"), vnInput.getBytes());
-		String command = "./parse_stories.sh";
         System.out.println("Parsing stories .... this may take a lot of time ...");
-		executeCommand(command);
-        System.out.println("Inserting  stories into the DB.... this may take a lot of time ...");
+        executeCommand("./parse_stories.sh");
+		System.out.println("Inserting  stories into the DB.... this may take a lot of time ...");
 		List<Path> filesInFolder = Files.walk(Paths.get("/data"))
 				.filter(Files::isRegularFile)
 				.collect(Collectors.toList());
@@ -55,6 +54,7 @@ public class InitBacklog extends Command<Environment> {
 			inserter.insert(stories.get(i),models.get(i),i, entries.get(i));
 		}
 		System.out.println("Stories successfuly inserted");
+
 	}
 
 	@Override
