@@ -2,13 +2,14 @@ package fr.unice.polytech.graphviz;
 
 import java.util.List;
 
-public class UserStory {
+public class UserStory extends Node{
 
     private List<Class> classes;
 
     private List<Method> methods;
 
-    public UserStory(List<Class> classes, List<Method> methods) {
+    public UserStory(List<Class> classes, List<Method> methods, String name) {
+        super(name);
         this.classes = classes;
         this.methods = methods;
     }
