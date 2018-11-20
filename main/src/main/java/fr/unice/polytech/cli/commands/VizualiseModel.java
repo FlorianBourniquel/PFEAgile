@@ -1,42 +1,60 @@
 package fr.unice.polytech.cli.commands;
 
-
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Class;
 import fr.unice.polytech.graphviz.Method;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
+import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.StatementResult;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class VizualiseModel extends Command<Environment> {
 
     @Override
-    public String identifier() { return "create_sprint"; }
+    public String identifier() { return "vizualise_domain"; }
 
     @Override
     public void execute() throws IOException {
-        /*
+        List<Sprint> sprintList = new ArrayList<>();
+
         try (Session session = shell.system.getDb().getDriver().session()) {
-            session.writeTransaction(tx -> tx.run(resBuilder.toString()));
+
+            StatementResult findSprints = session.writeTransaction(
+                    tx -> tx.run(
+                            "MATCH (s:Sprint) return s"));
+
+            sprintList = findSprints.list(sprint -> new Sprint(new ArrayList<>(), sprint.get("s").get("name").asString()));
+
+            for (Sprint sprint :
+                    sprintList) {
+                StatementResult findStories = session.writeTransaction(
+                        tx -> tx.run(
+                                "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
+
+                List<UserStory> stories = findStories.list(story -> new UserStory(new ArrayList<>(), new ArrayList<>(), story.get("s").get("name").asString()));
+
+                sprint.setStoryList(stories);
+
+                System.out.println(sprint.getStoryList().size());
+            }
+            System.out.println(sprintList);
         }
-        */
+
+        //place here the call to the viz function
+        this.parse(sprintList);
     }
 
     @Override
     public String describe() {
-        return "Create a sprint based on specified stories\n" +
-                "      - name:String\n" +
-                "      - stories:List<Integer>";
+        return "Create a vizualisation of the current model domain";
     }
 
     public void parse(List<Sprint> sprints) throws IOException {
