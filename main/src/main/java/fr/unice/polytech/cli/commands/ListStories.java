@@ -23,7 +23,7 @@ public class ListStories extends Command<Environment> {
 
             StatementResult s = session.writeTransaction(
                     tx -> tx.run(
-                            "match (s:Story) return s"));
+                            "match (s:Story) WHERE NOT (s)<-[:CONTAINS]-(:Sprint) return s"));
 
             List<StoryDTO> stories = s.list(r -> new StoryDTO(r.get("s").get("text").asString(), r.get("s").get("name").asString()));
             stories.sort(Comparator.comparing(StoryDTO::getNumber));
