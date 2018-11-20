@@ -1,6 +1,7 @@
-package fr.unice.polytech;
+package fr.unice.polytech.cli.commands.initbacklog;
 
 import com.google.gson.Gson;
+import fr.unice.polytech.Db;
 import fr.unice.polytech.models.Class;
 import fr.unice.polytech.models.RelationShip;
 import fr.unice.polytech.stories.Story;
@@ -14,11 +15,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -34,12 +33,14 @@ public class Inserter {
     }
 
 
-    public void insert(Path storiesFile, File modelsFile, int storyNumber) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
+    public void insert(Path storiesFile, File modelsFile, int storyNumber, StoryEntry storyEntry) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
 
 
         String data = new String(Files.readAllBytes(storiesFile));
         Story story = new Gson().fromJson(data, Story.class);
         story.setNumber(storyNumber);
+        story.setStoryPoints(storyEntry.getStoryPoints());
+        story.setBusinessValue(storyEntry.getBusinessValue());
 
         OWLOntology ontologyDocument = manager.loadOntologyFromOntologyDocument(modelsFile);
         OutputStream out = new FileOutputStream("temp.txt",false);
@@ -65,7 +66,6 @@ public class Inserter {
 
         db.executeQuery(story.createQuery());
         manager.removeOntology(ontologyDocument);
-       //System.out.println(story.createQuery());
 
     }
 
