@@ -34,6 +34,7 @@ public class InitBacklog extends Command<Environment> {
         System.out.println("Parsing stories .... this may take a lot of time ...");
         executeCommand("./parse_stories.sh");
 		System.out.println("Inserting  stories into the DB.... this may take a lot of time ...");
+
 		List<Path> filesInFolder = Files.walk(Paths.get("/data"))
 				.filter(Files::isRegularFile)
 				.collect(Collectors.toList());
@@ -59,7 +60,7 @@ public class InitBacklog extends Command<Environment> {
 
 	@Override
 	public String describe() {
-		return "init backlog";
+		return "initialize the backlog";
 	}
 
 	@Override

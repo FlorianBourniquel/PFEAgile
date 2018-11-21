@@ -11,11 +11,6 @@ public class StoryDTO {
     private int businessValue;
     private int storyPoints;
 
-    public StoryDTO(String text, String name) {
-        this.text = text;
-        this.name = name;
-    }
-
     public StoryDTO(Value value) {
         this.name = value.get("name").asString();
         this.text = value.get("text").asString();
@@ -65,6 +60,11 @@ public class StoryDTO {
     }
 
 
+    public float getAgileRatio(){
+        return (float) businessValue/ (float) storyPoints;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,4 +76,7 @@ public class StoryDTO {
                 Objects.equals(name, storyDTO.name);
     }
 
+    public String toStringWithRatio() {
+        return "["+getNumber()+"]"+ "  [ BV: " + businessValue+", SP: "+storyPoints+", Ratio: " + getAgileRatio() +" ] " + text;
+    }
 }
