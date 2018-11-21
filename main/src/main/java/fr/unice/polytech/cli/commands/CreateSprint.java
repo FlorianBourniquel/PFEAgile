@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class CreateSprint extends AbstractSprintCommand {
 
-
     private List<StoryDTO> backlog;
     private boolean error;
 
