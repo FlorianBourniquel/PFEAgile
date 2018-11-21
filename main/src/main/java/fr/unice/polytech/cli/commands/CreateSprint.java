@@ -19,7 +19,7 @@ public class CreateSprint extends AbstractSprintCommand {
     @Override
     public void load(List<String> args) {
         super.load(args);
-        backlog = this.shell.system.getRepository().getStoriesRemainingInBacklog();
+        backlog = this.shell.system.getRepository().getBacklog();
         List<Integer> missingStories = this.storyIds.stream().filter(x -> !sprintNumberExists(x)).collect(Collectors.toList());
         if(missingStories.size() > 0){
             String sts = missingStories.stream().map(String::valueOf).collect(Collectors.joining(", "));

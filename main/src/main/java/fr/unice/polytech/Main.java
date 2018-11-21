@@ -22,7 +22,9 @@ public class Main  extends Shell<Environment>
                 VisualiseImpact.class,
                 WhatIfIAddStory.class,
                 WhatIfIRemoveStory.class,
-                SortBacklogByValue.class
+                SortBacklogByValue.class,
+                AddStory.class,
+                RemoveStory.class
         );
     }
 

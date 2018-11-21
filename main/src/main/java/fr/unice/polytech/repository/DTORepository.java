@@ -24,8 +24,9 @@ public class DTORepository {
 
     public SprintWithStoriesDTO getSprintWithStories(String sprintName) {
         try (Session session = db.getDriver().session()) {
-            StatementResult s = session.writeTransaction(
-                    tx -> tx.run("MATCH (sp:Sprint{name:\""+sprintName+"\"})-[CONTAINS]->(st:Story) return sp,st"));
+            String query = " MATCH (sp:Sprint{name:"+sprintName+"})-[:CONTAINS]->(st:Story) RETURN sp,st";
+
+            StatementResult s = session.writeTransaction(tx -> tx.run(query));
             if(!s.hasNext()){
                 return  null;
             }
@@ -86,7 +87,7 @@ public class DTORepository {
 
 
 
-    public List<StoryDTO> getStoriesRemainingInBacklog(){
+    public List<StoryDTO> getBacklog(){
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(tx -> tx.run("MATCH (s:Story) WHERE NOT (s)<-[:CONTAINS]-(:Sprint) return s"));
             return s.list(r -> new StoryDTO(r.get("s")));

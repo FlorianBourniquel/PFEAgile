@@ -16,7 +16,7 @@ public class SortBacklogByValue extends Command<Environment> {
 
     @Override
     public void execute() {
-        List<StoryDTO> stories = shell.system.getRepository().getStoriesRemainingInBacklog();
+        List<StoryDTO> stories = shell.system.getRepository().getBacklog();
         stories.sort(Comparator.comparing(StoryDTO::getAgileRatio).reversed());
         System.out.println();
         stories.forEach(x -> System.out.println(x.toStringWithRatio()));

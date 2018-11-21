@@ -50,4 +50,8 @@ public abstract class Command<T> {
 		System.out.println("\n" + o + "\n");
 	}
 
+	protected String ss(String content){
+		return '"'+content + '"';
+	}
+
 }

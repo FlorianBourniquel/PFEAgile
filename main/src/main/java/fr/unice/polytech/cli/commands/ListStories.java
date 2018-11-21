@@ -17,7 +17,7 @@ public class ListStories extends Command<Environment> {
 
     @Override
     public void execute() {
-        List<StoryDTO> stories = shell.system.getRepository().getStoriesRemainingInBacklog();
+        List<StoryDTO> stories = shell.system.getRepository().getBacklog();
         stories.sort(Comparator.comparing(StoryDTO::getNumber));
         System.out.println();
         stories.forEach(System.out::println);
