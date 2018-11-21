@@ -16,6 +16,7 @@ public class UserStory extends Node{
         super(name);
         this.classes = classes;
         this.methods = methods;
+        colorEnum = ColorEnum.USERSTORY;
     }
 
     public List<Method> getMethods() {

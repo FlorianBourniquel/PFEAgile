@@ -293,3 +293,4 @@ $RECYCLE.BIN/
 /input/System/
 /data/*.svg
 /data/*.dot
+/data/*.csv

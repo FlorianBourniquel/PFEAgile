@@ -6,9 +6,9 @@ import java.util.Objects;
 
 public abstract class Node {
 
-    private String name;
+    protected String name;
 
-    private ColorEnum colorEnum;
+    protected ColorEnum colorEnum;
 
     public Node(String name){
         this.name = name;
