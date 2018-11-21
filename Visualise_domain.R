@@ -60,12 +60,13 @@ setwd("/Users/Florian/IdeaProjects/PFEAgile")
 
 library("igraph")
 
+args = commandArgs(trailingOnly=TRUE)
 
 # -------~~ DATASET 1: edgelist  --------
 
 # Read in the data:
-nodes <- read.csv("./data/node.csv", header=T, as.is=T)
-links <- read.csv("./data/edge.csv", header=T, as.is=T)
+nodes <- read.csv(fileNode, header=T, as.is=T)
+links <- read.csv(fileEdge, header=T, as.is=T)
 
 
 
@@ -112,7 +113,6 @@ vis.nodes$color.border <- "black"
 vis.nodes$color.highlight.background <- "orange"
 vis.nodes$color.highlight.border <- "darkred"
 
-visNetwork(vis.nodes, vis.links)
 
 # Below we change some of the visual properties of the edges:
 
@@ -125,7 +125,6 @@ vis.links$shadow <- FALSE    # edge shadow
 
 visNetwork(vis.nodes, vis.links)
 
-# Remove the arrows and set the edge width to 1:
 
 visnet <- visNetwork(vis.nodes, vis.links)
 visnet

@@ -31,8 +31,52 @@ public class VisualiseImpact extends AbstractSprintCommand {
         }
     }
 
-    private void visualiseRemoveStories() {
+    private void visualiseRemoveStories() throws IOException {
+        super.execute();
 
+        try (Session session = shell.system.getDb().getDriver().session()) {
+
+            Sprint sprint = this.initSprint(session);
+
+            for (Integer story :
+                    this.storyIds) {
+                StatementResult findStory = session.writeTransaction(
+                        tx -> tx.run(
+                                "MATCH (s:Story {name : \"US" + story + "\"}) return s"));
+
+                List<UserStory> stories = findStory.list(s -> new UserStory(new ArrayList<>(), new ArrayList<>(), "US" + story));
+
+                stories.forEach(s -> {
+                    s.fill(session);
+                    sprint.getStoryList().remove(s);
+
+                    for (Class classElement: s.getClasses()) {
+                        Optional<Class> classOptional = sprint.containsDomainElement(classElement);
+
+                        if(classOptional.isPresent()){
+                            classOptional.get().setColorEnum(ColorEnum.MODIFIED);
+                        } else {
+                            classElement.setColorEnum(ColorEnum.REMOVED);
+                        }
+                    }
+
+                    for (Method methodElement: s.getMethods()) {
+                        Optional<Method> methodOptional = sprint.containsDomainElement(methodElement);
+
+                        if(methodOptional.isPresent()){
+                            methodOptional.get().setColorEnum(ColorEnum.MODIFIED);
+                        } else {
+                            methodElement.setColorEnum(ColorEnum.REMOVED);
+                        }
+                    }
+
+                    sprint.getStoryList().add(s);
+                    s.setColorEnum(ColorEnum.REMOVED);
+                });
+            }
+
+            Parser.parse(Collections.singletonList(sprint), "/data/nodeRemove.csv","/data/edgeRemove.csv");
+        }
     }
 
     private void visualiseAddStories() throws IOException {
@@ -40,14 +84,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
 
         try (Session session = shell.system.getDb().getDriver().session()) {
 
-            StatementResult findSprint = session.writeTransaction(
-                    tx -> tx.run(
-                            "MATCH (s:Sprint {name : \"" + this.sprintName + "\"}) return s"));
-
-            Sprint sprint = new Sprint(new ArrayList<>(), findSprint.next().get("s").get("name").asString());
-
-            sprint.setColorEnum(ColorEnum.MODIFIED);
-            sprint.fill(session);
+            Sprint sprint = this.initSprint(session);
 
             for (Integer story :
                     this.storyIds) {
@@ -82,13 +119,33 @@ public class VisualiseImpact extends AbstractSprintCommand {
                         }
                     }
 
-                    s.setColorEnum(ColorEnum.MODIFIED);
+                    s.setColorEnum(ColorEnum.ADDED);
                     sprint.getStoryList().add(s);
                 });
             }
 
             Parser.parse(Collections.singletonList(sprint), "/data/nodeAdd.csv","/data/edgeAdd.csv");
         }
+    }
+
+    private Sprint initSprint(Session session){
+        StatementResult findSprint = session.writeTransaction(
+                tx -> tx.run(
+                        "MATCH (s:Sprint {name : \"" + this.sprintName + "\"}) return s"));
+
+        Sprint sprint = new Sprint(new ArrayList<>(), findSprint.next().get("s").get("name").asString());
+
+        sprint.setColorEnum(ColorEnum.MODIFIED);
+        sprint.fill(session);
+
+        for (UserStory story :
+                sprint.getStoryList()) {
+            story.setColorEnum(ColorEnum.DEFAULT);
+            story.getClasses().forEach(c -> c.setColorEnum(ColorEnum.DEFAULT));
+            story.getMethods().forEach(m -> m.setColorEnum(ColorEnum.DEFAULT));
+        }
+
+        return sprint;
     }
 
     @Override
