@@ -50,8 +50,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
                     s.fill(session);
                     sprint.getStoryList().remove(s);
 
-                    for (Class classElement:
-                            s.getClasses()) {
+                    for (Class classElement: s.getClasses()) {
                         Optional<Class> classOptional = sprint.containsDomainElement(classElement);
 
                         if(classOptional.isPresent()){
@@ -61,8 +60,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
                         }
                     }
 
-                    for (Method methodElement:
-                            s.getMethods()) {
+                    for (Method methodElement: s.getMethods()) {
                         Optional<Method> methodOptional = sprint.containsDomainElement(methodElement);
 
                         if(methodOptional.isPresent()){
