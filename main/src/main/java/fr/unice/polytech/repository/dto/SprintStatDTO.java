@@ -2,13 +2,15 @@ package fr.unice.polytech.repository.dto;
 
 public class SprintStatDTO {
 
-
     private int businessValue;
     private int storyPoints;
+    private SprintDTO sprint;
 
-    public SprintStatDTO(int businessValue, int storyPoints) {
+
+    public SprintStatDTO(int businessValue, int storyPoints, SprintDTO sprint) {
         this.businessValue = businessValue;
         this.storyPoints = storyPoints;
+        this.sprint = sprint;
     }
 
 
@@ -28,11 +30,20 @@ public class SprintStatDTO {
         this.storyPoints = storyPoints;
     }
 
+    public SprintDTO getSprint() {
+        return sprint;
+    }
+
+    public void setSprint(SprintDTO sprint) {
+        this.sprint = sprint;
+    }
+
     @Override
     public String toString() {
-        return "SprintStat{" +
+        return "SprintStatDTO{" +
                 "businessValue=" + businessValue +
                 ", storyPoints=" + storyPoints +
+                ", sprint=" + sprint +
                 '}';
     }
 }

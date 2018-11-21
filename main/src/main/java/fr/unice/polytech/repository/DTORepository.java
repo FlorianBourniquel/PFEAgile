@@ -60,16 +60,29 @@ public class DTORepository {
         }
     }
 
-    public SprintStatDTO getSprintStat(SprintDTO sprint) {
+    public SprintStatDTO getSprintStat(String sprintName) {
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(
                     tx -> tx.run(
-                            "MATCH (:Sprint{name:\""+sprint.getName()+"\"})-[CONTAINS]->(s:Story)\n" +
-                                    "RETURN sum(s.business_value) as bv, sum(s.story_points) as sp"));
+                            "MATCH (spr:Sprint{name:\""+sprintName+"\"})-[CONTAINS]->(s:Story)\n" +
+                                    "RETURN sum(s.business_value) as bv, sum(s.story_points) as sp, spr"));
             Record r = s.next();
-            return  new SprintStatDTO(r.get("bv").asInt(), r.get("sp").asInt());
+            SprintDTO spr = new SprintDTO(r.get("spr"));
+            return  new SprintStatDTO(r.get("bv").asInt(), r.get("sp").asInt(), spr);
         }
     }
+
+
+    public List<SprintStatDTO> getAllSprintStat() {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run(
+                            "MATCH (spr:Sprint)-[CONTAINS]->(s:Story)\n" +
+                               "RETURN sum(s.business_value) as bv, sum(s.story_points) as sp, spr"));
+            return s.list( r -> new SprintStatDTO(r.get("bv").asInt(), r.get("sp").asInt(), new SprintDTO(r.get("spr"))));
+        }
+    }
+
 
 
 

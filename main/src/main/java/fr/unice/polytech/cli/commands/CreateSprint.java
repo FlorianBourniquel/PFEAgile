@@ -1,12 +1,16 @@
 package fr.unice.polytech.cli.commands;
 
+import fr.unice.polytech.repository.dto.SprintStatDTO;
 import fr.unice.polytech.repository.dto.StoryDTO;
-import org.neo4j.driver.v1.Session;
-
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CreateSprint extends AbstractSprintCommand {
+
+
+    private List<StoryDTO> backlog;
+    private boolean error;
 
     @Override
     public String identifier() { return "create_sprint"; }
@@ -14,12 +18,13 @@ public class CreateSprint extends AbstractSprintCommand {
     @Override
     public void load(List<String> args) {
         super.load(args);
-
-        this.storyIds.forEach(s -> {
-            if(!isIdExists(s)) {
-                throw new IllegalArgumentException("Couldn't find story n°" + s);
-            }
-        });
+        backlog = this.shell.system.getRepository().getStoriesRemainingInBacklog();
+        List<Integer> missingStories = this.storyIds.stream().filter(x -> !sprintNumberExists(x)).collect(Collectors.toList());
+        if(missingStories.size() > 0){
+            String sts = missingStories.stream().map(String::valueOf).collect(Collectors.joining(", "));
+            this.error = true;
+            print("Couldn't find stories n° " + sts);
+        }
     }
 
     @Override
@@ -27,20 +32,16 @@ public class CreateSprint extends AbstractSprintCommand {
         return 0;
     }
 
-    private boolean isIdExists(Integer integer) {
-        for (StoryDTO story :
-                this.shell.system.getStories()) {
-            if (story.getNumber() == integer) {
-                return true;
-            }
-        }
-        return false;
+    private boolean sprintNumberExists(Integer integer) {
+        return this.backlog.stream().anyMatch( x -> x.getNumber() == integer);
     }
 
     @Override
     public void execute() throws IOException {
         super.execute();
-
+        if(error){
+            return;
+        }
         System.out.println("User requested to create a sprint named " + this.sprintName + " and containing " + this.storyIds.size() + " stories.");
 
         StringBuilder resBuilder = new StringBuilder();
@@ -64,8 +65,23 @@ public class CreateSprint extends AbstractSprintCommand {
             resBuilder.append("\nCREATE (n)-[:CONTAINS]->(s").append(i + 1).append(")");
         }
 
-        try (Session session = shell.system.getDb().getDriver().session()) {
-            session.writeTransaction(tx -> tx.run(resBuilder.toString()));
+        this.shell.system.getRepository().executeQuery(resBuilder.toString());
+
+        checkIfSprintLoadHigherThanTheAverage();
+
+    }
+
+    private void checkIfSprintLoadHigherThanTheAverage() {
+        List<SprintStatDTO> list = this.shell.system.getRepository().getAllSprintStat();
+        Double averagePrevPrintsStoryPoints = list.stream()
+                .mapToInt(SprintStatDTO::getStoryPoints).average().getAsDouble();
+
+        Double averageNewSprintStoryPoints = this.backlog
+                .stream().filter(x -> storyIds.contains(x.getNumber()))
+                .mapToInt(StoryDTO::getStoryPoints).average().getAsDouble();
+
+        if(averageNewSprintStoryPoints > averagePrevPrintsStoryPoints){
+            System.out.println("[WARNING] this sprint has more story points ("+averageNewSprintStoryPoints+") than the average ("+averagePrevPrintsStoryPoints+")");
         }
     }
 

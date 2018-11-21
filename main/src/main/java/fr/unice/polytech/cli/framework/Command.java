@@ -46,4 +46,8 @@ public abstract class Command<T> {
 
 	}
 
+	protected void print( Object o){
+		System.out.println("\n" + o + "\n");
+	}
+
 }

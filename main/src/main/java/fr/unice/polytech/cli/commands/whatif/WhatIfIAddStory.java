@@ -20,12 +20,10 @@ public class WhatIfIAddStory extends Command<Environment> {
 
     @Override
     public void execute() {
-        System.out.println();
         DTORepository repository = this.shell.system.getRepository();
         SprintWithStoriesDTO sprint = repository.getSprintWithStories(sprintName);
         if(sprint == null){
-            System.out.println("Le spring "+ sprintName+" n'existe pas");
-            System.out.println();
+            print("Le spring "+ sprintName+" n'existe pas");
             return;
         }
 
@@ -41,19 +39,16 @@ public class WhatIfIAddStory extends Command<Environment> {
         List<StoryDTO> contained = stories.stream().filter( x -> sprint.getStories().contains(x)).collect(Collectors.toList());
         if(contained.size() > 0){
             String sts = contained.stream().map(StoryDTO::getName).collect(Collectors.joining(", "));
-            System.out.println("Les stories " + sts + " appartiennent déja au Sprint " + sprintName);
-            System.out.println();
+            print("Les stories " + sts + " appartiennent déja au Sprint " + sprintName);
             return;
         }
 
 
-        SprintStatDTO sprintStat = repository.getSprintStat(sprint.getSprint());
+        SprintStatDTO sprintStat = repository.getSprintStat(sprint.getSprint().getName());
         int newBv = stories.stream().mapToInt(StoryDTO::getBusinessValue).sum() + sprintStat.getBusinessValue();
         int newSp = stories.stream().mapToInt(StoryDTO::getStoryPoints).sum() + sprintStat.getStoryPoints();
-        System.out.println("[Actuellement] --> Business Value : " + sprintStat.getBusinessValue() + " - Story Points : " + sprintStat.getStoryPoints());
-        System.out.println("[Apres Ajout]  --> Business Value : " + newBv + " - Story Points : " + newSp);
-        System.out.println();
-
+        print("[Actuellement] --> Business Value : " + sprintStat.getBusinessValue() + " - Story Points : " + sprintStat.getStoryPoints()
+              + "\n[Apres Ajout]  --> Business Value : " + newBv + " - Story Points : " + newSp);
     }
 
 
@@ -64,7 +59,7 @@ public class WhatIfIAddStory extends Command<Environment> {
             sprintName = args.get(0).trim();
             storyNames = args.subList(1,args.size()).stream().map(String::trim).collect(Collectors.toList());
         }else {
-            System.out.println("Nombre d'arguments incorrect incorrect");
+            print("Nombre d'arguments incorrect incorrect");
         }
     }
 

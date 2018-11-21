@@ -48,7 +48,7 @@ public class WhatIfIRemoveStory extends Command<Environment> {
         }
 
 
-        SprintStatDTO sprintStat = repository.getSprintStat(sprint.getSprint());
+        SprintStatDTO sprintStat = repository.getSprintStat(sprint.getSprint().getName());
         int newBv = sprintStat.getBusinessValue() - stories.stream().mapToInt(StoryDTO::getBusinessValue).sum() ;
         int newSp = sprintStat.getStoryPoints() - stories.stream().mapToInt(StoryDTO::getStoryPoints).sum() ;
         System.out.println("[Actuellement     ] --> Business Value : " + sprintStat.getBusinessValue() + " - Story Points : " + sprintStat.getStoryPoints());

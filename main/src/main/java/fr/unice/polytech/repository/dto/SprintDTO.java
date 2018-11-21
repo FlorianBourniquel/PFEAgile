@@ -27,5 +27,12 @@ public class SprintDTO {
         SprintDTO sprintDTO = (SprintDTO) o;
         return Objects.equals(name, sprintDTO.name);
     }
-    
+
+
+    @Override
+    public String toString() {
+        return "SprintDTO{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

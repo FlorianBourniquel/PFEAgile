@@ -47,8 +47,6 @@ public abstract class AbstractSprintCommand extends Command<Environment> {
                 this.storyIds.add(Integer.valueOf(argsIteration.next()));
                 argsIteration.remove();
             }
-
-            this.storyIds.forEach(System.out::println);
         }
     }
 
@@ -61,22 +59,11 @@ public abstract class AbstractSprintCommand extends Command<Environment> {
     public void execute() throws IOException {
         if(this.sprintName.isEmpty()){
             throw new IOException("Please specify a name for the sprint.");
-        } else if(this.checkSprintExistency()){
+        } else if(this.shell.system.getRepository().getSprint(sprintName) != null ){
             throw new IOException("The sprint named " + this.sprintName + " already exists.");
         }
     }
 
-    private boolean checkSprintExistency() {
-        try (Session session = shell.system.getDb().getDriver().session()) {
-            StringBuilder resBuilder = new StringBuilder();
-
-            resBuilder.append("MATCH (s:Sprint {name:\"").append(this.sprintName).append("\"}) return s");
-
-            StatementResult result = session.writeTransaction(tx -> tx.run(resBuilder.toString()));
-
-            return result.hasNext();
-        }
-    }
 
     @Override
     public boolean shouldContinue() { return true; }
