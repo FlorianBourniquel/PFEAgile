@@ -5,6 +5,7 @@ import org.neo4j.driver.v1.StatementResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Sprint extends Node{
 
@@ -24,6 +25,10 @@ public class Sprint extends Node{
                         "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + this.getName() + "\"}) RETURN s"));
 
         this.storyList = findStories.list(story -> new UserStory(new ArrayList<>(), new ArrayList<>(), story.get("s").get("name").asString()));
+
+        for (UserStory story : this.storyList) {
+            story.fill(session);
+        }
     }
 
     public List<UserStory> getStoryList() {
@@ -32,5 +37,21 @@ public class Sprint extends Node{
 
     public void setStoryList(List<UserStory> storyList) {
         this.storyList = storyList;
+    }
+
+    public Optional<Class> containsDomainElement(Class classWanted) {
+        for (UserStory story : this.storyList) {
+            return story.getClasses().stream().filter(c -> c.equals(classWanted)).findFirst();
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Method> containsDomainElement(Method methodWanted) {
+        for (UserStory story : this.storyList) {
+            return story.getMethods().stream().filter(s -> s.equals(methodWanted)).findFirst();
+        }
+
+        return Optional.empty();
     }
 }

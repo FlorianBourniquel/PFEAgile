@@ -35,19 +35,6 @@ public class VisualiseModel extends Command<Environment> {
 
             for (Sprint sprint : sprintList) {
                 sprint.fill(session);
-
-                for (UserStory story : sprint.getStoryList()) {
-
-                    story.fill(session);
-
-                    for (Class classElement : story.getClasses()) {
-                        classElement.fill(session);
-                    }
-
-                    for (Method methodElement : story.getMethods()) {
-                        methodElement.fill(session);
-                    }
-                }
             }
         }
 

@@ -43,11 +43,18 @@ public class UserStory extends Node{
 
         this.classes = findClasses.list(classElement -> new Class(new ArrayList<>(), classElement.get("c").get("name").asString()));
 
+        for (Class classElement : this.classes) {
+            classElement.fill(session);
+        }
+
         StatementResult findMethods = session.writeTransaction(
                 tx -> tx.run(
                         "MATCH (c:RelationShip)<-[:INVOLVES]-(n:Story {name:\"" + this.getName() + "\"}) RETURN c"));
 
         this.methods = findMethods.list(methodElement -> new Method(new ArrayList<>(), methodElement.get("c").get("name").asString()));
 
+        for (Method methodElement : this.methods) {
+            methodElement.fill(session);
+        }
     }
 }

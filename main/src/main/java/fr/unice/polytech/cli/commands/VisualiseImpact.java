@@ -1,10 +1,13 @@
 package fr.unice.polytech.cli.commands;
 
+import fr.unice.polytech.cli.commands.utils.Parser;
+import fr.unice.polytech.graphviz.*;
+import fr.unice.polytech.graphviz.Class;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 public class VisualiseImpact extends AbstractSprintCommand {
 
@@ -41,7 +44,50 @@ public class VisualiseImpact extends AbstractSprintCommand {
                     tx -> tx.run(
                             "MATCH (s:Sprint {name : \"" + this.sprintName + "\"}) return s"));
 
-            findSprint.next();
+            Sprint sprint = new Sprint(new ArrayList<>(), findSprint.next().get("s").get("name").asString());
+
+            sprint.setColorEnum(ColorEnum.MODIFIED);
+            sprint.fill(session);
+
+            for (Integer story :
+                    this.storyIds) {
+                StatementResult findStory = session.writeTransaction(
+                        tx -> tx.run(
+                                "MATCH (s:Story {name : \"US" + story + "\"}) return s"));
+
+                List<UserStory> stories = findStory.list(s -> new UserStory(new ArrayList<>(), new ArrayList<>(), "US" + story));
+
+                stories.forEach(s -> {
+                    s.fill(session);
+
+                    for (Class classElement:
+                         s.getClasses()) {
+                        Optional<Class> classOptional = sprint.containsDomainElement(classElement);
+
+                        if(classOptional.isPresent()){
+                            classOptional.get().setColorEnum(ColorEnum.MODIFIED);
+                        } else {
+                            classElement.setColorEnum(ColorEnum.ADDED);
+                        }
+                    }
+
+                    for (Method methodElement:
+                            s.getMethods()) {
+                        Optional<Method> methodOptional = sprint.containsDomainElement(methodElement);
+
+                        if(methodOptional.isPresent()){
+                            methodOptional.get().setColorEnum(ColorEnum.MODIFIED);
+                        } else {
+                            methodElement.setColorEnum(ColorEnum.ADDED);
+                        }
+                    }
+
+                    s.setColorEnum(ColorEnum.MODIFIED);
+                    sprint.getStoryList().add(s);
+                });
+            }
+
+            Parser.parse(Collections.singletonList(sprint), "/data/nodeAdd.csv","/data/edgeAdd.csv");
         }
     }
 

@@ -41,4 +41,8 @@ public abstract class Node {
     public ColorEnum getColorEnum() {
         return colorEnum;
     }
+
+    public void setColorEnum(ColorEnum colorEnum) {
+        this.colorEnum = colorEnum;
+    }
 }
