@@ -8,8 +8,11 @@ public abstract class Node {
 
     private String name;
 
+    private ColorEnum colorEnum;
+
     public Node(String name){
         this.name = name;
+        this.colorEnum = ColorEnum.DEFAULT;
     }
 
     public String getName() {
@@ -33,5 +36,9 @@ public abstract class Node {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public ColorEnum getColorEnum() {
+        return colorEnum;
     }
 }

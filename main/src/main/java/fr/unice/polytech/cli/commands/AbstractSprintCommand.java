@@ -2,8 +2,6 @@ package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,8 +45,6 @@ public abstract class AbstractSprintCommand extends Command<Environment> {
                 this.storyIds.add(Integer.valueOf(argsIteration.next()));
                 argsIteration.remove();
             }
-
-            this.storyIds.forEach(System.out::println);
         }
     }
 
@@ -59,24 +55,14 @@ public abstract class AbstractSprintCommand extends Command<Environment> {
 
     @Override
     public void execute() throws IOException {
-        if(this.sprintName.isEmpty()){
+        if(this.sprintName.isEmpty()) {
             throw new IOException("Please specify a name for the sprint.");
-        } else if(this.checkSprintExistency()){
-            throw new IOException("The sprint named " + this.sprintName + " already exists.");
         }
+
+        check();
     }
 
-    private boolean checkSprintExistency() {
-        try (Session session = shell.system.getDb().getDriver().session()) {
-            StringBuilder resBuilder = new StringBuilder();
-
-            resBuilder.append("MATCH (s:Sprint {name:\"").append(this.sprintName).append("\"}) return s");
-
-            StatementResult result = session.writeTransaction(tx -> tx.run(resBuilder.toString()));
-
-            return result.hasNext();
-        }
-    }
+    protected void check() throws IOException { }
 
     @Override
     public boolean shouldContinue() { return true; }

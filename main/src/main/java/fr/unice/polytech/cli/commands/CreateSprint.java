@@ -34,7 +34,15 @@ public class CreateSprint extends AbstractSprintCommand {
                 return true;
             }
         }
+
         return false;
+    }
+
+    @Override
+    protected void check() throws IOException {
+        if(this.shell.system.getRepository().getSprint(this.sprintName) != null) {
+            throw new IOException("The sprint named " + this.sprintName + " already exists.");
+        }
     }
 
     @Override
@@ -64,9 +72,7 @@ public class CreateSprint extends AbstractSprintCommand {
             resBuilder.append("\nCREATE (n)-[:CONTAINS]->(s").append(i + 1).append(")");
         }
 
-        try (Session session = shell.system.getDb().getDriver().session()) {
-            session.writeTransaction(tx -> tx.run(resBuilder.toString()));
-        }
+        this.shell.system.getRepository().executeQuery(resBuilder.toString());
     }
 
     @Override
