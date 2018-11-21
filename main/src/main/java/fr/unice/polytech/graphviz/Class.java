@@ -13,6 +13,7 @@ public class Class extends Node {
     public Class(List<Method> methodList, String name) {
         super(name);
         this.methodList = methodList;
+        colorEnum = ColorEnum.CLASS;
     }
 
     public List<Method> getMethodList() {

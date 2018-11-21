@@ -6,10 +6,13 @@ import java.util.Objects;
 
 public abstract class Node {
 
-    private String name;
+    protected String name;
+
+    protected ColorEnum colorEnum;
 
     public Node(String name){
         this.name = name;
+        this.colorEnum = ColorEnum.DEFAULT;
     }
 
     public String getName() {
@@ -33,5 +36,9 @@ public abstract class Node {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public ColorEnum getColorEnum() {
+        return colorEnum;
     }
 }

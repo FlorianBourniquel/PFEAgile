@@ -53,8 +53,13 @@ public class VisualiseImpact extends AbstractSprintCommand {
             addMode = Boolean.valueOf(args.get(0));
             args.remove(0);
         }
+    }
 
-        throw new IllegalArgumentException("");
+    @Override
+    protected void check() throws IOException {
+        if(this.shell.system.getRepository().getSprint(this.sprintName) == null) {
+            throw new IOException("The sprint named " + this.sprintName + " wasn't found.");
+        }
     }
 
     @Override

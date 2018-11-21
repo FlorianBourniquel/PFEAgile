@@ -62,8 +62,11 @@ public abstract class AbstractSprintCommand extends Command<Environment> {
         } else if(this.shell.system.getRepository().getSprint(sprintName) != null ){
             throw new IOException("The sprint named " + this.sprintName + " already exists.");
         }
+
+        check();
     }
 
+    protected void check() throws IOException { }
 
     @Override
     public boolean shouldContinue() { return true; }

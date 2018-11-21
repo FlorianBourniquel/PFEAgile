@@ -37,6 +37,13 @@ public class CreateSprint extends AbstractSprintCommand {
     }
 
     @Override
+    protected void check() throws IOException {
+        if(this.shell.system.getRepository().getSprint(this.sprintName) != null) {
+            throw new IOException("The sprint named " + this.sprintName + " already exists.");
+        }
+    }
+
+    @Override
     public void execute() throws IOException {
         super.execute();
         if(error){

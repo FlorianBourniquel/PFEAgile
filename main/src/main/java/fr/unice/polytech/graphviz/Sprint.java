@@ -14,6 +14,7 @@ public class Sprint extends Node{
         super(name);
 
         this.storyList = storyList;
+        colorEnum = ColorEnum.SPRINT;
     }
 
     @Override
