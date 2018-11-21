@@ -53,7 +53,6 @@ public class VisualiseModel extends Command<Environment> {
             }
         }
 
-        //place here the call to the viz function
         this.parse(sprintList);
     }
 

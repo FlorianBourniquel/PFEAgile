@@ -1,22 +1,16 @@
 package fr.unice.polytech.cli.commands;
 
-import fr.unice.polytech.cli.framework.Command;
-import fr.unice.polytech.environment.Environment;
+import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.StatementResult;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
-public class VisualiseImpact extends Command<Environment> {
-
-    private String sprintName;
-
-    private List<Integer> storyIds;
+public class VisualiseImpact extends AbstractSprintCommand {
 
     private boolean addMode;
 
-    public VisualiseImpact(){
-        this.sprintName = "";
-        this.storyIds = new ArrayList<>();
+    public VisualiseImpact() {
         this.addMode = true;
     }
 
@@ -26,7 +20,7 @@ public class VisualiseImpact extends Command<Environment> {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws IOException {
         if(addMode){
             visualiseAddStories();
         } else {
@@ -38,28 +32,34 @@ public class VisualiseImpact extends Command<Environment> {
 
     }
 
-    private void visualiseAddStories() {
+    private void visualiseAddStories() throws IOException {
+        super.execute();
 
+        try (Session session = shell.system.getDb().getDriver().session()) {
+
+            StatementResult findSprint = session.writeTransaction(
+                    tx -> tx.run(
+                            "MATCH (s:Sprint {name : \"" + this.sprintName + "\"}) return s"));
+
+            findSprint.next();
+        }
     }
 
     @Override
     public void load(List<String> args) {
-        initCmd();
+        super.load(args);
 
-        if(args.size() > 1){
-            sprintName = args.get(0);
-            args.remove(0);
-
+        if(args.size() > 0){
             addMode = Boolean.valueOf(args.get(0));
             args.remove(0);
-
-            args.forEach(s -> storyIds.add(Integer.valueOf(s)));
         }
+
+        throw new IllegalArgumentException("");
     }
 
-    private void initCmd() {
-        this.storyIds.clear();
-        this.sprintName = "";
+    @Override
+    protected int getNbOtherArgs() {
+        return 1;
     }
 
     @Override
@@ -68,10 +68,5 @@ public class VisualiseImpact extends Command<Environment> {
                 "       - name:String\n" +
                 "       - addMode:Boolean\n" +
                 "       - stories:List<Integer>";
-    }
-
-    @Override
-    public boolean shouldContinue() {
-        return true;
     }
 }
