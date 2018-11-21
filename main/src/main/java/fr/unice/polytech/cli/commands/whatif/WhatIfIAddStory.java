@@ -71,7 +71,7 @@ public class WhatIfIAddStory extends Command<Environment> {
 
     @Override
     public String describe() {
-        return "Exit Agile Backlog";
+        return "Display new Sprint's BV and SP if stories are added : what_if_i_add 'SPRINT' 'STORY1' 'STORY2' ...";
     }
 
     @Override

@@ -6,21 +6,11 @@ import fr.unice.polytech.cli.commands.whatif.WhatIfIAddStory;
 import fr.unice.polytech.cli.commands.whatif.WhatIfIRemoveStory;
 import fr.unice.polytech.cli.framework.Shell;
 import fr.unice.polytech.environment.Environment;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
-/**
- * Hello world!
- *
- */
 public class Main  extends Shell<Environment>
 {
 
-    public Main(){
+     Main(){
         this.system = new Environment();
         this.invite  = "Agile";
         register(
@@ -31,14 +21,13 @@ public class Main  extends Shell<Environment>
                 VisualiseModel.class,
                 VisualiseImpact.class,
                 WhatIfIAddStory.class,
-                WhatIfIRemoveStory.class
+                WhatIfIRemoveStory.class,
+                SortBacklogByValue.class
         );
-
     }
 
 
-
-    public static void main( String[] args ) throws IOException, URISyntaxException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException, InterruptedException {
+    public static void main( String[] args ) throws InterruptedException {
         Thread.sleep(10000);
         Main main = new Main();
         main.run();

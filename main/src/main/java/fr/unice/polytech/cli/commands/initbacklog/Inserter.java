@@ -38,6 +38,7 @@ public class Inserter {
 
         String data = new String(Files.readAllBytes(storiesFile));
         Story story = new Gson().fromJson(data, Story.class);
+        story.setText(story.getText().trim());
         story.setNumber(storyNumber);
         story.setStoryPoints(storyEntry.getStoryPoints());
         story.setBusinessValue(storyEntry.getBusinessValue());

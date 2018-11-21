@@ -72,7 +72,7 @@ public class WhatIfIRemoveStory extends Command<Environment> {
 
     @Override
     public String describe() {
-        return "Exit Agile Backlog";
+        return "Display new Sprint's BV and SP if stories are removed : what_if_i_remove 'SPRINT' 'STORY1' 'STORY2' ...";
     }
 
     @Override
