@@ -48,6 +48,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
 
                 stories.forEach(s -> {
                     s.fill(session);
+                    sprint.getStoryList().remove(s);
 
                     for (Class classElement:
                             s.getClasses()) {
@@ -71,11 +72,12 @@ public class VisualiseImpact extends AbstractSprintCommand {
                         }
                     }
 
+                    sprint.getStoryList().add(s);
                     s.setColorEnum(ColorEnum.REMOVED);
                 });
             }
 
-            Parser.parse(Collections.singletonList(sprint), "/data/nodeAdd.csv","/data/edgeAdd.csv");
+            Parser.parse(Collections.singletonList(sprint), "/data/nodeRemove.csv","/data/edgeRemove.csv");
         }
     }
 

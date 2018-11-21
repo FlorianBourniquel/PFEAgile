@@ -28,7 +28,7 @@ public class Main  extends Shell<Environment>
 
 
     public static void main( String[] args ) throws InterruptedException {
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
         Main main = new Main();
         main.run();
     }
