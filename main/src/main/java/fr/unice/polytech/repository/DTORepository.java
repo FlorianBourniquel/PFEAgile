@@ -90,13 +90,17 @@ public class DTORepository {
     }
 
 
-    public List<SprintStatDTO> getAllSprintStat() {
+    public List<Sprint> getAllSprints() {
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(
                     tx -> tx.run(
                             "MATCH (spr:Sprint)-[CONTAINS]->(s:Story)\n" +
-                               "RETURN sum(s.business_value) as bv, sum(s.story_points) as sp, spr"));
-            return s.list( r -> new SprintStatDTO(r.get("bv").asInt(), r.get("sp").asInt(), new SprintDTO(r.get("spr"))));
+                               "RETURN spr"));
+            return s.list( r -> {
+                Sprint res = new Sprint(r.get("spr").get("name").asString());
+                res.fill(db.getDriver().session());
+                return res;
+            });
         }
     }
 

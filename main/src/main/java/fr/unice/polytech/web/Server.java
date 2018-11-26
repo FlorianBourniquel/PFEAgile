@@ -1,6 +1,7 @@
 package fr.unice.polytech.web;
 
 import fr.unice.polytech.cli.commands.Bye;
+import fr.unice.polytech.cli.commands.CreateSprint;
 import fr.unice.polytech.cli.commands.ListBacklog;
 import fr.unice.polytech.cli.commands.initbacklog.InitBacklog;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -18,7 +19,7 @@ public class Server {
     private static final String ROOT_PATH = "main";
 
     public static void main(String[] args) {
-        CmdProcessor.get().register(Bye.class, ListBacklog.class, InitBacklog.class);
+        CmdProcessor.get().register(Bye.class, ListBacklog.class, InitBacklog.class, CreateSprint.class);
         try {
             final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, create(), false);
             Runtime.getRuntime().addShutdownHook(new Thread(server::shutdownNow));

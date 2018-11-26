@@ -1,20 +1,33 @@
 package fr.unice.polytech.cli.commands;
 
+import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
 import fr.unice.polytech.repository.DTORepository;
-import fr.unice.polytech.repository.dto.SprintStatDTO;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CreateSprint extends AbstractSprintCommand {
+public class CreateSprint extends AbstractSprintCommand implements WebCommand {
 
     private List<UserStory> backlog;
     private boolean error;
 
     @Override
     public String identifier() { return "create_sprint"; }
+
+    @Override
+    public Response execResponse() throws CmdException {
+        try {
+            execute();
+            return Response.ok(this.checkIfSprintLoadHigherThanTheAverage()).build();
+        } catch (IOException e) {
+            throw new CmdException(e.getMessage());
+        }
+    }
 
     @Override
     public void load(List<String> args) {
@@ -73,23 +86,29 @@ public class CreateSprint extends AbstractSprintCommand {
             resBuilder.append("\nCREATE (n)-[:CONTAINS]->(s").append(i + 1).append(")");
         }
 
-        this.shell.system.getRepository().executeQuery(resBuilder.toString());
+        DTORepository.get().executeQuery(resBuilder.toString());
 
-        checkIfSprintLoadHigherThanTheAverage();
-
+        System.out.println(checkIfSprintLoadHigherThanTheAverage());
     }
 
-    private void checkIfSprintLoadHigherThanTheAverage() {
-        List<SprintStatDTO> list = DTORepository.get().getAllSprintStat();
-        Double averagePrevPrintsStoryPoints = list.stream()
-                .mapToInt(SprintStatDTO::getStoryPoints).average().getAsDouble();
+    private String checkIfSprintLoadHigherThanTheAverage() {
+        List<Sprint> list = DTORepository.get().getAllSprints();
 
-        Double averageNewSprintStoryPoints = this.backlog
-                .stream().filter(x -> storyIds.contains(x.getNumber()))
-                .mapToInt(UserStory::getStoryPoints).average().getAsDouble();
+        if(list.size() > 0) {
+            Double averagePrevPrintsStoryPoints = list.stream()
+                    .mapToInt(Sprint::calculateTotalStoryPoints).average().getAsDouble();
 
-        if(averageNewSprintStoryPoints > averagePrevPrintsStoryPoints){
-            System.out.println("[WARNING] this sprint has more story points ("+averageNewSprintStoryPoints+") than the average ("+averagePrevPrintsStoryPoints+")");
+            int averageNewSprintStoryPoints = this.backlog
+                    .stream().filter(x -> storyIds.contains(x.getNumber()))
+                    .mapToInt(UserStory::getStoryPoints).sum();
+
+            if (averageNewSprintStoryPoints > averagePrevPrintsStoryPoints) {
+                return "[WARNING] this sprint has more story points (" + averageNewSprintStoryPoints + ") than the average (" + averagePrevPrintsStoryPoints + ")";
+            } else {
+                return "This sprint contains the average story points from all the other sprints";
+            }
+        } else {
+            return "This sprint is the first one, can't establish sprint load stats";
         }
     }
 

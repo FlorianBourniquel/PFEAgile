@@ -54,4 +54,11 @@ public class Sprint extends Node{
 
         return Optional.empty();
     }
+
+    public int calculateTotalStoryPoints(){
+        return this.storyList
+                .stream()
+                .mapToInt(UserStory::getStoryPoints)
+                .sum();
+    }
 }
