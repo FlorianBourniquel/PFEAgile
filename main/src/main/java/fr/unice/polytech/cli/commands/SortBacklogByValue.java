@@ -3,12 +3,16 @@ package fr.unice.polytech.cli.commands;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.UserStory;
-import fr.unice.polytech.repository.dto.StoryDTO;
+import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
+
+import javax.ws.rs.core.Response;
 import java.util.Comparator;
 import java.util.List;
 
 
-public class SortBacklogByValue extends Command<Environment> {
+public class SortBacklogByValue extends Command<Environment> implements WebCommand{
 
     @Override
     public String identifier() {
@@ -16,12 +20,26 @@ public class SortBacklogByValue extends Command<Environment> {
     }
 
     @Override
+    public Response execResponse() throws CmdException {
+        StringBuilder res = new StringBuilder();
+
+        sortRemainingUSByValue().forEach(story -> res.append(story.toStringWithRatio()).append("\n"));
+
+        return Response.ok(res.toString()).build();
+    }
+
+    @Override
     public void execute() {
-        List<UserStory> stories = shell.system.getRepository().getBacklog();
+        System.out.println();
+        sortRemainingUSByValue().forEach(x -> System.out.println(x.toStringWithRatio()));
+        System.out.println();
+    }
+
+    private List<UserStory> sortRemainingUSByValue(){
+        List<UserStory> stories = DTORepository.get().getBacklog();
         stories.sort(Comparator.comparing(UserStory::getAgileRatio).reversed());
-        System.out.println();
-        stories.forEach(x -> System.out.println(x.toStringWithRatio()));
-        System.out.println();
+
+        return stories;
     }
 
     @Override

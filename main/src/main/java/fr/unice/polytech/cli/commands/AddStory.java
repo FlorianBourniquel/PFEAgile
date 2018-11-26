@@ -26,6 +26,7 @@ public class AddStory extends Command<Environment> {
             print("Le sprint "+ sprintName+" n'existe pas");
             return;
         }
+        /*
 
         List<StoryDTO> stories = repository.getStoriesIn(storyNames);
         if(stories.size() != storyNames.size()){
@@ -35,7 +36,7 @@ public class AddStory extends Command<Environment> {
             return;
         }
 
-        /*
+
         List<StoryDTO> backlog = shell.system.getRepository().getBacklog();
         List<StoryDTO> toAdd = stories.stream().filter( x -> !sprint.getStories().contains(x)).collect(Collectors.toList());
         List<StoryDTO> alreadyBounded = toAdd.stream().filter(x ->!backlog.contains(x)).collect(Collectors.toList());

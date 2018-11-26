@@ -1,56 +1,63 @@
 package fr.unice.polytech.cli.commands.whatif;
 
-import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.cli.framework.Command;
-import fr.unice.polytech.repository.dto.SprintStatDTO;
-import fr.unice.polytech.repository.dto.SprintWithStoriesDTO;
-import fr.unice.polytech.repository.dto.StoryDTO;
 import fr.unice.polytech.environment.Environment;
+import fr.unice.polytech.graphviz.Sprint;
+import fr.unice.polytech.graphviz.UserStory;
+import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
+
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class WhatIfIAddStory extends Command<Environment> {
+public class WhatIfIAddStory extends Command<Environment> implements WebCommand{
 
     private String sprintName;
     private List<String> storyNames;
-
 
     @Override
     public String identifier() { return "what_if_i_add"; }
 
     @Override
-    public void execute() {
-        DTORepository repository = this.shell.system.getRepository();
-        SprintWithStoriesDTO sprint = repository.getSprintWithStories(sprintName);
-        if(sprint == null){
-            print("Le spring "+ sprintName+" n'existe pas");
-            return;
-        }
-
-        List<StoryDTO> stories = repository.getStoriesIn(storyNames);
-        if(stories.size() != storyNames.size()){
-             List<String> temp = stories.stream().map(StoryDTO::getName).collect(Collectors.toList());
-            String sts = storyNames.stream().filter(x -> !temp.contains(x)).collect(Collectors.joining(", "));
-            System.out.println("Les stories "+sts+" n'existent pas");
-            System.out.println();
-            return;
-        }
-
-        List<StoryDTO> contained = stories.stream().filter( x -> sprint.getStories().contains(x)).collect(Collectors.toList());
-        if(contained.size() > 0){
-            String sts = contained.stream().map(StoryDTO::getName).collect(Collectors.joining(", "));
-            print("Les stories " + sts + " appartiennent déja au Sprint " + sprintName);
-            return;
-        }
-
-
-        SprintStatDTO sprintStat = repository.getSprintStat(sprint.getSprint().getName());
-        int newBv = stories.stream().mapToInt(StoryDTO::getBusinessValue).sum() + sprintStat.getBusinessValue();
-        int newSp = stories.stream().mapToInt(StoryDTO::getStoryPoints).sum() + sprintStat.getStoryPoints();
-        print("[Actuellement] --> Business Value : " + sprintStat.getBusinessValue() + " - Story Points : " + sprintStat.getStoryPoints()
-              + "\n[Apres Ajout]  --> Business Value : " + newBv + " - Story Points : " + newSp);
+    public Response execResponse() throws CmdException {
+        return Response.ok(this.execWithStringResponse()).build();
     }
 
+    @Override
+    public void execute() {
+        print(this.execWithStringResponse());
+    }
+
+    private String execWithStringResponse(){
+        DTORepository repository = DTORepository.get();
+        Sprint sprint = repository.getSprint(sprintName);
+        if(sprint == null){
+            return "Le sprint "+ sprintName +" n'existe pas";
+        }
+
+        DTORepository.get().fill(sprint);
+
+        List<UserStory> stories = repository.getStoriesIn(storyNames);
+        if(stories.size() != storyNames.size()){
+            List<String> temp = stories.stream().map(UserStory::getName).collect(Collectors.toList());
+            String sts = storyNames.stream().filter(x -> !temp.contains(x)).collect(Collectors.joining(", "));
+            return "Les stories "+sts+" n'existent pas\n";
+        }
+
+        List<UserStory> contained = stories.stream().filter(x -> sprint.getStoryList().contains(x)).collect(Collectors.toList());
+        if(contained.size() > 0){
+            String sts = contained.stream().map(UserStory::getName).collect(Collectors.joining(", "));
+            return "Les stories " + sts + " appartiennent déja au Sprint " + sprintName;
+        }
+
+        int newBv = stories.stream().mapToInt(UserStory::getBusinessValue).sum() + sprint.calculateTotalBusinessValue();
+        int newSp = stories.stream().mapToInt(UserStory::getStoryPoints).sum() + sprint.calculateTotalStoryPoints();
+
+        return "[Actuellement] --> Business Value : " + sprint.calculateTotalBusinessValue() + " - Story Points : " + sprint.calculateTotalStoryPoints()
+                + "\n[Apres Ajout]  --> Business Value : " + newBv + " - Story Points : " + newSp;
+    }
 
     @Override
     public void load(List<String> args) {
