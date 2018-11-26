@@ -120,7 +120,7 @@ vis.links$width <- 1+links$weight/8 # line width
 vis.links$label <- vis.links$type# line width
 vis.links$color <- "gray"    # line color
 vis.links$arrows <- "to" # arrows: 'from', 'to', or 'middle'
-vis.links$smooth <- FALSE    # should the edges be curved?
+vis.links$smooth <- TRUE    # should the edges be curved?
 vis.links$shadow <- FALSE    # edge shadow
 
 visNetwork(vis.nodes, vis.links)

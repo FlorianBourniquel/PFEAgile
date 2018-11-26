@@ -17,7 +17,7 @@ public class Main  extends Shell<Environment>
                 Bye.class,
                 InitBacklog.class,
                 CreateSprint.class,
-                ListStories.class,
+                ListBacklog.class,
                 VisualiseModel.class,
                 VisualiseImpact.class,
                 WhatIfIAddStory.class,

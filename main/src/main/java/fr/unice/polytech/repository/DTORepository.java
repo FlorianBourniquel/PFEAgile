@@ -39,7 +39,7 @@ public class DTORepository {
 
     public SprintWithStoriesDTO getSprintWithStories(String sprintName) {
         try (Session session = db.getDriver().session()) {
-            String query = " MATCH (sp:Sprint{name:"+sprintName+"})-[:CONTAINS]->(st:Story) RETURN sp,st";
+            String query = " MATCH (sp:Sprint{name:\""+sprintName+"\"})-[:CONTAINS]->(st:Story) RETURN sp,st";
 
             StatementResult s = session.writeTransaction(tx -> tx.run(query));
             if(!s.hasNext()){
