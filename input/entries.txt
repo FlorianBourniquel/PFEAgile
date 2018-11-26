@@ -11,7 +11,7 @@
 },
 {
     "text": "As a Visitor, I can rename my account.",
-    "storyPoints": 2,
+    "storyPoints": 100,
     "businessValue": 10
 }
 ]

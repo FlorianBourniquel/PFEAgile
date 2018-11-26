@@ -8,11 +8,11 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class ListStories extends Command<Environment> {
+public class ListBacklog extends Command<Environment> {
 
     @Override
     public String identifier() {
-        return "list_stories";
+        return "list_backlog";
     }
 
     @Override
