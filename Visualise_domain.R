@@ -125,8 +125,9 @@ vis.links$shadow <- FALSE    # edge shadow
 
 visNetwork(vis.nodes, vis.links)
 
-
-visnet <- visNetwork(vis.nodes, vis.links)
+visnet <- visNetwork(vis.nodes, vis.links, width="900px", height="500px")
+setwd("./front_end/Agile/src/assets/")
+visSave(visnet, file = "./network.html", background = "white")
 visnet
 
 
