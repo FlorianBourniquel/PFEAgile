@@ -45,7 +45,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
                         tx -> tx.run(
                                 "MATCH (s:Story {name : \"US" + story + "\"}) return s"));
 
-                List<UserStory> stories = findStory.list(s -> new UserStory(new ArrayList<>(), new ArrayList<>(), "US" + story));
+                List<UserStory> stories = findStory.list(s -> new UserStory("US" + story));
 
                 stories.forEach(s -> {
                     s.fill(session);
@@ -93,7 +93,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
                         tx -> tx.run(
                                 "MATCH (s:Story {name : \"US" + story + "\"}) return s"));
 
-                List<UserStory> stories = findStory.list(s -> new UserStory(new ArrayList<>(), new ArrayList<>(), "US" + story));
+                List<UserStory> stories = findStory.list(s -> new UserStory("US" + story));
 
                 stories.forEach(s -> {
                     s.fill(session);
@@ -134,7 +134,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
                 tx -> tx.run(
                         "MATCH (s:Sprint {name : \"" + this.sprintName + "\"}) return s"));
 
-        Sprint sprint = new Sprint(new ArrayList<>(), findSprint.next().get("s").get("name").asString());
+        Sprint sprint = new Sprint(findSprint.next().get("s").get("name").asString());
 
         sprint.setColorEnum(ColorEnum.MODIFIED);
         sprint.fill(session);
@@ -161,7 +161,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
 
     @Override
     protected void check() throws IOException {
-        if(this.shell.system.getRepository().getSprint(this.sprintName) == null) {
+        if(DTORepository.get().getSprint(this.sprintName) == null) {
             throw new IOException("The sprint named " + this.sprintName + " wasn't found.");
         }
     }

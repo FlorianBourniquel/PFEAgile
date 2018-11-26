@@ -1,6 +1,7 @@
 package fr.unice.polytech.repository;
 
-import fr.unice.polytech.graphviz.*;
+import fr.unice.polytech.graphviz.Sprint;
+import fr.unice.polytech.graphviz.UserStory;
 import fr.unice.polytech.repository.dto.SprintDTO;
 import fr.unice.polytech.repository.dto.SprintStatDTO;
 import fr.unice.polytech.repository.dto.SprintWithStoriesDTO;
@@ -8,7 +9,7 @@ import fr.unice.polytech.repository.dto.StoryDTO;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class DTORepository {
     }
 
     public void executeQuery(final String query ){
-        this.db.executeQuery(query);
+        db.executeQuery(query);
     }
 
     public SprintWithStoriesDTO getSprintWithStories(String sprintName) {
@@ -52,14 +53,14 @@ public class DTORepository {
         }
     }
 
-    public SprintDTO getSprint(String sprintName) {
+    public Sprint getSprint(String sprintName) {
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(
                     tx -> tx.run("MATCH (sp:Sprint{name:\""+sprintName+"\"}) RETURN sp"));
             if(!s.hasNext()){
-                return  null;
+                return null;
             }
-             return new SprintDTO(s.next().get("sp"));
+             return new Sprint(s.next().get("sp").get("name").asString());
         }
     }
 
@@ -102,32 +103,37 @@ public class DTORepository {
 
 
 
-    public List<StoryDTO> getBacklog(){
+    public List<UserStory> getBacklog(){
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(tx -> tx.run("MATCH (s:Story) WHERE NOT (s)<-[:CONTAINS]-(:Sprint) return s"));
-            return s.list(r -> new StoryDTO(r.get("s")));
+            return s.list(r -> {
+                UserStory userStory = new UserStory(r.get("s").get("name").asString());
+                userStory.setBusinessValue(r.get("s").get("business_value").asInt());
+                userStory.setStoryPoints(r.get("s").get("story_points").asInt());
+                userStory.setText(r.get("s").get("text").asString());
+                return userStory;
+            });
         }
     }
 
 
     public Sprint getSprintWithUserStories(String sprintName){
-
-       SprintDTO sprintDTO = getSprint(sprintName);
-       if(sprintDTO == null){
+       Sprint sprint = getSprint(sprintName);
+       if(sprint == null){
            return null;
        }
-       Sprint sprint = new Sprint(new ArrayList<>(),sprintName);
-       sprint.fill(this.db.getDriver().session());
+
+       sprint.fill(db.getDriver().session());
        return sprint;
     }
 
 
     public List<UserStory> getBacklogUserStories(){
-        List<StoryDTO> backlog = getBacklog();
+        List<UserStory> backlog = getBacklog();
         Session session = db.getDriver().session();
 
         List<UserStory> userStories = backlog.stream()
-                        .map(x -> new UserStory(new ArrayList<>(), new ArrayList<>(), x.getName()))
+                        .map(x -> new UserStory(x.getName()))
                         .collect(Collectors.toList());
 
         userStories.forEach(x -> x.fill(session));

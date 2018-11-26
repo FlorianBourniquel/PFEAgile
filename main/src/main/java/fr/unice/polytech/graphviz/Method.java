@@ -10,9 +10,9 @@ public class Method extends Node {
 
     private List<Class> classList;
 
-    public Method(List<Class> classList, String name) {
+    public Method(String name) {
         super(name);
-        this.classList = classList;
+        this.classList = new ArrayList<>();
         colorEnum = ColorEnum.METHOD;
     }
 
@@ -30,7 +30,7 @@ public class Method extends Node {
                 tx -> tx.run(
                         "MATCH (r:Class)<-[:TARGET]-(n:RelationShip {name:\"" + this.getName() + "\"}) RETURN r"));
 
-        this.classList = findRelationShip.list(classElement -> new Class(new ArrayList<>(), classElement.get("r").get("name").asString()));
+        this.classList = findRelationShip.list(classElement -> new Class(classElement.get("r").get("name").asString()));
 
     }
 }
