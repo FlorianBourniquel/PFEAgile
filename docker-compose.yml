@@ -10,8 +10,17 @@ services:
     - ./input:/usr/src/app/output
     depends_on:
     - neodb
-    stdin_open: true
-    tty: true
+    ports:
+    - '81:8080'
+
+  front:
+      container_name: front_end
+      build:
+        context: ./front_end
+      depends_on:
+      - main
+      ports:
+      - '80:80'
 
   neodb:
     container_name: neodb

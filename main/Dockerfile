@@ -8,8 +8,10 @@ RUN apt-get install -y apt-utils graphviz
 
 RUN mkdir /data
 
-COPY target/main-1.0-SNAPSHOT-jar-with-dependencies.jar .
+EXPOSE 8080
 
 COPY parse_stories.sh .
+
+COPY target/main-1.0-SNAPSHOT-jar-with-dependencies.jar .
 
 ENTRYPOINT ["java", "-jar", "main-1.0-SNAPSHOT-jar-with-dependencies.jar"]
