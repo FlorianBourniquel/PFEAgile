@@ -10,12 +10,10 @@ public class Environment {
 
 
     private List<StoryDTO> stories = new LinkedList<StoryDTO>();
-    private Db db;
     private DTORepository repository;
 
     public Environment() {
-        this.db = new Db();
-        this.repository = new DTORepository(db);
+        this.repository = DTORepository.get();
     }
 
     public List<StoryDTO> getStories() {
@@ -26,9 +24,7 @@ public class Environment {
         this.stories = stories;
     }
 
-    public Db getDb() {
-        return db;
-    }
+
 
     public DTORepository getRepository() {
         return repository;

@@ -1,5 +1,7 @@
 package fr.unice.polytech.web;
 
+import fr.unice.polytech.cli.commands.Bye;
+import fr.unice.polytech.cli.commands.ListStories;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -15,8 +17,8 @@ public class Server {
     private static final String ROOT_PATH = "main";
 
     public static void main(String[] args) {
+        CmdProcessor.get().register(Bye.class, ListStories.class);
         try {
-            System.out.println("\"Hello World\" Jersey Example App");
             final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, create(), false);
             Runtime.getRuntime().addShutdownHook(new Thread(server::shutdownNow));
             server.start();

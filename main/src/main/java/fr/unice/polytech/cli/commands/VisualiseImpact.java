@@ -3,6 +3,7 @@ package fr.unice.polytech.cli.commands;
 import fr.unice.polytech.cli.commands.utils.Parser;
 import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.graphviz.Class;
+import fr.unice.polytech.repository.DTORepository;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
@@ -34,7 +35,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
     private void visualiseRemoveStories() throws IOException {
         super.execute();
 
-        try (Session session = shell.system.getDb().getDriver().session()) {
+        try (Session session = DTORepository.get().getDb().getDriver().session()) {
 
             Sprint sprint = this.initSprint(session);
 
@@ -82,7 +83,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
     private void visualiseAddStories() throws IOException {
         super.execute();
 
-        try (Session session = shell.system.getDb().getDriver().session()) {
+        try (Session session = DTORepository.get().getDb().getDriver().session()) {
 
             Sprint sprint = this.initSprint(session);
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
+import fr.unice.polytech.repository.DTORepository;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.xml.sax.SAXException;
@@ -49,7 +50,7 @@ public class InitBacklog extends Command<Environment> {
 				.sorted(Comparator.comparing(Path::getFileName))
 				.map(Path::toFile)
 				.collect(Collectors.toList());
-		Inserter inserter = new Inserter(this.shell.system.getDb());
+		Inserter inserter = new Inserter(DTORepository.get());
 
 		for (int i = 0; i < stories.size(); i++) {
 			inserter.insert(stories.get(i),models.get(i),i, entries.get(i));

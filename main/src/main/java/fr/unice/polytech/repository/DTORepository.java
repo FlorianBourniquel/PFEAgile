@@ -14,10 +14,23 @@ import java.util.stream.Collectors;
 
 public class DTORepository {
 
-    private Db db;
+    private static Db db;
 
-    public DTORepository(Db db) {
-        this.db = db;
+    private static DTORepository instance;
+
+    public static DTORepository get(){
+        if(instance == null){
+           instance = new DTORepository(new Db());
+        }
+        return instance;
+    }
+
+    private DTORepository(Db db) {
+        DTORepository.db = db;
+    }
+
+    public Db getDb() {
+        return db;
     }
 
     public void executeQuery(final String query ){
