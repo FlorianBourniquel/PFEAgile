@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface WebCommand {
     String identifier();
-    Response execResponse();
+    Response execResponse() throws CmdException;
     void load(List<String> args) throws Exception;
 }

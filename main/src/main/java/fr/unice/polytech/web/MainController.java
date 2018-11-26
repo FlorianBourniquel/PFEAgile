@@ -20,7 +20,7 @@ public class MainController {
         try {
             return  CmdProcessor.get().executeCmd(request.getCmd(),request.getArgs());
         } catch (IllegalAccessException | InstantiationException e) {
-            return Response.serverError().entity("Erreur interne lors de l'execution de la commande").build();
+            return Response.serverError().entity("Erreur interne lors de la construction de la commande").build();
         } catch (CmdException e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
