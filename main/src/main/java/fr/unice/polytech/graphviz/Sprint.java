@@ -61,4 +61,11 @@ public class Sprint extends Node{
                 .mapToInt(UserStory::getStoryPoints)
                 .sum();
     }
+
+    public int calculateTotalBusinessValue(){
+        return this.storyList
+                .stream()
+                .mapToInt(UserStory::getBusinessValue)
+                .sum();
+    }
 }

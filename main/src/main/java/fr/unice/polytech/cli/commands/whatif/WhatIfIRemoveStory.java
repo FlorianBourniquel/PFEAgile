@@ -29,7 +29,7 @@ public class WhatIfIRemoveStory extends Command<Environment> {
             System.out.println();
             return;
         }
-
+/*
         List<StoryDTO> stories = repository.getStoriesIn(storyNames);
         if(stories.size() != storyNames.size()){
              List<String> temp = stories.stream().map(StoryDTO::getName).collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class WhatIfIRemoveStory extends Command<Environment> {
         System.out.println("[Actuellement     ] --> Business Value : " + sprintStat.getBusinessValue() + " - Story Points : " + sprintStat.getStoryPoints());
         System.out.println("[Apres Suppression]  --> Business Value : " + newBv + " - Story Points : " + newSp);
         System.out.println();
-
+*/
     }
 
 

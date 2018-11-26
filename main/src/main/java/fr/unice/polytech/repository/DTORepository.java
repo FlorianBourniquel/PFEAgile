@@ -6,9 +6,11 @@ import fr.unice.polytech.repository.dto.SprintDTO;
 import fr.unice.polytech.repository.dto.SprintStatDTO;
 import fr.unice.polytech.repository.dto.SprintWithStoriesDTO;
 import fr.unice.polytech.repository.dto.StoryDTO;
+import fr.unice.polytech.stories.Story;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.Value;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,12 +62,12 @@ public class DTORepository {
             if(!s.hasNext()){
                 return null;
             }
-             return new Sprint(s.next().get("sp").get("name").asString());
+            return new Sprint(s.next().get("sp").get("name").asString());
         }
     }
 
 
-    public List<StoryDTO> getStoriesIn(List<String> storyNames) {
+    public List<UserStory> getStoriesIn(List<String> storyNames) {
         try (Session session = db.getDriver().session()) {
             String names =  storyNames.stream().map(x -> "'"+x+"'").collect(Collectors.joining(","));
             StatementResult s = session.writeTransaction(
@@ -73,7 +75,7 @@ public class DTORepository {
                             "MATCH (s:Story)\n" +
                             "WHERE s.name in names\n" +
                             "RETURN s"));
-            return  s.list( x -> new StoryDTO(x.get("s")));
+            return  s.list( x -> this.createUserStoryFromRequest(x.get("s")));
         }
     }
 
@@ -110,14 +112,16 @@ public class DTORepository {
     public List<UserStory> getBacklog(){
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(tx -> tx.run("MATCH (s:Story) WHERE NOT (s)<-[:CONTAINS]-(:Sprint) return s"));
-            return s.list(r -> {
-                UserStory userStory = new UserStory(r.get("s").get("name").asString());
-                userStory.setBusinessValue(r.get("s").get("business_value").asInt());
-                userStory.setStoryPoints(r.get("s").get("story_points").asInt());
-                userStory.setText(r.get("s").get("text").asString());
-                return userStory;
-            });
+            return s.list(r -> createUserStoryFromRequest(r.get("s")));
         }
+    }
+
+    private UserStory createUserStoryFromRequest(Value value){
+        UserStory userStory = new UserStory(value.get("name").asString());
+        userStory.setBusinessValue(value.get("business_value").asInt());
+        userStory.setStoryPoints(value.get("story_points").asInt());
+        userStory.setText(value.get("text").asString());
+        return userStory;
     }
 
 
@@ -142,6 +146,18 @@ public class DTORepository {
 
         userStories.forEach(x -> x.fill(session));
         return userStories;
+    }
+
+    //Visitor fill
+
+    public void fill(Sprint sprint) {
+        StatementResult findStories = db.getDriver().session().writeTransaction(
+                tx -> tx.run(
+                        "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
+
+        List<UserStory> storyList = findStories.list(story -> createUserStoryFromRequest(story.get("s")));
+
+        sprint.setStoryList(storyList);
     }
 
 }

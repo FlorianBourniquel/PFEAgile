@@ -28,7 +28,7 @@ public class RemoveStory extends Command<Environment> {
             print("Le spring "+ sprintName+" n'existe pas");
             return;
         }
-
+    /*
         List<StoryDTO> stories = repository.getStoriesIn(storyNames);
         if(stories.size() != storyNames.size()){
              List<String> temp = stories.stream().map(StoryDTO::getName).collect(Collectors.toList());
@@ -48,6 +48,7 @@ public class RemoveStory extends Command<Environment> {
         String sts = stories.stream().map(StoryDTO::getName).collect(Collectors.joining(", "));
         System.out.println("Les stories "+ sts + " ont été supprimées du sprint " + sprintName);
         System.out.println();
+        */
     }
 
 
