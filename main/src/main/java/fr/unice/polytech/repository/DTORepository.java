@@ -1,5 +1,6 @@
 package fr.unice.polytech.repository;
 
+import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.repository.dto.SprintDTO;
 import fr.unice.polytech.repository.dto.SprintStatDTO;
 import fr.unice.polytech.repository.dto.SprintWithStoriesDTO;
@@ -7,6 +8,7 @@ import fr.unice.polytech.repository.dto.StoryDTO;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,5 +96,29 @@ public class DTORepository {
         }
     }
 
+
+    public Sprint getSprintWithUserStories(String sprintName){
+
+       SprintDTO sprintDTO = getSprint(sprintName);
+       if(sprintDTO == null){
+           return null;
+       }
+       Sprint sprint = new Sprint(new ArrayList<>(),sprintName);
+       sprint.fill(this.db.getDriver().session());
+       return sprint;
+    }
+
+
+    public List<UserStory> getBacklogUserStories(){
+        List<StoryDTO> backlog = getBacklog();
+        Session session = db.getDriver().session();
+
+        List<UserStory> userStories = backlog.stream()
+                        .map(x -> new UserStory(new ArrayList<>(), new ArrayList<>(), x.getName()))
+                        .collect(Collectors.toList());
+
+        userStories.forEach(x -> x.fill(session));
+        return userStories;
+    }
 
 }

@@ -24,7 +24,8 @@ public class Main  extends Shell<Environment>
                 WhatIfIRemoveStory.class,
                 SortBacklogByValue.class,
                 AddStory.class,
-                RemoveStory.class
+                RemoveStory.class,
+                SortBacklogByComplexity.class
         );
     }
 

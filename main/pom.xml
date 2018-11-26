@@ -1,109 +1,125 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>fr.unice.polytech</groupId>
-  <artifactId>main</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>main</name>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fr.unice.polytech</groupId>
+    <artifactId>main</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>main</name>
 
-   <properties>
-    <versions.maven.compiler>3.6.1</versions.maven.compiler>
-   </properties>
-
-
-  <dependencies>
-
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.5</version>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-
-      <!-- https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver -->
-    <dependency>
-        <groupId>org.neo4j.driver</groupId>
-        <artifactId>neo4j-java-driver</artifactId>
-        <version>1.6.1</version>
-    </dependency>
-
-     <dependency>
-         <groupId>fr.lirmm.graphik</groupId>
-         <artifactId>graal-io-owl</artifactId>
-         <version>1.3.1</version>
-     </dependency>
+    <properties>
+        <versions.maven.compiler>3.6.1</versions.maven.compiler>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jersey.version>2.22.2</jersey.version>
+    </properties>
 
 
+    <dependencies>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- neo4j -->
+        <dependency>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <!-- rdf files parsing -->
+        <dependency>
+            <groupId>fr.lirmm.graphik</groupId>
+            <artifactId>graal-io-owl</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+
+        <!-- web exposition -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0</version>
+        </dependency>
 
 
-
-  </dependencies>
-
-
-  <build>
-      <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <version>${versions.maven.compiler}</version>
-              <configuration>
-                  <source>1.8</source>
-                  <target>1.8</target>
-              </configuration>
-          </plugin>
-
-          <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <version>1.6.0</version>
-              <executions>
-                  <execution>
-                      <goals>
-                          <goal>java</goal>
-                      </goals>
-                  </execution>
-              </executions>
-              <configuration>
-                  <mainClass>fr.unice.polytech.Main</mainClass>
-              </configuration>
-          </plugin>
+    </dependencies>
 
 
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-assembly-plugin</artifactId>
-              <version>3.1.0</version>
-              <executions>
-                  <execution>
-                      <phase>package</phase>
-                      <goals>
-                          <goal>single</goal>
-                      </goals>
-                      <configuration>
-                          <archive>
-                              <manifest>
-                                  <mainClass>
-                                      fr.unice.polytech.Main
-                                  </mainClass>
-                              </manifest>
-                          </archive>
-                          <descriptorRefs>
-                              <descriptorRef>jar-with-dependencies</descriptorRef>
-                          </descriptorRefs>
-                      </configuration>
-                  </execution>
-              </executions>
-          </plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${versions.maven.compiler}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>fr.unice.polytech.web.Server</mainClass>
+                </configuration>
+            </plugin>
 
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>fr.unice.polytech.web.Server</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-      </plugins>
-  </build>
+
+        </plugins>
+    </build>
 </project>
