@@ -2,8 +2,6 @@ package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
 
 import java.io.IOException;
 import java.util.ArrayList;

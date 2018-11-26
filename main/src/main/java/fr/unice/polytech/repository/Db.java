@@ -5,16 +5,13 @@ import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
 
-
-
-
 public class Db implements AutoCloseable
 {
     private final Driver driver;
 
     public Db()
     {
-        driver = GraphDatabase.driver( "bolt://neodb:7687" , AuthTokens.basic( "neo4j", "password" ) );
+        driver = GraphDatabase.driver( "bolt://localhost:7687" , AuthTokens.basic( "neo4j", "password" ) );
     }
 
     @Override

@@ -14,7 +14,6 @@ public class AddStory extends Command<Environment> {
     private String sprintName;
     private List<String> storyNames;
 
-
     @Override
     public String identifier() { return "add_story"; }
 
@@ -27,6 +26,7 @@ public class AddStory extends Command<Environment> {
             print("Le sprint "+ sprintName+" n'existe pas");
             return;
         }
+        /*
 
         List<StoryDTO> stories = repository.getStoriesIn(storyNames);
         if(stories.size() != storyNames.size()){
@@ -35,6 +35,7 @@ public class AddStory extends Command<Environment> {
             print("Les stories "+sts+" n'existent pas");
             return;
         }
+
 
         List<StoryDTO> backlog = shell.system.getRepository().getBacklog();
         List<StoryDTO> toAdd = stories.stream().filter( x -> !sprint.getStories().contains(x)).collect(Collectors.toList());
@@ -59,6 +60,7 @@ public class AddStory extends Command<Environment> {
             System.out.println("Les stories "+ sts + " ont été ajoutés au sprint " + sprintName);
             System.out.println();
         }
+        */
     }
 
 

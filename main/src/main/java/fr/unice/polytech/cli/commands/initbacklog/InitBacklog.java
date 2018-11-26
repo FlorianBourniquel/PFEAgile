@@ -4,13 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
+import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.xml.sax.SAXException;
+
+import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,13 +23,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class InitBacklog extends Command<Environment> {
+public class InitBacklog extends Command<Environment> implements WebCommand {
 
 	@Override
 	public String identifier() { return "init_backlog"; }
 
 	@Override
-	public void execute() throws IOException, OWLOntologyStorageException, ParserConfigurationException, URISyntaxException, SAXException, OWLOntologyCreationException, InterruptedException {
+	public Response execResponse() throws CmdException{
+		try {
+			execute();
+		} catch (IOException | OWLOntologyStorageException | SAXException | ParserConfigurationException | OWLOntologyCreationException | InterruptedException e) {
+			e.printStackTrace();
+			throw  new CmdException("Erreur lors de l'initialisation du backlog");
+		}
+		return Response.ok().build();
+	}
+
+	@Override
+	public void execute() throws IOException, OWLOntologyStorageException, ParserConfigurationException, SAXException, OWLOntologyCreationException, InterruptedException {
 
         String data = new String(Files.readAllBytes(Paths.get("./output/entries.txt")));
         List<StoryEntry> entries = new Gson().fromJson(data, new TypeToken<List<StoryEntry>>(){}.getType());
@@ -49,7 +64,7 @@ public class InitBacklog extends Command<Environment> {
 				.sorted(Comparator.comparing(Path::getFileName))
 				.map(Path::toFile)
 				.collect(Collectors.toList());
-		Inserter inserter = new Inserter(this.shell.system.getDb());
+		Inserter inserter = new Inserter(DTORepository.get());
 
 		for (int i = 0; i < stories.size(); i++) {
 			inserter.insert(stories.get(i),models.get(i),i, entries.get(i));

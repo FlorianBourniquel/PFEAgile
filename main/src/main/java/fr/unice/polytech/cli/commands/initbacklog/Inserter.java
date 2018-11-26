@@ -1,6 +1,7 @@
 package fr.unice.polytech.cli.commands.initbacklog;
 
 import com.google.gson.Gson;
+import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.repository.Db;
 import fr.unice.polytech.models.Class;
 import fr.unice.polytech.models.RelationShip;
@@ -24,12 +25,12 @@ import java.util.List;
 
 public class Inserter {
 
-    private Db db;
+    private DTORepository repo;
     private OWLOntologyManager manager;
 
-    public Inserter(Db db) {
+    public Inserter(DTORepository repo) {
         manager = OWLManager.createOWLOntologyManager();
-        this.db = db;
+        this.repo = repo;
     }
 
 
@@ -65,7 +66,7 @@ public class Inserter {
             relationShips.add(new RelationShip(nodeList.item(i),classes));
         }
 
-        db.executeQuery(story.createQuery());
+        repo.executeQuery(story.createQuery());
         manager.removeOntology(ontologyDocument);
 
     }

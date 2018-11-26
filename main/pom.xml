@@ -100,8 +100,9 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
+
                     <execution>
-                        <phase>package</phase>
+                        <id>web</id>
                         <goals>
                             <goal>single</goal>
                         </goals>
@@ -116,6 +117,25 @@
                             </descriptorRefs>
                         </configuration>
                     </execution>
+
+
+                    <execution>
+                        <id>cli</id>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>fr.unice.polytech.Main</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
 

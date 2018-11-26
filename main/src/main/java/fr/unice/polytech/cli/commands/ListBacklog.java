@@ -1,14 +1,18 @@
 package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.framework.Command;
-import fr.unice.polytech.repository.dto.StoryDTO;
 import fr.unice.polytech.environment.Environment;
+import fr.unice.polytech.graphviz.UserStory;
+import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
 
+import javax.ws.rs.core.Response;
 import java.util.Comparator;
 import java.util.List;
 
 
-public class ListBacklog extends Command<Environment> {
+public class ListBacklog extends Command<Environment> implements WebCommand {
 
     @Override
     public String identifier() {
@@ -16,13 +20,17 @@ public class ListBacklog extends Command<Environment> {
     }
 
     @Override
+    public Response execResponse() throws CmdException {
+        return Response.ok(DTORepository.get().getBacklog()).build();
+    }
+
+    @Override
     public void execute() {
-        List<StoryDTO> stories = shell.system.getRepository().getBacklog();
-        stories.sort(Comparator.comparing(StoryDTO::getNumber));
+        List<UserStory> stories = DTORepository.get().getBacklog();
+        stories.sort(Comparator.comparing(UserStory::getNumber));
         System.out.println();
         stories.forEach(System.out::println);
         System.out.println();
-        shell.system.setStories(stories);
     }
 
     @Override
