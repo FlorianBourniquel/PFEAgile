@@ -59,11 +59,9 @@ public class StoryDTO {
         this.storyPoints = storyPoints;
     }
 
-
     public float getAgileRatio(){
         return (float) businessValue/ (float) storyPoints;
     }
-
 
     @Override
     public boolean equals(Object o) {

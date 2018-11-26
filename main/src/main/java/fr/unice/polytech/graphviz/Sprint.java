@@ -11,10 +11,10 @@ public class Sprint extends Node{
 
     private List<UserStory> storyList;
 
-    public Sprint(List<UserStory> storyList, String name) {
+    public Sprint(String name) {
         super(name);
 
-        this.storyList = storyList;
+        this.storyList = new ArrayList<>();
         colorEnum = ColorEnum.SPRINT;
     }
 
@@ -24,7 +24,7 @@ public class Sprint extends Node{
                 tx -> tx.run(
                         "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + this.getName() + "\"}) RETURN s"));
 
-        this.storyList = findStories.list(story -> new UserStory(new ArrayList<>(), new ArrayList<>(), story.get("s").get("name").asString()));
+        this.storyList = findStories.list(story -> new UserStory(story.get("s").get("name").asString()));
 
         for (UserStory story : this.storyList) {
             story.fill(session);

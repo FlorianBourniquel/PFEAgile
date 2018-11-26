@@ -1,7 +1,8 @@
 package fr.unice.polytech.cli.commands;
 
+import fr.unice.polytech.graphviz.UserStory;
+import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.repository.dto.SprintStatDTO;
-import fr.unice.polytech.repository.dto.StoryDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class CreateSprint extends AbstractSprintCommand {
 
-    private List<StoryDTO> backlog;
+    private List<UserStory> backlog;
     private boolean error;
 
     @Override
@@ -18,7 +19,7 @@ public class CreateSprint extends AbstractSprintCommand {
     @Override
     public void load(List<String> args) {
         super.load(args);
-        backlog = this.shell.system.getRepository().getBacklog();
+        backlog = DTORepository.get().getBacklog();
         List<Integer> missingStories = this.storyIds.stream().filter(x -> !sprintNumberExists(x)).collect(Collectors.toList());
         if(missingStories.size() > 0){
             String sts = missingStories.stream().map(String::valueOf).collect(Collectors.joining(", "));
@@ -38,7 +39,7 @@ public class CreateSprint extends AbstractSprintCommand {
 
     @Override
     protected void check() throws IOException {
-        if(this.shell.system.getRepository().getSprint(this.sprintName) != null) {
+        if(DTORepository.get().getSprint(this.sprintName) != null) {
             throw new IOException("The sprint named " + this.sprintName + " already exists.");
         }
     }
@@ -79,13 +80,13 @@ public class CreateSprint extends AbstractSprintCommand {
     }
 
     private void checkIfSprintLoadHigherThanTheAverage() {
-        List<SprintStatDTO> list = this.shell.system.getRepository().getAllSprintStat();
+        List<SprintStatDTO> list = DTORepository.get().getAllSprintStat();
         Double averagePrevPrintsStoryPoints = list.stream()
                 .mapToInt(SprintStatDTO::getStoryPoints).average().getAsDouble();
 
         Double averageNewSprintStoryPoints = this.backlog
                 .stream().filter(x -> storyIds.contains(x.getNumber()))
-                .mapToInt(StoryDTO::getStoryPoints).average().getAsDouble();
+                .mapToInt(UserStory::getStoryPoints).average().getAsDouble();
 
         if(averageNewSprintStoryPoints > averagePrevPrintsStoryPoints){
             System.out.println("[WARNING] this sprint has more story points ("+averageNewSprintStoryPoints+") than the average ("+averagePrevPrintsStoryPoints+")");

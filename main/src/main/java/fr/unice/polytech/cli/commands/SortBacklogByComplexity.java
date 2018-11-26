@@ -2,12 +2,10 @@ package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
-import fr.unice.polytech.graphviz.Class;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
-import fr.unice.polytech.repository.dto.StoryDTO;
+import fr.unice.polytech.repository.DTORepository;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +29,8 @@ public class SortBacklogByComplexity extends Command<Environment> {
     @Override
     public void execute() {
 
-        Sprint sp = this.shell.system.getRepository().getSprintWithUserStories(sprintName);
-        List<UserStory> backlog = shell.system.getRepository().getBacklogUserStories();
+        Sprint sp = DTORepository.get().getSprintWithUserStories(sprintName);
+        List<UserStory> backlog = DTORepository.get().getBacklogUserStories();
 
         Map<UserStory,Integer> methodAdded = new HashMap<>();
         Map<UserStory,Integer> classesAdded = new HashMap<>();

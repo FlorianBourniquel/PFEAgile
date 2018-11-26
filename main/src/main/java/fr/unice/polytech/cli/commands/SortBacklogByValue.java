@@ -2,6 +2,7 @@ package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
+import fr.unice.polytech.graphviz.UserStory;
 import fr.unice.polytech.repository.dto.StoryDTO;
 import java.util.Comparator;
 import java.util.List;
@@ -16,8 +17,8 @@ public class SortBacklogByValue extends Command<Environment> {
 
     @Override
     public void execute() {
-        List<StoryDTO> stories = shell.system.getRepository().getBacklog();
-        stories.sort(Comparator.comparing(StoryDTO::getAgileRatio).reversed());
+        List<UserStory> stories = shell.system.getRepository().getBacklog();
+        stories.sort(Comparator.comparing(UserStory::getAgileRatio).reversed());
         System.out.println();
         stories.forEach(x -> System.out.println(x.toStringWithRatio()));
         System.out.println();
