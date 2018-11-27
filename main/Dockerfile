@@ -6,6 +6,10 @@ RUN apt-get install -y default-jre
 
 RUN apt-get install -y apt-utils graphviz
 
+RUN apt-get install -y r-base
+
+RUN apt-get install -y pandoc
+
 RUN mkdir /data
 
 EXPOSE 8080
