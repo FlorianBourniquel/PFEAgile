@@ -12,6 +12,8 @@ RUN apt-get install -y pandoc
 
 RUN mkdir /data
 
+RUN mkdir /graphs
+
 EXPOSE 8080
 
 COPY parse_stories.sh .

@@ -294,3 +294,4 @@ $RECYCLE.BIN/
 /data/*.svg
 /data/*.dot
 /data/*.csv
+/front_end/docker/dist/

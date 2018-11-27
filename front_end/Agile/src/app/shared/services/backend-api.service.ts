@@ -16,9 +16,9 @@ export class BackendApiService {
     this.base_url = URLBACKEND + '/main';
   }
 
-  public listBacklog(): Observable<HttpResponse<Config>> {
+  public listBacklog() {
     const data = [];
-    this.http.post<UserStory>(this.base_url, data, { observe: 'response', responseType: 'text'});
+   // this.http.post<UserStory>(this.base_url, data, { observe: 'response', responseType: 'text'});
   }
 
   public by() {
