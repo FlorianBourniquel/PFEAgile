@@ -12,6 +12,6 @@ EXPOSE 8080
 
 COPY parse_stories.sh .
 
-COPY target/main-1.0-SNAPSHOT-jar-with-dependencies.jar .
+COPY target/main-1.0-SNAPSHOT-shaded.jar .
 
-ENTRYPOINT ["java", "-jar", "main-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+ENTRYPOINT ["java", "-jar", "main-1.0-SNAPSHOT-shaded.jar"]

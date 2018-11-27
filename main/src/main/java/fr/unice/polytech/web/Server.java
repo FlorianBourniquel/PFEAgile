@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class Server {
 
-    private static final URI BASE_URI = URI.create("http://localhost:8080/");
+    private static final URI BASE_URI = URI.create("http://0.0.0.0:8080/");
     private static final String ROOT_PATH = "main";
 
     public static void main(String[] args) {

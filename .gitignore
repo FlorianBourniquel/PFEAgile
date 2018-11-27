@@ -285,12 +285,12 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/java,linux,macos,python,windows,intellij
-/data/System1.omn
-/data/System2.omn
-/data/System-user_stories2.json
-/data/System-user_stories1.json
+/data/System*.omn
+/data/System*.json
 /input/story.txt
+/input/stories.txt
 /input/System/
+/main/dependency-reduced-pom.xml
 /data/*.svg
 /data/*.dot
 /data/*.csv
