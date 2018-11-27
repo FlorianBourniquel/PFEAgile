@@ -14,15 +14,13 @@ export class AppComponent implements OnInit {
     window['comp'] = {component : this};
   }
 
-  N
-
   public nodeClick(node) {
     alert(JSON.stringify({ data: node}, null, 4));
   }
   title = 'Agile';
 
   ngOnInit(): void {
-    this.backendApi.listBacklog().subscribe( (c: HttpResponse<UserStory[]>) => console.log(c.body));
+    //this.backendApi.listBacklog().subscribe( (c: HttpResponse<UserStory[]>) => console.log(c.body));
   }
 }
 
