@@ -9,6 +9,7 @@ import {MaterialModule} from "./material/material-module";
 
 import { GridListComponent } from './grid-list/grid-list.component';
 import { CliComponent } from './cli/cli.component';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { CliComponent } from './cli/cli.component';
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
+    FormsModule,
     AppRoutingModule
   ],
   bootstrap: [AppComponent],

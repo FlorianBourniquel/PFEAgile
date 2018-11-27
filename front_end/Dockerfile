@@ -8,10 +8,10 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /app
 
-COPY ./app/ .
+#COPY ./app/ .
 
 #RUN npm install
 
 #RUN ng build --prod
 
-RUN cp -r /Agile/dist/.  /usr/share/nginx/html/
+COPY /Agile/dist/.  /usr/share/nginx/html/
