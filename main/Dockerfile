@@ -14,6 +14,10 @@ RUN mkdir /data
 
 RUN mkdir /graphs
 
+COPY Install.R .
+
+RUN Rscript ./Install.R
+
 EXPOSE 8080
 
 COPY parse_stories.sh .
