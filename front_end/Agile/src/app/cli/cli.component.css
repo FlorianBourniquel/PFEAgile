@@ -1,0 +1,10 @@
+.cli-form {
+  display: flex;
+  width: 100%;
+}
+
+.cli-field {
+  display: inline;
+  width: 95%;
+  margin-right: 10px;
+}
