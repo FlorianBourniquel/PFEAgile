@@ -1,13 +1,9 @@
 package fr.unice.polytech.repository;
 
+import fr.unice.polytech.graphviz.Class;
+import fr.unice.polytech.graphviz.Method;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
-import fr.unice.polytech.repository.dto.SprintDTO;
-import fr.unice.polytech.repository.dto.SprintStatDTO;
-import fr.unice.polytech.repository.dto.SprintWithStoriesDTO;
-import fr.unice.polytech.repository.dto.StoryDTO;
-import fr.unice.polytech.stories.Story;
-import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Value;
@@ -40,21 +36,6 @@ public class DTORepository {
         db.executeQuery(query);
     }
 
-    public SprintWithStoriesDTO getSprintWithStories(String sprintName) {
-        try (Session session = db.getDriver().session()) {
-            String query = " MATCH (sp:Sprint{name:\""+sprintName+"\"})-[:CONTAINS]->(st:Story) RETURN sp,st";
-
-            StatementResult s = session.writeTransaction(tx -> tx.run(query));
-            if(!s.hasNext()){
-                return  null;
-            }
-            List<Record> records = s.list();
-            List<StoryDTO> storyDTOS = records.stream().map(r -> new StoryDTO(r.get("st"))).collect(Collectors.toList());
-            SprintDTO sprintDTO = new SprintDTO(records.get(0).get("sp"));
-            return new SprintWithStoriesDTO(sprintDTO,storyDTOS);
-        }
-    }
-
     public Sprint getSprint(String sprintName) {
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(
@@ -79,19 +60,6 @@ public class DTORepository {
         }
     }
 
-    public SprintStatDTO getSprintStat(String sprintName) {
-        try (Session session = db.getDriver().session()) {
-            StatementResult s = session.writeTransaction(
-                    tx -> tx.run(
-                            "MATCH (spr:Sprint{name:\""+sprintName+"\"})-[CONTAINS]->(s:Story)\n" +
-                                    "RETURN sum(s.business_value) as bv, sum(s.story_points) as sp, spr"));
-            Record r = s.next();
-            SprintDTO spr = new SprintDTO(r.get("spr"));
-            return  new SprintStatDTO(r.get("bv").asInt(), r.get("sp").asInt(), spr);
-        }
-    }
-
-
     public List<Sprint> getAllSprints() {
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(
@@ -105,9 +73,6 @@ public class DTORepository {
             });
         }
     }
-
-
-
 
     public List<UserStory> getBacklog(){
         try (Session session = db.getDriver().session()) {
@@ -131,21 +96,16 @@ public class DTORepository {
            return null;
        }
 
-       sprint.fill(db.getDriver().session());
+       this.fill(sprint);
        return sprint;
     }
 
 
     public List<UserStory> getBacklogUserStories(){
         List<UserStory> backlog = getBacklog();
-        Session session = db.getDriver().session();
 
-        List<UserStory> userStories = backlog.stream()
-                        .map(x -> new UserStory(x.getName()))
-                        .collect(Collectors.toList());
-
-        userStories.forEach(x -> x.fill(session));
-        return userStories;
+        backlog.forEach(this::fill);
+        return backlog;
     }
 
     //Visitor fill
@@ -155,9 +115,21 @@ public class DTORepository {
                 tx -> tx.run(
                         "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
 
-        List<UserStory> storyList = findStories.list(story -> createUserStoryFromRequest(story.get("s")));
+        sprint.setStoryList(findStories.list(story -> createUserStoryFromRequest(story.get("s"))));
+    }
 
-        sprint.setStoryList(storyList);
+    public void fill(UserStory story){
+        StatementResult findClasses = this.getDb().getDriver().session().writeTransaction(
+                tx -> tx.run(
+                        "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
+
+        story.setClasses(findClasses.list(classElement -> new Class(classElement.get("c").get("name").asString())));
+
+        StatementResult findMethods = this.getDb().getDriver().session().writeTransaction(
+                tx -> tx.run(
+                        "MATCH (c:RelationShip)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
+
+        story.setMethods(findMethods.list(methodElement -> new Method(methodElement.get("c").get("name").asString())));
     }
 
 }

@@ -5,21 +5,29 @@ import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
 import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
 
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 
-public class SortBacklogByComplexity extends Command<Environment> {
+public class SortBacklogByComplexity extends Command<Environment> implements WebCommand{
+
+    private String sprintName;
 
     @Override
     public String identifier() {
         return "sort_backlog_by_complexity";
     }
 
-    private String sprintName;
+    @Override
+    public Response execResponse() throws CmdException {
+        return Response.ok(executeWithResult()).build();
+    }
 
     @Override
     public void load(List<String> args) {
@@ -28,9 +36,14 @@ public class SortBacklogByComplexity extends Command<Environment> {
 
     @Override
     public void execute() {
+        print(executeWithResult());
+    }
 
+    private String executeWithResult(){
         Sprint sp = DTORepository.get().getSprintWithUserStories(sprintName);
         List<UserStory> backlog = DTORepository.get().getBacklogUserStories();
+
+        sp.getStoryList().forEach(story -> DTORepository.get().fill(story));
 
         Map<UserStory,Integer> methodAdded = new HashMap<>();
         Map<UserStory,Integer> classesAdded = new HashMap<>();
@@ -52,9 +65,13 @@ public class SortBacklogByComplexity extends Command<Environment> {
             });
         });
 
-
         Stream<Map.Entry<UserStory, Integer>> sorted = classesAdded.entrySet().stream().sorted(Map.Entry.comparingByValue());
-        sorted.forEach(us -> System.out.println("Classes added by: " + us.getKey().getName() + " = " + us.getValue()));
+
+        StringBuilder res = new StringBuilder();
+
+        sorted.forEach(us -> res.append("Classes added by: ").append(us.getKey().getName()).append(" = ").append(us.getValue()).append("\n"));
+
+        return res.toString();
     }
 
     @Override

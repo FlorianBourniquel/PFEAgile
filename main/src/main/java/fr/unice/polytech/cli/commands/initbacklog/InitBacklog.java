@@ -25,8 +25,23 @@ import java.util.stream.Collectors;
 
 public class InitBacklog extends Command<Environment> implements WebCommand {
 
+	private String data;
+
 	@Override
 	public String identifier() { return "init_backlog"; }
+
+	@Override
+	public void load(List<String> args){
+		if(args.size() > 0){
+			data = args.get(0);
+		} else {
+			try {
+				data = new String(Files.readAllBytes(Paths.get("./output/entries.txt")));
+			} catch (IOException e) {
+				throw new IllegalArgumentException(e);
+			}
+		}
+	}
 
 	@Override
 	public Response execResponse() throws CmdException{
@@ -41,8 +56,6 @@ public class InitBacklog extends Command<Environment> implements WebCommand {
 
 	@Override
 	public void execute() throws IOException, OWLOntologyStorageException, ParserConfigurationException, SAXException, OWLOntologyCreationException, InterruptedException {
-
-        String data = new String(Files.readAllBytes(Paths.get("./output/entries.txt")));
         List<StoryEntry> entries = new Gson().fromJson(data, new TypeToken<List<StoryEntry>>(){}.getType());
         String vnInput = entries.stream().map(StoryEntry::getText).collect(Collectors.joining("\n")).concat("\n");
         Files.write(Paths.get("./output/stories.txt"), vnInput.getBytes());

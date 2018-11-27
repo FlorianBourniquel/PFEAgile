@@ -1,9 +1,6 @@
 package fr.unice.polytech.web;
 
-import fr.unice.polytech.cli.commands.Bye;
-import fr.unice.polytech.cli.commands.CreateSprint;
-import fr.unice.polytech.cli.commands.ListBacklog;
-import fr.unice.polytech.cli.commands.SortBacklogByValue;
+import fr.unice.polytech.cli.commands.*;
 import fr.unice.polytech.cli.commands.initbacklog.InitBacklog;
 import fr.unice.polytech.cli.commands.whatif.WhatIfIAddStory;
 import fr.unice.polytech.cli.commands.whatif.WhatIfIRemoveStory;
@@ -30,7 +27,11 @@ public class Server {
                 CreateSprint.class,
                 WhatIfIAddStory.class,
                 WhatIfIRemoveStory.class,
-                SortBacklogByValue.class);
+                SortBacklogByValue.class,
+                SortBacklogByComplexity.class,
+                AddStory.class,
+                RemoveStory.class
+        );
 
         try {
             final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, create(), false);
