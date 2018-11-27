@@ -52,7 +52,7 @@
 
 
 # Set the working directory to the folder containing the workshop files:
-setwd("/Users/Florian/IdeaProjects/PFEAgile")
+setwd("/")
 
 # If you don't know the path to the folder and you're in RStudio, go to the
 # "Session" menu -> "Set Working Directory" -> "To Source File Location"
@@ -131,7 +131,7 @@ visnet <- visNetwork(vis.nodes, vis.links, width="900px", height="500px") %>%
     visEvents(selectEdge = "function(properties) {
        window.parent.comp.component.nodeClick(this.body.data.edges.get(properties.edges[0]));}")
 
-setwd("./front_end/Agile/src/assets/")
+setwd("/graphs/")
 visSave(visnet, file = "./network.html", background = "white")
 visnet
 
