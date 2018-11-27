@@ -11,7 +11,7 @@ public class Db implements AutoCloseable
 
     public Db()
     {
-        driver = GraphDatabase.driver( "bolt://localhost:7687" , AuthTokens.basic( "neo4j", "password" ) );
+        driver = GraphDatabase.driver( "bolt://neodb:7687" , AuthTokens.basic( "neo4j", "password" ) );
     }
 
     @Override
