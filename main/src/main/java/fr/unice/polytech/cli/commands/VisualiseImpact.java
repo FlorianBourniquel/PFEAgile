@@ -76,7 +76,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
                 });
             }
 
-            Parser.parse(Collections.singletonList(sprint), "/data/nodeRemove.csv","/data/edgeRemove.csv");
+            Parser.parseSprints(Collections.singletonList(sprint), "/data/nodeRemove.csv","/data/edgeRemove.csv");
         }
     }
 
@@ -125,7 +125,7 @@ public class VisualiseImpact extends AbstractSprintCommand {
                 });
             }
 
-            Parser.parse(Collections.singletonList(sprint), "/data/nodeAdd.csv","/data/edgeAdd.csv");
+            Parser.parseSprints(Collections.singletonList(sprint), "/data/nodeAdd.csv","/data/edgeAdd.csv");
         }
     }
 
