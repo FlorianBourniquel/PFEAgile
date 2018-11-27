@@ -46,6 +46,8 @@ public class Server {
 
 
     private static ResourceConfig create() {
-        return new ResourceConfig(MainController.class);
+        ResourceConfig config = new ResourceConfig(MainController.class);
+        config.register(new CORSFilter());
+        return config;
     }
 }
