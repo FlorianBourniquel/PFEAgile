@@ -9,6 +9,7 @@ import {MaterialModule} from "./material/material-module";
 
 import { GridListComponent } from './grid-list/grid-list.component';
 import { CliComponent } from './cli/cli.component';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CliComponent } from './cli/cli.component';
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
   ],
   bootstrap: [AppComponent],
   providers: []
