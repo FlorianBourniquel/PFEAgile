@@ -132,4 +132,15 @@ public class DTORepository {
         story.setMethods(findMethods.list(methodElement -> new Method(methodElement.get("c").get("name").asString())));
     }
 
+    public UserStory getUSByName(String wantedUS) {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(tx -> tx.run("MATCH (s:Story {name:\"" + wantedUS +"\"}) return s"));
+
+            UserStory story = createUserStoryFromRequest(s.next().get("s"));
+
+            story.fill(this.getDb().getDriver().session());
+
+            return story;
+        }
+    }
 }
