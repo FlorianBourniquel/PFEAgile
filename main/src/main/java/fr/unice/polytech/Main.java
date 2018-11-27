@@ -21,6 +21,7 @@ public class Main  extends Shell<Environment>
                 VisualiseModel.class,
                 VisualiseImpact.class,
                 VisualiseModelUS.class,
+                VisualiseModelSprint.class,
                 WhatIfIAddStory.class,
                 WhatIfIRemoveStory.class,
                 SortBacklogByValue.class,
