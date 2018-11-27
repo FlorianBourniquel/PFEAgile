@@ -8,13 +8,13 @@ import {MaterialModule} from "./material/material-module";
 
 
 import { GridListComponent } from './grid-list/grid-list.component';
-import { TestComponent } from './test/test.component';
+import { CliComponent } from './cli/cli.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GridListComponent,
-    TestComponent
+    CliComponent
   ],
   imports: [
     BrowserModule,

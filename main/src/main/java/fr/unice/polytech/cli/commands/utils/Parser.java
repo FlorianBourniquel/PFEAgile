@@ -21,15 +21,15 @@ public class  Parser {
         List<String> linesNode = new LinkedList<>();
         List<String> linesEdge = new LinkedList<>();
 
-        linesNode.add("id,type,type.label,size,node.color");
+        linesNode.add("id,type,type.label,size,node.color,filter");
         linesEdge.add("from,to,type,weight");
 
         for (Sprint sprint : sprints) {
-            linesNode.add(sprint.getName() + "," + 1 + "," + "Sprint" + "," + 10 + "," + sprint.getColorEnum().getColor());
+            linesNode.add(sprint.getName() + "," + 1 + "," + "Sprint" + "," + 10 + "," + sprint.getColorEnum().getColor() + "," + "Sprint&US");
         }
         for (Sprint sprint : sprints) {
             for (UserStory userStory : sprint.getStoryList()) {
-                linesNode.add(userStory.getName() + "," + 2 + "," + "USERSTORY" + "," + 10 + "," + userStory.getColorEnum().getColor());
+                linesNode.add(userStory.getName() + "," + 2 + "," + "USERSTORY" + "," + 10 + "," + userStory.getColorEnum().getColor()+ "," + "Sprint&US");
             }
         }
 
@@ -44,10 +44,10 @@ public class  Parser {
         }
 
         for (Class aClass : classes) {
-            linesNode.add(aClass.getName() + "," + 3 + "," + "CLASS" + "," + 10 + "," + aClass.getColorEnum().getColor());
+            linesNode.add(aClass.getName() + "," + 3 + "," + "CLASS" + "," + 10 + "," + aClass.getColorEnum().getColor() + "," + "Class&Method");
         }
         for (Method method : methods) {
-            linesNode.add(method.getName() + "," + 4 + "," + "METHOD" + "," + 10 + "," + method.getColorEnum().getColor());
+            linesNode.add(method.getName() + "," + 4 + "," + "METHOD" + "," + 10 + "," + method.getColorEnum().getColor() + "," + "Class&Method");
         }
 
         for (Sprint sprint : sprints) {

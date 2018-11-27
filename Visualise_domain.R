@@ -113,7 +113,6 @@ vis.nodes$color.border <- "black"
 vis.nodes$color.highlight.background <- "orange"
 vis.nodes$color.highlight.border <- "darkred"
 
-
 # Below we change some of the visual properties of the edges:
 
 vis.links$width <- 1+links$weight/8 # line width
@@ -125,7 +124,13 @@ vis.links$shadow <- FALSE    # edge shadow
 
 visNetwork(vis.nodes, vis.links)
 
-visnet <- visNetwork(vis.nodes, vis.links, width="900px", height="500px")
+visnet <- visNetwork(vis.nodes, vis.links, width="900px", height="500px") %>%
+    visOptions(selectedBy = list(variable = "filter", multiple = T),highlightNearest = TRUE) %>%
+    visEvents(selectNode = "function(properties) {
+       window.parent.comp.component.nodeClick(this.body.data.nodes.get(properties.nodes[0]));}") %>%
+    visEvents(selectEdge = "function(properties) {
+       window.parent.comp.component.nodeClick(this.body.data.edges.get(properties.edges[0]));}")
+
 setwd("./front_end/Agile/src/assets/")
 visSave(visnet, file = "./network.html", background = "white")
 visnet
