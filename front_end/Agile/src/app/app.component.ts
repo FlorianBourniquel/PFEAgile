@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {BackendApiService} from './shared/services/backend-api.service';
+import {HttpResponse} from '@angular/common/http';
+import {UserStory} from './shared/models/UserStory';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +22,7 @@ export class AppComponent implements OnInit {
   title = 'Agile';
 
   ngOnInit(): void {
-    this.backendApi.by();
+    this.backendApi.listBacklog().subscribe( (c: HttpResponse<UserStory[]>) => console.log(c.body));
   }
 }
 
