@@ -1,8 +1,8 @@
-<form class="cli-form" (ngSubmit)="onSubmit()">
-  <mat-form-field class="cli-field">
+<form class="cli-form" (ngSubmit)="onSubmit()" #myForm="ngForm">
+  <mat-form-field class="cli-field" >
     <input matInput placeholder="Command">
   </mat-form-field>
   <p>
-    <button mat-raised-button color="primary" type="submit">Submit</button>
+    <button mat-raised-button color="primary" type="button">Submit</button>
   </p>
 </form>

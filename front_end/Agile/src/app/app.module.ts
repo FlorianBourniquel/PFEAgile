@@ -10,6 +10,7 @@ import {MaterialModule} from "./material/material-module";
 import { GridListComponent } from './grid-list/grid-list.component';
 import { CliComponent } from './cli/cli.component';
 import {HttpClientModule} from '@angular/common/http';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -21,6 +22,8 @@ import {HttpClientModule} from '@angular/common/http';
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
+    FormsModule,
+    AppRoutingModule
     AppRoutingModule,
     HttpClientModule,
   ],
