@@ -21,7 +21,10 @@ public class ListBacklog extends Command<Environment> implements WebCommand {
 
     @Override
     public Response execResponse() throws CmdException {
-        return Response.ok(DTORepository.get().getBacklog()).build();
+        List<UserStory> stories = DTORepository.get().getBacklog();
+        stories.sort(Comparator.comparing(UserStory::getNumber));
+
+        return Response.ok(stories).build();
     }
 
     @Override
