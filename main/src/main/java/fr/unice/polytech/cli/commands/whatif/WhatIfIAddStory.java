@@ -4,11 +4,13 @@ import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
+import fr.unice.polytech.graphviz.WhatIfStats;
 import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.web.CmdException;
 import fr.unice.polytech.web.WebCommand;
 
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,19 +24,31 @@ public class WhatIfIAddStory extends Command<Environment> implements WebCommand{
 
     @Override
     public Response execResponse() throws CmdException {
-        return Response.ok(this.execWithStringResponse()).build();
+        try {
+            return Response.ok(this.execWithResponse()).build();
+        } catch (IOException e) {
+            throw new CmdException(e.getMessage());
+        }
     }
 
     @Override
     public void execute() {
-        print(this.execWithStringResponse());
+        WhatIfStats stats;
+        try {
+            stats = execWithResponse();
+
+            print("[Actuellement] --> Business Value : " + stats.getBeforeBusiness() + " - Story Points : " + stats.getBeforePoints()
+                    + "\n[Apres Ajout]  --> Business Value : " + stats.getAfterBusiness() + " - Story Points : " + stats.getAfterPoints());
+        } catch (IOException e) {
+            print(e.getMessage());
+        }
     }
 
-    private String execWithStringResponse(){
+    private WhatIfStats execWithResponse() throws IOException {
         DTORepository repository = DTORepository.get();
         Sprint sprint = repository.getSprint(sprintName);
         if(sprint == null){
-            return "Le sprint "+ sprintName +" n'existe pas";
+            throw new IOException("Le sprint "+ sprintName +" n'existe pas");
         }
 
         DTORepository.get().fill(sprint);
@@ -43,20 +57,20 @@ public class WhatIfIAddStory extends Command<Environment> implements WebCommand{
         if(stories.size() != storyNames.size()){
             List<String> temp = stories.stream().map(UserStory::getName).collect(Collectors.toList());
             String sts = storyNames.stream().filter(x -> !temp.contains(x)).collect(Collectors.joining(", "));
-            return "Les stories "+sts+" n'existent pas\n";
+            throw new IOException("Les stories "+sts+" n'existent pas\n");
         }
 
         List<UserStory> contained = stories.stream().filter(x -> sprint.getStoryList().contains(x)).collect(Collectors.toList());
         if(contained.size() > 0){
             String sts = contained.stream().map(UserStory::getName).collect(Collectors.joining(", "));
-            return "Les stories " + sts + " appartiennent déja au Sprint " + sprintName;
+            throw new IOException("Les stories " + sts + " appartiennent déja au Sprint " + sprintName);
         }
 
         int newBv = stories.stream().mapToInt(UserStory::getBusinessValue).sum() + sprint.calculateTotalBusinessValue();
         int newSp = stories.stream().mapToInt(UserStory::getStoryPoints).sum() + sprint.calculateTotalStoryPoints();
 
-        return "[Actuellement] --> Business Value : " + sprint.calculateTotalBusinessValue() + " - Story Points : " + sprint.calculateTotalStoryPoints()
-                + "\n[Apres Ajout]  --> Business Value : " + newBv + " - Story Points : " + newSp;
+
+        return new WhatIfStats(sprint.calculateTotalBusinessValue(), sprint.calculateTotalStoryPoints(), newBv, newSp);
     }
 
     @Override
