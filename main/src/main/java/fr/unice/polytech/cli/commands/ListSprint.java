@@ -21,13 +21,15 @@ public class ListSprint extends Command<Environment> implements WebCommand {
 
     @Override
     public Response execResponse() throws CmdException {
-        return Response.ok(DTORepository.get().getAllSprints()).build();
+        List<Sprint> sprints = DTORepository.get().getAllSprints();
+        sprints.sort(Comparator.comparing(Sprint::getName));
+        return Response.ok(sprints).build();
     }
 
     @Override
     public void execute() {
         List<Sprint> sprints = DTORepository.get().getAllSprints();
-        sprints.sort(Comparator.comparing(Sprint::getName));
+        sprints.sort(Comparator.comparing(Sprint::getName).reversed());
         System.out.println();
         sprints.forEach(System.out::println);
         System.out.println();
