@@ -33,7 +33,8 @@ public class Server {
                 AddStory.class,
                 RemoveStory.class,
                 VisualiseModelSprint.class,
-                VisualiseModelUS.class
+                VisualiseModelUS.class,
+                VisualiseModel.class
         );
 
         try {

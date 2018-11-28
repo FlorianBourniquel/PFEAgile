@@ -4,14 +4,28 @@ import fr.unice.polytech.cli.commands.utils.Parser;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 
-public class VisualiseModel extends Command<Environment> {
+public class VisualiseModel extends Command<Environment> implements WebCommand{
 
     @Override
     public String identifier() {
         return "visualise_domain";
+    }
+
+    @Override
+    public Response execResponse() throws CmdException {
+        try {
+            execute();
+
+            return Response.ok().build();
+        } catch (IOException e) {
+            throw new CmdException(e.getMessage());
+        }
     }
 
     @Override
