@@ -3,6 +3,7 @@ import {UserStory} from '../shared/models/UserStory';
 import {BackendApiService} from '../shared/services/backend-api.service';
 import {Sprint} from '../shared/models/Sprint';
 import {CmdProcessorService} from '../shared/services/cmd-processor/cmd-processor.service';
+import {MatSelectChange} from "@angular/material";
 
 @Component({
   selector: 'app-backlog',
@@ -31,4 +32,21 @@ export class BacklogComponent implements OnInit {
     this.cmdProcessor.execCmd('add_story', [sp.name, this.storyToAdd.name]);
 
   }
+  changedValue(value: MatSelectChange){
+    switch (value.value) {
+      case "byName":
+        console.log("byName");
+        break;
+      case "byValue":
+        console.log("byValue");
+        break;
+      case "byComplexity":
+        console.log("byComplexity");
+        break;
+      default:
+        console.log("Not implemented yet");
+        break;
+    }
+  }
+
 }
