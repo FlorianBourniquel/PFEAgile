@@ -1,3 +1,4 @@
+<div style="position: relative">
 <mat-list role="list"  *ngFor="let us of backlog">
   <mat-list-item role="listitem">
     {{us.name}}
@@ -5,11 +6,15 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>remove</mat-icon>
-        <span>remove</span>
+      <button mat-menu-item (mouseenter)="onAddStoryMouseEnter(us)" [matMenuTriggerFor]="appMenu">
+        <mat-icon>add</mat-icon>
+        <span>Add to Sprint</span>
       </button>
     </mat-menu>
   </mat-list-item>
 </mat-list>
 
+<mat-menu #appMenu="matMenu">
+    <button *ngFor="let sp of sprints" mat-menu-item (click)="onChooseSprintClicked(sp)">{{sp.name}} </button>
+</mat-menu>
+  </div>
