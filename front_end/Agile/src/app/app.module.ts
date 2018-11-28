@@ -12,13 +12,15 @@ import { CliComponent } from './cli/cli.component';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import { ListComponent } from './list/list.component';
+import { TabComponent } from './tab/tab.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GridListComponent,
     CliComponent,
-    ListComponent
+    ListComponent,
+    TabComponent
   ],
   imports: [
     BrowserModule,
