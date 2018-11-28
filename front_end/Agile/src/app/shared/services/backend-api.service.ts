@@ -54,4 +54,11 @@ export class BackendApiService {
       .subscribe( x => { console.log(x.body); this.scope.next('d'); });
 
   }
+
+  public changeScopeAll(): void {
+    const data = new CmdRequestModel('visualise_domain', []);
+    this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
+      .subscribe( x => { console.log(x.body); this.scope.next('d'); });
+
+  }
 }

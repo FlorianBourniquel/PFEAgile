@@ -4,13 +4,21 @@
     Welcome to {{ title }}!
   </h1>
 </div>
+
 <div style="display: flex; height: 80%" id="divID">
   <iframe style="height: 100%; width: 80%; background-color: beige"
           id="graphe"
           title="graphe"
           src="../assets/graphs/network.html">
   </iframe>
-  <app-list style="height: 100%; width: 20%; background-color: firebrick"> ddd </app-list>
+  <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; width: 20%; overflow: auto">
+    <div style="margin: auto">
+    <app-list ></app-list>
+    </div>
+    <div style="margin: auto">
+
+    </div>
+  </div>
 </div>
 <div style="display: flex; height: 20%">
 <app-cli style="width: 100%;"></app-cli>
