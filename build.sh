@@ -9,7 +9,7 @@ echo "----------Building front_end-------------"
 echo ""
 cd ..
 cd front_end/Agile
-ng build --prod --output ../docker/dist
+ng build --prod --output-path ../docker/dist
 cd ../..
 
 echo ""

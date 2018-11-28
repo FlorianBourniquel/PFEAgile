@@ -11,12 +11,14 @@ import { GridListComponent } from './grid-list/grid-list.component';
 import { CliComponent } from './cli/cli.component';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from "@angular/forms";
+import { ListComponent } from './list/list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GridListComponent,
-    CliComponent
+    CliComponent,
+    ListComponent
   ],
   imports: [
     BrowserModule,
