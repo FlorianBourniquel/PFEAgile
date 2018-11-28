@@ -4,6 +4,7 @@ import {URLBACKEND} from '../../constants/urls';
 import {Command} from '../commands/Command';
 import {ListBacklogService} from '../commands/list-backlog.service';
 import {CmdRequestModel} from '../../models/CmdRequestModel';
+import {RemoveStoryService} from '../commands/remove-story.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,12 @@ export class CmdProcessorService {
   private readonly base_url: string;
   private readonly cmds: Command[];
 
-  constructor(private l: ListBacklogService) {
+  constructor(private l: ListBacklogService, private rs: RemoveStoryService) {
     this._cmdOutput$ = new BehaviorSubject<string>('');
     this.base_url = URLBACKEND + '/main';
     this.cmds = [];
     this.addCommand(l);
+    this.addCommand(rs);
   }
 
   public execCmd(cmd: string, args: string[]) {
