@@ -34,7 +34,8 @@ public class Server {
                 RemoveStory.class,
                 VisualiseModelSprint.class,
                 VisualiseModelUS.class,
-                VisualiseModel.class
+                VisualiseModel.class,
+                VisualiseImpact.class
         );
 
         try {

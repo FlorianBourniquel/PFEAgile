@@ -4,13 +4,16 @@ import fr.unice.polytech.cli.commands.utils.Parser;
 import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.graphviz.Class;
 import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.*;
 
-public class VisualiseImpact extends AbstractSprintCommand {
+public class VisualiseImpact extends AbstractSprintCommand implements WebCommand{
 
     private boolean addMode;
 
@@ -21,6 +24,17 @@ public class VisualiseImpact extends AbstractSprintCommand {
     @Override
     public String identifier() {
         return "visualise_impact";
+    }
+
+    @Override
+    public Response execResponse() throws CmdException {
+        try {
+            execute();
+
+            return Response.ok().build();
+        } catch (IOException e) {
+            throw new CmdException(e.getMessage());
+        }
     }
 
     @Override
