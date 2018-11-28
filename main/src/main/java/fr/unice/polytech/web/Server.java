@@ -32,7 +32,8 @@ public class Server {
                 SortBacklogByComplexity.class,
                 AddStory.class,
                 RemoveStory.class,
-                VisualiseModelSprint.class
+                VisualiseModelSprint.class,
+                VisualiseModelUS.class
         );
 
         try {
