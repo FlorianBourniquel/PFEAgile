@@ -5,8 +5,8 @@ import {Command} from '../commands/Command';
 import {ListBacklogService} from '../commands/list-backlog.service';
 import {CmdRequestModel} from '../../models/CmdRequestModel';
 import {RemoveStoryService} from '../commands/remove-story.service';
-import {WhatIfIAddService} from "../commands/what-if-iadd.service";
-import {WhatIfIRemoveService} from "../commands/what-if-iremove.service";
+import {WhatIfIAddService} from '../commands/what-if-iadd.service';
+import {WhatIfIRemoveService} from '../commands/what-if-iremove.service';
 
 @Injectable({
   providedIn: 'root'
