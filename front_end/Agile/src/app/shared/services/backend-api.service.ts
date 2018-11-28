@@ -4,7 +4,7 @@ import {URLBACKEND} from '../constants/urls';
 import {CmdRequestModel} from '../models/CmdRequestModel';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {UserStory} from '../models/UserStory';
-import {Sprint} from "../models/Sprint";
+import {Sprint} from '../models/Sprint';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +13,12 @@ export class BackendApiService {
 
   private base_url: string;
   private _sprints: BehaviorSubject <Sprint[]>;
+  private _scope: BehaviorSubject <String>;
 
   constructor(private http: HttpClient) {
     this.base_url = URLBACKEND + '/main';
     this._sprints = new BehaviorSubject([]);
+    this._scope = new BehaviorSubject('');
   }
 
   public listBacklog(): Observable<HttpResponse<UserStory[]>> {
@@ -33,10 +35,23 @@ export class BackendApiService {
   public getSprints(): void {
     const data = new CmdRequestModel('list_sprint', []);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe( x => this.sprints.next(x.body));
+      .subscribe( x => { console.log(x.body); this.sprints.next(x.body); });
+
   }
 
   get sprints(): BehaviorSubject<Sprint[]> {
     return this._sprints;
+  }
+
+
+  get scope(): BehaviorSubject<String> {
+    return this._scope;
+  }
+
+  public changeScope(s): void {
+    const data = new CmdRequestModel('visualise_domain_sprint', [s]);
+    this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
+      .subscribe( x => { console.log(x.body); this.scope.next('d'); });
+
   }
 }

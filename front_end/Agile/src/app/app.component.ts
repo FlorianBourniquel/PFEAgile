@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   @Input() title;
   cd: ChangeDetectorRef;
 
-  constructor(cd: ChangeDetectorRef, private backendApi: BackendApiService) {
+  constructor(private backendApiService: BackendApiService, cd: ChangeDetectorRef) {
     window['comp'] = {component: this};
     this.title = 'Agile';
     this.cd = cd;
@@ -24,7 +24,9 @@ export class AppComponent implements OnInit {
     alert(JSON.stringify({ data: node}, null, 4));
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.backendApiService.scope.subscribe(x => document.getElementById('graphe').setAttribute('src', '../assets/graphs/network.html'));
+  }
 }
 
 
