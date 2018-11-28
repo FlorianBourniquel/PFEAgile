@@ -13,6 +13,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import { ListComponent } from './list/list.component';
 import { TabComponent } from './tab/tab.component';
+import { BacklogComponent } from './backlog/backlog.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TabComponent } from './tab/tab.component';
     GridListComponent,
     CliComponent,
     ListComponent,
-    TabComponent
+    TabComponent,
+    BacklogComponent
   ],
   imports: [
     BrowserModule,

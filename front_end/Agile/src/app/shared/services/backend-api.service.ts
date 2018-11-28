@@ -13,17 +13,20 @@ export class BackendApiService {
 
   private base_url: string;
   private _sprints: BehaviorSubject <Sprint[]>;
+  private _backlog: BehaviorSubject <UserStory[]>;
   private _scope: BehaviorSubject <String>;
 
   constructor(private http: HttpClient) {
     this.base_url = URLBACKEND + '/main';
     this._sprints = new BehaviorSubject([]);
+    this._backlog = new BehaviorSubject([]);
     this._scope = new BehaviorSubject('');
   }
 
-  public listBacklog(): Observable<HttpResponse<UserStory[]>> {
+  public loadBacklog(): void {
     const data = new CmdRequestModel('list_backlog', []);
-    return this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'});
+    this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
+      .subscribe(x => {console.log(x.body); this.backlog.next(x.body); });
   }
 
   public by() {
@@ -46,6 +49,11 @@ export class BackendApiService {
 
   get scope(): BehaviorSubject<String> {
     return this._scope;
+  }
+
+
+  get backlog(): BehaviorSubject<UserStory[]> {
+    return this._backlog;
   }
 
   public changeScope(s): void {

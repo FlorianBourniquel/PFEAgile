@@ -1,0 +1,15 @@
+<mat-list role="list"  *ngFor="let us of backlog">
+  <mat-list-item role="listitem">
+    {{us.name}}
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>remove</mat-icon>
+        <span>remove</span>
+      </button>
+    </mat-menu>
+  </mat-list-item>
+</mat-list>
+
