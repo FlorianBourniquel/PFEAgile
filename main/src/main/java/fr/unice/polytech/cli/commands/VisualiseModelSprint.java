@@ -26,9 +26,10 @@ public class VisualiseModelSprint extends Command<Environment> implements WebCom
     public Response execResponse() throws CmdException {
         try {
             execute();
-
+            executeCommand("Rscript /usr/src/app/output/Script.R");
             return Response.ok().build();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new CmdException(e.getMessage());
         }
     }

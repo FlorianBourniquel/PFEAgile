@@ -25,7 +25,7 @@ public class VisualiseModelUS extends Command<Environment> implements WebCommand
     public Response execResponse() throws CmdException {
         try {
             execute();
-
+            executeCommand("Rscript /usr/src/app/output/Script.R");
             return Response.ok().build();
         } catch (IOException e) {
             throw new CmdException(e.getMessage());
