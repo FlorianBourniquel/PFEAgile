@@ -69,7 +69,6 @@ public class WhatIfIAddStory extends Command<Environment> implements WebCommand{
         int newBv = stories.stream().mapToInt(UserStory::getBusinessValue).sum() + sprint.calculateTotalBusinessValue();
         int newSp = stories.stream().mapToInt(UserStory::getStoryPoints).sum() + sprint.calculateTotalStoryPoints();
 
-
         return new WhatIfStats(sprint.calculateTotalBusinessValue(), sprint.calculateTotalStoryPoints(), newBv, newSp);
     }
 

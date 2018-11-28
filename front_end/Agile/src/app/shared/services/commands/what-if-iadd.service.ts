@@ -14,7 +14,7 @@ export class WhatIfIAddService extends Command{
   }
 
   description(): string {
-    return 'liste le backlog backlog';
+    return 'simule sur un sprint souhaité l\'ajout de certaines user stories et retourne l\'impact non métier';
   }
 
   exec(cmd: CmdRequestModel) {
