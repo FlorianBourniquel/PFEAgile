@@ -24,9 +24,7 @@ export class AppComponent implements OnInit {
     alert(JSON.stringify({ data: node}, null, 4));
   }
 
-  ngOnInit(): void {
-    //this.backendApi.listBacklog().subscribe( (c: HttpResponse<UserStory[]>) => console.log(c.body));
-  }
+  ngOnInit(): void {}
 }
 
 

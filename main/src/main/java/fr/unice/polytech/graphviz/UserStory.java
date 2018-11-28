@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class UserStory extends Node{
 
+
     private List<Class> classes;
 
     private List<Method> methods;
@@ -28,6 +29,10 @@ public class UserStory extends Node{
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getText() {
+        return text;
     }
 
     public int getBusinessValue() {
