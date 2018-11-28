@@ -18,6 +18,7 @@ public class Main  extends Shell<Environment>
                 InitBacklog.class,
                 CreateSprint.class,
                 ListBacklog.class,
+                ListSprint.class,
                 VisualiseModel.class,
                 VisualiseImpact.class,
                 VisualiseModelUS.class,

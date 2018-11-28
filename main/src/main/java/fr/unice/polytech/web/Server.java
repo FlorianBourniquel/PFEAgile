@@ -23,6 +23,7 @@ public class Server {
         CmdProcessor.get().register(
                 Bye.class,
                 ListBacklog.class,
+                ListSprint.class,
                 InitBacklog.class,
                 CreateSprint.class,
                 WhatIfIAddStory.class,
