@@ -5,18 +5,32 @@ import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.repository.DTORepository;
+import fr.unice.polytech.web.CmdException;
+import fr.unice.polytech.web.WebCommand;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class VisualiseModelSprint extends Command<Environment> {
+public class VisualiseModelSprint extends Command<Environment> implements WebCommand{
 
     private String wantedSprint;
 
     @Override
     public String identifier() {
         return "visualise_domain_sprint";
+    }
+
+    @Override
+    public Response execResponse() throws CmdException {
+        try {
+            execute();
+
+            return Response.ok().build();
+        } catch (IOException e) {
+            throw new CmdException(e.getMessage());
+        }
     }
 
     @Override
