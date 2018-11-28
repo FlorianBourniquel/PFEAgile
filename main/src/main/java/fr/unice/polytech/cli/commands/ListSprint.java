@@ -26,10 +26,10 @@ public class ListSprint extends Command<Environment> implements WebCommand {
 
     @Override
     public void execute() {
-        List<Sprint> stories = DTORepository.get().getAllSprints();
-        stories.sort(Comparator.comparing(Sprint::getName));
+        List<Sprint> sprints = DTORepository.get().getAllSprints();
+        sprints.sort(Comparator.comparing(Sprint::getName));
         System.out.println();
-        stories.forEach(System.out::println);
+        sprints.forEach(System.out::println);
         System.out.println();
     }
 
