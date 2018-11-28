@@ -2,8 +2,8 @@
   <button style="alignment: center; width: 100%;" mat-flat-button color="primary" (click)="allDomain()">All Domain</button>
 </div>
 <mat-accordion>
-  <mat-expansion-panel *ngFor="let sprint of sprints" (click)="sprintClick(sprint)">
-    <mat-expansion-panel-header>
+  <mat-expansion-panel *ngFor="let sprint of sprints" >
+    <mat-expansion-panel-header (click)="sprintClick(sprint)">
       <mat-panel-title>
         {{sprint.name}}
       </mat-panel-title>
@@ -15,17 +15,9 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item>
-            <mat-icon>dialpad</mat-icon>
-            <span>Redial</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>voicemail</mat-icon>
-            <span>Check voicemail</span>
-          </button>
-          <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon>
-            <span>Disable alerts</span>
+          <button mat-menu-item (click)="onRemoveUsClicked(us)">
+            <mat-icon>remove</mat-icon>
+            <span>remove</span>
           </button>
         </mat-menu>
 

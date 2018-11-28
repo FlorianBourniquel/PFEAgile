@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Tile} from '../grid-list/grid-list.component';
-import {CmdProcessorService} from '../shared/services/cmd-processor/cmd-processor.service';
 import {Sprint} from '../shared/models/Sprint';
 import {BackendApiService} from '../shared/services/backend-api.service';
+import {UserStory} from '../shared/models/UserStory';
+import {CmdProcessorService} from '../shared/services/cmd-processor/cmd-processor.service';
 
 
 @Component({
@@ -13,7 +13,7 @@ import {BackendApiService} from '../shared/services/backend-api.service';
 export class ListComponent implements OnInit {
   sprints: Sprint[] = [];
   sprint: Sprint;
-  constructor(private backendApiService: BackendApiService) { }
+  constructor(private backendApiService: BackendApiService, private cmdProcessor: CmdProcessorService) { }
 
   ngOnInit() {
     this.backendApiService.sprints.subscribe(x => this.sprints = x);
@@ -30,4 +30,7 @@ export class ListComponent implements OnInit {
     this.backendApiService.changeScopeAll();
   }
 
+  onRemoveUsClicked(us: UserStory) {
+    this.cmdProcessor.execCmd('remove_story', [this.sprint.name, us.name]);
+  }
 }
