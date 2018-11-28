@@ -22,7 +22,12 @@ export class ListComponent implements OnInit {
 
   sprintClick(sprint: Sprint) {
     this.sprint = sprint;
-    this.backendApiService.changeScope(sprint.name);
+    this.backendApiService.changeScope(this.sprint.name);
+  }
+
+  allDomain() {
+    this.sprint = undefined;
+    this.backendApiService.changeScopeAll();
   }
 
   onRemoveUsClicked(us: UserStory) {

@@ -4,11 +4,13 @@ import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
+import fr.unice.polytech.graphviz.WhatIfStats;
 import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.web.CmdException;
 import fr.unice.polytech.web.WebCommand;
 
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,40 +25,54 @@ public class WhatIfIRemoveStory extends Command<Environment> implements WebComma
 
     @Override
     public Response execResponse() throws CmdException {
-        return Response.ok(execWithResponse()).build();
+        try {
+            return Response.ok(this.execWithResponse()).build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CmdException(e.getMessage());
+        }
     }
 
     @Override
     public void execute() {
-        print(execWithResponse());
+        WhatIfStats stats;
+        try {
+            stats = execWithResponse();
+
+            print("[Actuellement     ] --> Business Value : " + stats.getBeforeBusiness() + " - Story Points : " + stats.getBeforePoints()
+                    + "\n[Apres Suppression]  --> Business Value : " + stats.getAfterBusiness() + " - Story Points : " + stats.getAfterPoints());
+        } catch (IOException e) {
+            print(e.getMessage());
+        }
     }
 
-    private String execWithResponse() {DTORepository repository = DTORepository.get();
+    private WhatIfStats execWithResponse() throws IOException {
+        DTORepository repository = DTORepository.get();
         Sprint sprint = repository.getSprint(sprintName);
 
         repository.fill(sprint);
 
         if(sprint == null){
-            return "Le sprint "+ sprintName+" n'existe pas\n";
+            throw new IOException("Le sprint "+ sprintName +" n'existe pas");
         }
 
         List<UserStory> stories = repository.getStoriesIn(storyNames);
         if(stories.size() != storyNames.size()){
             List<String> temp = stories.stream().map(UserStory::getName).collect(Collectors.toList());
             String sts = storyNames.stream().filter(x -> !temp.contains(x)).collect(Collectors.joining(", "));
-            return "Les stories "+sts+" n'existent pas\n";
+            throw new IOException("Les stories "+sts+" n'existent pas\n");
         }
 
         List<UserStory> notContained = stories.stream().filter( x -> !sprint.getStoryList().contains(x)).collect(Collectors.toList());
         if(notContained.size() > 0){
             String sts = notContained.stream().map(UserStory::getName).collect(Collectors.joining(", "));
-            return "Les stories " + sts + " n'appartiennent pas au Sprint " + sprintName;
+            throw new IOException("Les stories " + sts + " appartiennent déja au Sprint " + sprintName);
         }
 
         int newBv = sprint.calculateTotalBusinessValue() - stories.stream().mapToInt(UserStory::getBusinessValue).sum() ;
         int newSp = sprint.calculateTotalStoryPoints() - stories.stream().mapToInt(UserStory::getStoryPoints).sum() ;
-        return "[Actuellement     ] --> Business Value : " + sprint.calculateTotalBusinessValue() + " - Story Points : " + sprint.calculateTotalStoryPoints() +
-        "\n[Apres Suppression]  --> Business Value : " + newBv + " - Story Points : " + newSp + "\n";
+
+        return new WhatIfStats(sprint.calculateTotalBusinessValue(), sprint.calculateTotalStoryPoints(), newBv, newSp);
     }
 
 
