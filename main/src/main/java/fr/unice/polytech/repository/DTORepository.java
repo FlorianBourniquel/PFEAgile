@@ -64,8 +64,7 @@ public class DTORepository {
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(
                     tx -> tx.run(
-                            "MATCH (spr:Sprint)-[CONTAINS]->(s:Story)\n" +
-                               "RETURN spr"));
+                            "MATCH (spr:Sprint) RETURN spr"));
             return s.list( r -> {
                 Sprint res = new Sprint(r.get("spr").get("name").asString());
                 res.fill(db.getDriver().session());
