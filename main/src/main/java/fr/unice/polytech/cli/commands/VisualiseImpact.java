@@ -53,13 +53,13 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
 
             Sprint sprint = this.initSprint(session);
 
-            for (Integer story :
+            for (String story :
                     this.storyIds) {
                 StatementResult findStory = session.writeTransaction(
                         tx -> tx.run(
-                                "MATCH (s:Story {name : \"US" + story + "\"}) return s"));
+                                "MATCH (s:Story {name :\"" + story + "\"}) return s"));
 
-                List<UserStory> stories = findStory.list(s -> new UserStory("US" + story));
+                List<UserStory> stories = findStory.list(s -> new UserStory(story));
 
                 stories.forEach(s -> {
                     s.fill(session);
@@ -101,13 +101,13 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
 
             Sprint sprint = this.initSprint(session);
 
-            for (Integer story :
+            for (String story :
                     this.storyIds) {
                 StatementResult findStory = session.writeTransaction(
                         tx -> tx.run(
-                                "MATCH (s:Story {name : \"US" + story + "\"}) return s"));
+                                "MATCH (s:Story {name :\"" + story + "\"}) return s"));
 
-                List<UserStory> stories = findStory.list(s -> new UserStory("US" + story));
+                List<UserStory> stories = findStory.list(s -> new UserStory(story));
 
                 stories.forEach(s -> {
                     s.fill(session);
@@ -139,7 +139,7 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
                 });
             }
 
-            Parser.parseSprints(Collections.singletonList(sprint), "/data/node.csv","/data/edge.csv");
+            Parser.parseSprints(Collections.singletonList(sprint), "./data/node.csv","./data/edge.csv");
         }
     }
 

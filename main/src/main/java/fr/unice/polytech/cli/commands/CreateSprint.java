@@ -33,11 +33,11 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
     public void load(List<String> args) {
         super.load(args);
         backlog = DTORepository.get().getBacklog();
-        List<Integer> missingStories = this.storyIds.stream().filter(x -> !sprintNumberExists(x)).collect(Collectors.toList());
+        List<String> missingStories = this.storyIds.stream().filter(x -> !sprintNumberExists(x)).collect(Collectors.toList());
         if(missingStories.size() > 0){
             String sts = missingStories.stream().map(String::valueOf).collect(Collectors.joining(", "));
             this.error = true;
-            print("Couldn't find stories n° " + sts);
+            print("Couldn't find stories " + sts);
         }
     }
 
@@ -46,8 +46,8 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
         return 0;
     }
 
-    private boolean sprintNumberExists(Integer integer) {
-        return this.backlog.stream().anyMatch( x -> x.getNumber() == integer);
+    private boolean sprintNumberExists(String name) {
+        return this.backlog.stream().anyMatch( x -> x.getName().equalsIgnoreCase(name));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
 
         for (int i = 0; i < this.storyIds.size(); i++) {
 
-            resBuilder.append("(s").append(i + 1).append(":Story {name:\"US").append(this.storyIds.get(i)).append("\"})");
+            resBuilder.append("(s").append(i + 1).append(":Story {name:\"").append(this.storyIds.get(i)).append("\"})");
 
             if(i != (this.storyIds.size() - 1)){
                 resBuilder.append(",");
@@ -99,7 +99,7 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
                     .mapToInt(Sprint::calculateTotalStoryPoints).average().getAsDouble();
 
             int averageNewSprintStoryPoints = this.backlog
-                    .stream().filter(x -> storyIds.contains(x.getNumber()))
+                    .stream().filter(x -> storyIds.contains(x.getName()))
                     .mapToInt(UserStory::getStoryPoints).sum();
 
             if (averageNewSprintStoryPoints > averagePrevPrintsStoryPoints) {
