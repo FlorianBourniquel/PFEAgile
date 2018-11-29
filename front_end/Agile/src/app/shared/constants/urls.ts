@@ -1,1 +1,1 @@
-export const URLBACKEND = 'http://main:8080';
+export const URLBACKEND = 'http://142.93.110.77/main';
