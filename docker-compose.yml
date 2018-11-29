@@ -12,7 +12,7 @@ services:
     depends_on:
     - neodb
     ports:
-    - '81:8080'
+#    - '81:8080'
     expose:
     - "8080"
 
@@ -23,9 +23,11 @@ services:
 #      depends_on:
 #      - main
       ports:
-      - '80:80'
+#      - '80:80'
       volumes:
       - ./graphs:/usr/share/nginx/html/assets/graphs
+      expose:
+      - "80"
 
   neodb:
     container_name: neodb
