@@ -21,7 +21,7 @@ services:
 #      depends_on:
 #      - main
       ports:
-      - '82:80'
+      - '80:80'
       volumes:
       - ./graphs:/usr/share/nginx/html/assets/graphs
 
