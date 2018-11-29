@@ -23,8 +23,20 @@ export class BackendApiService {
     this._scope = new BehaviorSubject('');
   }
 
+  loadBacklogByComplexity(sprintName: string) {
+    const data = new CmdRequestModel('sort_backlog_by_complexity', [sprintName]);
+    this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
+      .subscribe(x => {console.log(x.body); this.backlog.next(x.body); });
+  }
+
   public loadBacklog(): void {
     const data = new CmdRequestModel('list_backlog', []);
+    this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
+      .subscribe(x => {console.log(x.body); this.backlog.next(x.body); });
+  }
+
+  public loadBacklogByValue(): void {
+    const data = new CmdRequestModel('sort_backlog_by_value', []);
     this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
       .subscribe(x => {console.log(x.body); this.backlog.next(x.body); });
   }
@@ -67,6 +79,5 @@ export class BackendApiService {
     const data = new CmdRequestModel('visualise_domain', []);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
       .subscribe( x => { console.log(x.body); this.scope.next('d'); });
-
   }
 }

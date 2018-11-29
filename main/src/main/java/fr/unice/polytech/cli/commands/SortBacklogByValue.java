@@ -21,11 +21,7 @@ public class SortBacklogByValue extends Command<Environment> implements WebComma
 
     @Override
     public Response execResponse() throws CmdException {
-        StringBuilder res = new StringBuilder();
-
-        sortRemainingUSByValue().forEach(story -> res.append(story.toStringWithRatio()).append("\n"));
-
-        return Response.ok(res.toString()).build();
+        return Response.ok(sortRemainingUSByValue()).build();
     }
 
     @Override

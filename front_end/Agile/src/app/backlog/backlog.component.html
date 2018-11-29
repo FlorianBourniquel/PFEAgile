@@ -14,16 +14,26 @@
   </mat-list-item>
 </mat-list>
 
-  <mat-form-field class="bottom">
-    <mat-select [(value)]="selected" (selectionChange)="changedValue($event)">
-      <mat-option value="byName">Sort by name</mat-option>
-      <mat-option value="byValue">Sort by value</mat-option>
-      <mat-option value="byComplexity">Sort by complexity</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="bottom">
+    <div>
+      <mat-form-field>
+        <mat-select [(value)]="selected" (selectionChange)="changedValue($event)">
+          <mat-option value="byName">Sort by name</mat-option>
+          <mat-option value="byValue">Sort by value</mat-option>
+          <mat-option value="byComplexity">Sort by complexity</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-select (selectionChange)="selectedSprint($event)" [disabled]="disableSelect.value">
+          <mat-option *ngFor="let sp of sprints" value="{{sp.name}}">{{sp.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
 </div>
 
 <mat-menu #appMenu="matMenu">
-    <button *ngFor="let sp of sprints" mat-menu-item (click)="onChooseSprintClicked(sp)">{{sp.name}} </button>
+    <button *ngFor="let sp of sprints" mat-menu-item (click)="onChooseSprintClicked(sp)">{{sp.name}}</button>
 </mat-menu>
-  </div>

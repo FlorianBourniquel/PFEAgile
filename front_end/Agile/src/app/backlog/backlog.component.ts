@@ -4,6 +4,7 @@ import {BackendApiService} from '../shared/services/backend-api.service';
 import {Sprint} from '../shared/models/Sprint';
 import {CmdProcessorService} from '../shared/services/cmd-processor/cmd-processor.service';
 import {MatSelectChange} from "@angular/material";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-backlog',
@@ -12,9 +13,11 @@ import {MatSelectChange} from "@angular/material";
 })
 export class BacklogComponent implements OnInit {
 
+  disableSelect = new FormControl(true);
   backlog: UserStory[];
   sprints: Sprint[] = [];
   private storyToAdd: UserStory;
+  private wantedFilter: string;
 
   constructor(private backendApiService: BackendApiService, private cmdProcessor: CmdProcessorService) { }
 
@@ -30,21 +33,31 @@ export class BacklogComponent implements OnInit {
 
   onChooseSprintClicked(sp: Sprint) {
     this.cmdProcessor.execCmd('add_story', [sp.name, this.storyToAdd.name]);
-
   }
+
+  selectedSprint(value: MatSelectChange){
+    if(this.wantedFilter == "byComplexity"){
+      this.backendApiService.loadBacklogByComplexity(value.value);
+    }
+  }
+
   changedValue(value: MatSelectChange){
+    this.disableSelect.setValue(true);
+    this.wantedFilter = value.value;
+
     switch (value.value) {
       case "byName":
-        console.log("byName");
+        this.backendApiService.loadBacklog();
         break;
       case "byValue":
+        this.backendApiService.loadBacklogByValue();
         console.log("byValue");
         break;
       case "byComplexity":
-        console.log("byComplexity");
+        this.disableSelect.setValue(false);
         break;
       default:
-        console.log("Not implemented yet");
+        console.log("Not implemented");
         break;
     }
   }

@@ -9,9 +9,7 @@ import fr.unice.polytech.web.CmdException;
 import fr.unice.polytech.web.WebCommand;
 
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 
@@ -26,7 +24,11 @@ public class SortBacklogByComplexity extends Command<Environment> implements Web
 
     @Override
     public Response execResponse() throws CmdException {
-        return Response.ok(executeWithResult()).build();
+        List<UserStory> resUS = new ArrayList<>();
+
+        this.executeWithResult().forEach(us -> resUS.add(us.getKey()));
+
+        return Response.ok(resUS).build();
     }
 
     @Override
@@ -36,10 +38,14 @@ public class SortBacklogByComplexity extends Command<Environment> implements Web
 
     @Override
     public void execute() {
-        print(executeWithResult());
+        StringBuilder res = new StringBuilder();
+
+        this.executeWithResult().forEach(us -> res.append("Classes added by: ").append(us.getKey().getName()).append(" = ").append(us.getValue()).append("\n"));
+
+        print(res.toString());
     }
 
-    private String executeWithResult(){
+    private Stream<Map.Entry<UserStory, Integer>> executeWithResult(){
         Sprint sp = DTORepository.get().getSprintWithUserStories(sprintName);
         List<UserStory> backlog = DTORepository.get().getBacklogUserStories();
 
@@ -65,13 +71,7 @@ public class SortBacklogByComplexity extends Command<Environment> implements Web
             });
         });
 
-        Stream<Map.Entry<UserStory, Integer>> sorted = classesAdded.entrySet().stream().sorted(Map.Entry.comparingByValue());
-
-        StringBuilder res = new StringBuilder();
-
-        sorted.forEach(us -> res.append("Classes added by: ").append(us.getKey().getName()).append(" = ").append(us.getValue()).append("\n"));
-
-        return res.toString();
+        return classesAdded.entrySet().stream().sorted(Map.Entry.comparingByValue());
     }
 
     @Override
