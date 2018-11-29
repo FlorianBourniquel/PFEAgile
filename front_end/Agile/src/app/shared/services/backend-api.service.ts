@@ -82,7 +82,7 @@ export class BackendApiService {
   }
 
   public visualiseImpact(us, sprint, mode): void {
-    const data = new CmdRequestModel('visualise_impact', [sprint, mode [us]]);
+    const data = new CmdRequestModel('visualise_impact', [sprint, mode, us]);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
       .subscribe( x => { console.log(x.body); this.scope.next('d'); });
   }

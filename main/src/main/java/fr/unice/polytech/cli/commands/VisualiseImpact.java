@@ -101,8 +101,7 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
 
             Sprint sprint = this.initSprint(session);
 
-            for (String story :
-                    this.storyIds) {
+            for (String story : this.storyIds) {
                 StatementResult findStory = session.writeTransaction(
                         tx -> tx.run(
                                 "MATCH (s:Story {name :\"" + story + "\"}) return s"));
@@ -112,8 +111,7 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
                 stories.forEach(s -> {
                     s.fill(session);
 
-                    for (Class classElement:
-                         s.getClasses()) {
+                    for (Class classElement: s.getClasses()) {
                         Optional<Class> classOptional = sprint.containsDomainElement(classElement);
 
                         if(classOptional.isPresent()){
@@ -139,7 +137,7 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
                 });
             }
 
-            Parser.parseSprints(Collections.singletonList(sprint), "./data/node.csv","./data/edge.csv");
+            Parser.parseSprints(Collections.singletonList(sprint), "/data/node.csv","/data/edge.csv");
         }
     }
 

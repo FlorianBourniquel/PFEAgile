@@ -38,7 +38,7 @@ export class BacklogComponent implements OnInit {
   }
 
   onVisualiseImpactSprintClicked(sp: Sprint) {
-    this.backendApiService.visualiseImpact(sp.name, this.selectedStory.name, true);
+    this.backendApiService.visualiseImpact( sp.name, this.selectedStory.name, true);
   }
 
   selectedSprint(value: MatSelectChange){
