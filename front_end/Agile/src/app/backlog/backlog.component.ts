@@ -36,6 +36,10 @@ export class BacklogComponent implements OnInit {
     this.cmdProcessor.execCmd('add_story', [sp.name, this.storyToAdd.name]);
   }
 
+  onVisualiseImpactSprintClicked(sp: Sprint) {
+    this.backendApiService.visualiseImpact(sp.name, this.storyToAdd.name, true);
+  }
+
   selectedSprint(value: MatSelectChange){
     if(this.wantedFilter == "byComplexity"){
       this.backendApiService.loadBacklogByComplexity(value.value);
