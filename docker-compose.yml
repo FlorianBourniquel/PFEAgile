@@ -11,7 +11,7 @@ services:
     - ./graphs:/graphs
     depends_on:
     - neodb
-    ports:
+#    ports:
 #    - '81:8080'
     expose:
     - "8080"
@@ -22,7 +22,7 @@ services:
         context: ./front_end/docker
 #      depends_on:
 #      - main
-      ports:
+#      ports:
 #      - '80:80'
       volumes:
       - ./graphs:/usr/share/nginx/html/assets/graphs
@@ -41,8 +41,8 @@ services:
         driver: none
   
   reverse_proxy:
-      container_name: reverse_proxy
-      build:
-        context: ./reverse_proxy
-      ports:
-      - '80:80'
+    container_name: reverse_proxy
+    build:
+      context: ./reverse_proxy
+    ports:
+    - '80:80'
