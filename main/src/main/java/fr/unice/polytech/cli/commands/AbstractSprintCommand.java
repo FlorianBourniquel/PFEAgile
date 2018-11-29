@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class AbstractSprintCommand extends Command<Environment> {
 
-    ArrayList<Integer> storyIds;
+    ArrayList<String> storyIds;
     String sprintName;
 
     public AbstractSprintCommand(){
@@ -42,7 +42,7 @@ public abstract class AbstractSprintCommand extends Command<Environment> {
             }
 
             while (argsIteration.hasNext()){
-                this.storyIds.add(Integer.valueOf(argsIteration.next()));
+                this.storyIds.add(argsIteration.next());
                 argsIteration.remove();
             }
         }
