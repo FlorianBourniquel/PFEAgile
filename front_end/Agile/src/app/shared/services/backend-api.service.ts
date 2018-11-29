@@ -47,7 +47,7 @@ export class BackendApiService {
       .subscribe(x => console.log(x.body), error => console.log(error.error));
   }
 
-  public getSprints(): void {
+  public loadSprints(): void {
     const data = new CmdRequestModel('list_sprint', []);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
       .subscribe( x => { console.log(x.body); this.sprints.next(x.body); });

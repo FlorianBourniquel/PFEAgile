@@ -16,6 +16,7 @@ RUN mkdir /graphs
 
 COPY Install.R .
 
+
 RUN Rscript ./Install.R
 
 EXPOSE 8080

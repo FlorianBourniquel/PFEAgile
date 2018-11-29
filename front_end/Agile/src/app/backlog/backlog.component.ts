@@ -18,6 +18,7 @@ export class BacklogComponent implements OnInit {
   sprints: Sprint[] = [];
   private storyToAdd: UserStory;
   private wantedFilter: string;
+  selected: string;
 
   constructor(private backendApiService: BackendApiService, private cmdProcessor: CmdProcessorService) { }
 

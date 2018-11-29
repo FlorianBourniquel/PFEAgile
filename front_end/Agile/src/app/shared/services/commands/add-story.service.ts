@@ -15,7 +15,7 @@ export class AddStoryService extends Command{
 
   exec(cmd: CmdRequestModel) {
     this.http.post(this.base_url, cmd, { observe: 'response', responseType: 'text'})
-      .subscribe((e) => { alert(e.body); this.backendApiService.loadBacklog(); } ,
+      .subscribe((e) => { alert(e.body); this.backendApiService.loadBacklog(); this.backendApiService.loadSprints(); } ,
                  () => alert('erreur lors de l\'ajout de la story'));
   }
 
