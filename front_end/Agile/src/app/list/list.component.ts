@@ -34,7 +34,7 @@ export class ListComponent implements OnInit {
     this.cmdProcessor.execCmd('remove_story', [this.sprint.name, us.name]);
   }
 
-  onClickVisualiseImpact(sp: Sprint) {
-
+  onClickVisualiseImpact(us: UserStory) {
+    this.backendApiService.visualiseImpact( us.name, this.sprint.name, false);
   }
 }
