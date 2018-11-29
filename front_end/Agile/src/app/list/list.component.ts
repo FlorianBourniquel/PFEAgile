@@ -33,4 +33,8 @@ export class ListComponent implements OnInit {
   onRemoveUsClicked(us: UserStory) {
     this.cmdProcessor.execCmd('remove_story', [this.sprint.name, us.name]);
   }
+
+  onClickVisualiseImpact(sp: Sprint) {
+
+  }
 }

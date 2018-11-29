@@ -1,18 +1,18 @@
 <div class="container">
-<mat-list role="list"  *ngFor="let us of backlog">
-  <mat-list-item role="listitem">
-    {{us.name}}
-    <button mat-icon-button [matMenuTriggerFor]="menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (mouseenter)="onAddStoryMouseEnter(us)" [matMenuTriggerFor]="appMenu">
-        <mat-icon>add</mat-icon>
-        <span>Add to Sprint</span>
+  <mat-list role="list"  *ngFor="let us of backlog">
+    <mat-list-item role="listitem">
+      {{us.name}}
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
       </button>
-    </mat-menu>
-  </mat-list-item>
-</mat-list>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (mouseenter)="onAddStoryMouseEnter(us)" [matMenuTriggerFor]="appMenu">
+          <mat-icon>add</mat-icon>
+          <span>Add to Sprint</span>
+        </button>
+      </mat-menu>
+    </mat-list-item>
+  </mat-list>
 
   <div class="bottom">
     <div>
@@ -35,5 +35,5 @@
 </div>
 
 <mat-menu #appMenu="matMenu">
-    <button *ngFor="let sp of sprints" mat-menu-item (click)="onChooseSprintClicked(sp)">{{sp.name}}</button>
+  <button *ngFor="let sp of sprints" mat-menu-item (click)="onChooseSprintClicked(sp)">{{sp.name}}</button>
 </mat-menu>
