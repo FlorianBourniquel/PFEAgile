@@ -40,7 +40,10 @@
 
 <mat-menu #appMenu="matMenu">
   <button *ngFor="let sp of sprints" mat-menu-item (click)="onChooseSprintClicked(sp)">{{sp.name}}</button>
+  <input mat-menu-item type="text" placeholder="new sprint name" [(ngModel)]="newSprintName" (click)="onAddToNewSprintClicked($event)">
 </mat-menu>
+
+
 
 <mat-menu #sprintMenu="matMenu">
   <button *ngFor="let sp of sprints" mat-menu-item (click)="onVisualiseImpactSprintClicked(sp)">{{sp.name}}</button>

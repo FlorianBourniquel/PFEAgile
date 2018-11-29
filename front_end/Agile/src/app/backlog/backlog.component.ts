@@ -16,9 +16,10 @@ export class BacklogComponent implements OnInit {
   disableSelect = new FormControl(true);
   backlog: UserStory[];
   sprints: Sprint[] = [];
-  private storyToAdd: UserStory;
+  private selectedStory: UserStory;
   private wantedFilter: string;
   selected: string;
+  newSprintName: string;
 
   constructor(private backendApiService: BackendApiService, private cmdProcessor: CmdProcessorService) { }
 
@@ -29,15 +30,15 @@ export class BacklogComponent implements OnInit {
   }
 
   onAddStoryMouseEnter(us: UserStory) {
-    this.storyToAdd = us;
+    this.selectedStory = us;
   }
 
   onChooseSprintClicked(sp: Sprint) {
-    this.cmdProcessor.execCmd('add_story', [sp.name, this.storyToAdd.name]);
+    this.cmdProcessor.execCmd('add_story', [sp.name, this.selectedStory.name]);
   }
 
   onVisualiseImpactSprintClicked(sp: Sprint) {
-    this.backendApiService.visualiseImpact(sp.name, this.storyToAdd.name, true);
+    this.backendApiService.visualiseImpact(sp.name, this.selectedStory.name, true);
   }
 
   selectedSprint(value: MatSelectChange){
@@ -67,4 +68,12 @@ export class BacklogComponent implements OnInit {
     }
   }
 
+  onAddToNewSprintClicked(event: Event) {
+    const newSprintName = this.newSprintName.trim();
+    if (newSprintName.length === 0) {
+      alert('Veuillez entrer un nom de sprint valid');
+      return;
+    }
+    this.cmdProcessor.execCmd('create_sprint', [newSprintName, this.selectedStory.name]);
+  }
 }
