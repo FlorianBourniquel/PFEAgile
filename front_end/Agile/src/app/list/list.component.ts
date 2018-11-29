@@ -17,7 +17,7 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
     this.backendApiService.sprints.subscribe(x => this.sprints = x);
-    this.backendApiService.getSprints();
+    this.backendApiService.loadSprints();
   }
 
   sprintClick(sprint: Sprint) {
