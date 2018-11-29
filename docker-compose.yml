@@ -13,6 +13,8 @@ services:
     - neodb
     ports:
     - '81:8080'
+    expose:
+    - "8080"
 
   front:
       container_name: front_end
