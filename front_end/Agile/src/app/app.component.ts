@@ -1,7 +1,5 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {BackendApiService} from './shared/services/backend-api.service';
-import {HttpResponse} from '@angular/common/http';
-import {UserStory} from './shared/models/UserStory';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +23,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.backendApiService.scope.subscribe(x => document.getElementById('graphe').setAttribute('src', 'assets/graphs/network.html'));
+    this.backendApiService.scope.subscribe(x => document.getElementById('graphe').setAttribute('src', 'assets/graphs/network.html?' + Math.random().toString(10).substring(2)));
   }
 }
 

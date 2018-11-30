@@ -24,7 +24,7 @@ export class BacklogComponent implements OnInit {
   constructor(private backendApiService: BackendApiService, private cmdProcessor: CmdProcessorService) { }
 
   ngOnInit() {
-    this.backendApiService.backlog.subscribe(x => this.backlog = x);
+    this.backendApiService.backlog.subscribe(x => { this.backlog = x; console.log(this.backlog); });
     this.backendApiService.loadBacklog();
     this.backendApiService.sprints.subscribe( x  => this.sprints = x);
   }

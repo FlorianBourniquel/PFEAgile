@@ -26,19 +26,23 @@ export class BackendApiService {
   loadBacklogByComplexity(sprintName: string) {
     const data = new CmdRequestModel('sort_backlog_by_complexity', [sprintName]);
     this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe(x => {console.log(x.body); this.backlog.next(x.body); });
+      .subscribe(x => { this.backlog.next(x.body); });
   }
 
   public loadBacklog(): void {
     const data = new CmdRequestModel('list_backlog', []);
     this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe(x => {console.log(x.body); this.backlog.next(x.body); });
+      .subscribe(x => { this.backlog.next(x.body);});
   }
 
   public loadBacklogByValue(): void {
     const data = new CmdRequestModel('sort_backlog_by_value', []);
     this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe(x => {console.log(x.body); this.backlog.next(x.body); });
+      .subscribe(x => {
+        const res = x.body;
+        res.forEach(us => us.displayRatio = true);
+        this.backlog.next(x.body);
+      });
   }
 
   public by() {
@@ -50,7 +54,7 @@ export class BackendApiService {
   public loadSprints(): void {
     const data = new CmdRequestModel('list_sprint', []);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe( x => { console.log(x.body); this.sprints.next(x.body); });
+      .subscribe( x => { this.sprints.next(x.body); });
 
   }
 
