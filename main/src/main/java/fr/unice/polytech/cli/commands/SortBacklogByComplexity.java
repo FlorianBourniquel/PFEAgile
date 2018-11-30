@@ -28,6 +28,7 @@ public class SortBacklogByComplexity extends Command<Environment> implements Web
     @Override
     public Response execResponse() throws CmdException {
         List<StoryWithComplexity> resp = this.executeWithResult().map(x -> new StoryWithComplexity(x.getKey(), x.getValue())).collect(Collectors.toList());
+        resp.forEach(System.out::println);
         return Response.ok(resp).build();
     }
 

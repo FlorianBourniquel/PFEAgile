@@ -2,6 +2,13 @@ package fr.unice.polytech.graphviz;
 
 
 public class StoryWithComplexity{
+    @Override
+    public String toString() {
+        return "StoryWithComplexity{" +
+                "userStory=" + userStory +
+                ", nbClassesAdded=" + nbClassesAdded +
+                '}';
+    }
 
     private UserStory userStory;
     private int nbClassesAdded;
