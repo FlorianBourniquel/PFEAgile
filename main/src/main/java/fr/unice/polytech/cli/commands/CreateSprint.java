@@ -22,8 +22,11 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
     @Override
     public Response execResponse() throws CmdException {
         try {
+            String res = this.checkIfSprintLoadHigherThanTheAverage();
+
             execute();
-            return Response.ok(this.checkIfSprintLoadHigherThanTheAverage()).build();
+
+            return Response.ok(res).build();
         } catch (IOException e) {
             throw new CmdException(e.getMessage());
         }
@@ -80,6 +83,8 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
             }
         }
 
+        System.out.println(checkIfSprintLoadHigherThanTheAverage());
+
         resBuilder.append("\nMERGE (n:Sprint {name:'").append(this.sprintName).append("'})");
 
         for (int i = 0; i < this.storyIds.size(); i++) {
@@ -87,8 +92,6 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
         }
 
         DTORepository.get().executeQuery(resBuilder.toString());
-
-        System.out.println(checkIfSprintLoadHigherThanTheAverage());
     }
 
     private String checkIfSprintLoadHigherThanTheAverage() {

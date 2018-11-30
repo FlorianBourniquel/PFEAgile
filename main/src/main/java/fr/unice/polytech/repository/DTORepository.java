@@ -67,7 +67,15 @@ public class DTORepository {
                             "MATCH (spr:Sprint) RETURN spr"));
             return s.list( r -> {
                 Sprint res = new Sprint(r.get("spr").get("name").asString());
-                res.fill(db.getDriver().session());
+                this.fill(res);
+
+                res.getStoryList().forEach(story -> {
+                    this.fill(story);
+
+                    story.getMethods().forEach(this::fill);
+                    story.getClasses().forEach(this::fill);
+                });
+
                 return res;
             });
         }
@@ -129,6 +137,22 @@ public class DTORepository {
                         "MATCH (c:RelationShip)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
 
         story.setMethods(findMethods.list(methodElement -> new Method(methodElement.get("c").get("name").asString())));
+    }
+
+    public void fill(Class toFill) {
+        StatementResult findRelationShip = this.getDb().getDriver().session().writeTransaction(
+                tx -> tx.run(
+                        "MATCH (r:RelationShip)<-[:CAN]-(n:Class {name:\"" + toFill.getName() + "\"}) RETURN r"));
+
+        toFill.setMethodList(findRelationShip.list(methodElement -> new Method(methodElement.get("r").get("name").asString())));
+    }
+
+    public void fill(Method toFill){
+        StatementResult findRelationShip = this.getDb().getDriver().session().writeTransaction(
+                tx -> tx.run(
+                        "MATCH (r:Class)<-[:TARGET]-(n:RelationShip {name:\"" + toFill.getName() + "\"}) RETURN r"));
+
+        toFill.setClassList(findRelationShip.list(classElement -> new Class(classElement.get("r").get("name").asString())));
     }
 
     public UserStory getUSByName(String wantedUS) {
