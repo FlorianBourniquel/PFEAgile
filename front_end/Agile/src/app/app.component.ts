@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.backendApiService.scope.subscribe(x => document.getElementById('graphe').setAttribute('src', 'assets/graphs/network.html?' + Math.random().toString(10).substring(2)));
+    this.backendApiService.scope.subscribe(x => document.getElementById('graphe').setAttribute('src', 'assets/graphs/network.html?'+ Math.random().toString(10).substring(2)));
   }
 }
 
