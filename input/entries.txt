@@ -4,14 +4,21 @@
     "storyPoints": 10,
     "businessValue": 5
 },
+
 {
     "text": "As a Visitor, I can log in.",
     "storyPoints": 12,
     "businessValue": 3
 },
+
 {
     "text": "As a Visitor, I can rename my account.",
     "storyPoints": 100,
     "businessValue": 10
+},
+
+{   "text": "As a Visitor, I am able to search for an event.", 
+    "storyPoints": 2,
+    "businessValue": 20 
 }
 ]
