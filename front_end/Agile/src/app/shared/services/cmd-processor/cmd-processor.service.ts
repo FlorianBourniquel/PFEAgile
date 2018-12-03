@@ -9,6 +9,7 @@ import {WhatIfIAddService} from '../commands/what-if-iadd.service';
 import {WhatIfIRemoveService} from '../commands/what-if-iremove.service';
 import {AddStoryService} from '../commands/add-story.service';
 import {CreateSprintService} from '../commands/create-sprint.service';
+import {InitBacklogService} from '../commands/init-backlog.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,8 @@ export class CmdProcessorService {
               private w: WhatIfIAddService,
               private wr: WhatIfIRemoveService,
               private as: AddStoryService,
-              private cs: CreateSprintService) {
+              private cs: CreateSprintService,
+              private ib: InitBacklogService) {
 
     this._cmdOutput$ = new BehaviorSubject<string>('');
     this.base_url = URLBACKEND + '/main';
@@ -36,6 +38,7 @@ export class CmdProcessorService {
     this.addCommand(wr);
     this.addCommand(as);
     this.addCommand(cs);
+    this.addCommand(ib);
   }
 
   public execCmd(cmd: string, args: string[]) {

@@ -3,15 +3,15 @@ package fr.unice.polytech.cli.commands;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
-import fr.unice.polytech.graphviz.StoryWithComplexity;
 import fr.unice.polytech.graphviz.UserStory;
 import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.web.CmdException;
 import fr.unice.polytech.web.WebCommand;
 
 import javax.ws.rs.core.Response;
-import java.util.*;
-import java.util.function.Function;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
