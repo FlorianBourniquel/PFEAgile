@@ -166,4 +166,15 @@ public class DTORepository {
             return story;
         }
     }
+
+    public void removeUSFromBacklog(String remove) {
+        try (Session session = db.getDriver().session()) {
+            session.writeTransaction(
+                    tx -> tx.run(
+                            "MATCH (s:Story {name:\"" + remove + "\"})-[r]-(a)\n" +
+                    "WHERE size((a)--()) < 2\n" +
+                    "DETACH DELETE s, a")
+            );
+        }
+    }
 }
