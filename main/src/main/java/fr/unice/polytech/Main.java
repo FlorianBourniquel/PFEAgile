@@ -28,7 +28,8 @@ public class Main  extends Shell<Environment>
                 SortBacklogByValue.class,
                 AddStory.class,
                 RemoveStory.class,
-                SortBacklogByComplexity.class
+                SortBacklogByComplexity.class,
+                RemoveFromBacklog.class
         );
     }
 
