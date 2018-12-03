@@ -172,8 +172,9 @@ public class DTORepository {
             session.writeTransaction(
                     tx -> tx.run(
                             "MATCH (s:Story {name:\"" + remove + "\"})-[r]-(a)\n" +
-                    "WHERE size((a)--()) < 2\n" +
-                    "DETACH DELETE s, a")
+                                    "WHERE SIZE(()-[:INVOLVES]->(a)) < 2\n" +
+                                    "AND SIZE(()-[:HAS_FOR_ROLE]->(a)) < 2\n" +
+                                    "DETACH DELETE s,a")
             );
         }
     }
