@@ -17,6 +17,10 @@
         <mat-icon>add</mat-icon>
         <span>Visualise impact to Sprint</span>
       </button>
+      <button mat-menu-item (mousedown)="onStoryRemove(us)">
+        <mat-icon>remove</mat-icon>
+        <span>Remove from backlog</span>
+      </button>
     </mat-menu>
   </mat-list-item>
 </mat-list>

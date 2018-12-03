@@ -45,22 +45,27 @@ public class InitBacklog extends Command<Environment> implements WebCommand {
 
 	@Override
 	public Response execResponse() throws CmdException{
+		String response;
 		try {
-			execute();
+			response = executeWithResponse();
 		} catch (IOException | OWLOntologyStorageException | SAXException | ParserConfigurationException | OWLOntologyCreationException | InterruptedException e) {
 			e.printStackTrace();
 			throw  new CmdException("Erreur lors de l'initialisation du backlog");
 		}
-		return Response.ok().build();
+		return Response.ok(response).build();
 	}
 
 	@Override
 	public void execute() throws IOException, OWLOntologyStorageException, ParserConfigurationException, SAXException, OWLOntologyCreationException, InterruptedException {
-        List<StoryEntry> entries = new Gson().fromJson(data, new TypeToken<List<StoryEntry>>(){}.getType());
-        String vnInput = entries.stream().map(StoryEntry::getText).collect(Collectors.joining("\n")).concat("\n");
-        Files.write(Paths.get("./output/stories.txt"), vnInput.getBytes());
-        System.out.println("Parsing stories .... this may take a lot of time ...");
-        executeCommand("./parse_stories.sh");
+        print(executeWithResponse());
+	}
+
+	private String executeWithResponse() throws IOException, OWLOntologyStorageException, ParserConfigurationException, SAXException, OWLOntologyCreationException, InterruptedException {
+		List<StoryEntry> entries = new Gson().fromJson(data, new TypeToken<List<StoryEntry>>(){}.getType());
+		String vnInput = entries.stream().map(StoryEntry::getText).collect(Collectors.joining("\n")).concat("\n");
+		Files.write(Paths.get("./output/stories.txt"), vnInput.getBytes());
+		System.out.println("Parsing stories .... this may take a lot of time ...");
+		executeCommand("./parse_stories.sh");
 		System.out.println("Inserting  stories into the DB.... this may take a lot of time ...");
 
 		List<Path> filesInFolder = Files.walk(Paths.get("/data"))
@@ -82,8 +87,7 @@ public class InitBacklog extends Command<Environment> implements WebCommand {
 		for (int i = 0; i < stories.size(); i++) {
 			inserter.insert(stories.get(i),models.get(i),i, entries.get(i));
 		}
-		System.out.println("Stories successfuly inserted");
-
+		return "Stories successfuly inserted";
 	}
 
 	@Override

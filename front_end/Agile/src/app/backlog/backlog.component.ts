@@ -76,4 +76,8 @@ export class BacklogComponent implements OnInit {
     }
     this.cmdProcessor.execCmd('create_sprint', [newSprintName, this.selectedStory.name]);
   }
+
+  onStoryRemove(us: UserStory) {
+    this.cmdProcessor.execCmd('remove_from_backlog', [us.name]);
+  }
 }
