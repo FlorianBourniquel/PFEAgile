@@ -1,10 +1,8 @@
 package fr.unice.polytech;
 
-import fr.unice.polytech.cli.commands.initbacklog.InitBacklog;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
