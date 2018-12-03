@@ -1,13 +1,20 @@
 package fr.unice.polytech.cli.commands;
 
+import fr.unice.polytech.cli.commands.utils.Parser;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
+import fr.unice.polytech.graphviz.*;
+import fr.unice.polytech.graphviz.Class;
 import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.web.CmdException;
 import fr.unice.polytech.web.WebCommand;
+import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.StatementResult;
 
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 public class RemoveFromBacklog extends Command<Environment> implements WebCommand {
