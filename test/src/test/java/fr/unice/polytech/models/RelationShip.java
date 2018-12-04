@@ -4,6 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RelationShip {
 
@@ -53,4 +54,15 @@ public class RelationShip {
                 ", destination=" + destination +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RelationShip)) return false;
+        RelationShip that = (RelationShip) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(source, that.source) &&
+                Objects.equals(destination, that.destination);
+    }
+
 }

@@ -15,7 +15,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
@@ -41,22 +40,82 @@ public class AppTest extends TestCase
     }
 
 
+
+
     public void testApp() throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException
     {
-        //System.out.println(executeCommand("./../scripts/parse_stories_multi.sh"));
 
-        List<Path> filesInFolder = Files.walk(Paths.get("/usr/src/app/output/System/ontology"))
+        System.out.println("Parsing multi");
+        List<Class> classesFromMulti = new ArrayList<>();
+        List<RelationShip> relsFromMulti = new ArrayList<>();
+        parseMulti(classesFromMulti,relsFromMulti);
+
+        System.out.println("Parsing single");
+        List<Class> classesFromSingle = new ArrayList<>();
+        List<RelationShip> relsFromSingle = new ArrayList<>();
+        parseSingle(classesFromSingle,relsFromSingle);
+
+        classesFromMulti.sort(Comparator.comparing(Class::getName));
+        classesFromSingle.sort(Comparator.comparing(Class::getName));
+        assertEquals(classesFromMulti, classesFromSingle);
+
+        relsFromSingle.sort(Comparator.comparing(RelationShip::getName));
+        relsFromMulti.sort(Comparator.comparing(RelationShip::getName));
+        assertEquals(relsFromSingle, relsFromMulti);
+
+    }
+
+
+    private void parseMulti(List<Class> classes, List<RelationShip> rels) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
+        System.out.println(executeCommand("./../scripts/parse_stories_multi.sh"));
+
+        List<File> models =Files.walk(Paths.get("/usr/src/app/output/System/ontology"))
                 .filter(Files::isRegularFile)
-                .collect(Collectors.toList());
-
-        List<File> models = filesInFolder.stream()
                 .map(Path::toFile)
                 .collect(Collectors.toList());
+
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
-        OWLOntology ontologyDocument = manager.loadOntologyFromOntologyDocument(models.get(0));
+        for (File model : models){
+
+            OWLOntology ontologyDocument = manager.loadOntologyFromOntologyDocument(model);
+            OutputStream out = new FileOutputStream("temp.txt",false);
+            manager.saveOntology(ontologyDocument, new RDFXMLDocumentFormat(), out);
+            manager.removeOntology(ontologyDocument);
+            out.close();
+
+            InputStream in = new FileInputStream("temp.txt");
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+            doc.getDocumentElement().normalize();
+
+            NodeList nodeList = doc.getElementsByTagName("owl:Class");
+            for (int i =0; i < nodeList.getLength(); i++) {
+                classes.add(new Class((Element) nodeList.item(i)));
+            }
+
+            nodeList = doc.getElementsByTagName("owl:ObjectProperty");
+            for (int i =0; i < nodeList.getLength(); i++) {
+                rels.add(new RelationShip(nodeList.item(i),classes));
+            }
+        }
+    }
+
+
+
+    private void parseSingle(List<Class> classes, List<RelationShip> rels) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
+        System.out.println(executeCommand("./../scripts/parse_stories_single.sh"));
+        List<File> models =Files.walk(Paths.get("/usr/src/app/output/System/ontology"))
+                .filter(Files::isRegularFile)
+                .sorted(Comparator.comparing(Path::getFileName))
+                .map(Path::toFile)
+                .collect(Collectors.toList());
+        File model = models.get(models.size() -1);
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+
+        OWLOntology ontologyDocument = manager.loadOntologyFromOntologyDocument(model);
         OutputStream out = new FileOutputStream("temp.txt",false);
         manager.saveOntology(ontologyDocument, new RDFXMLDocumentFormat(), out);
+        manager.removeOntology(ontologyDocument);
         out.close();
 
         InputStream in = new FileInputStream("temp.txt");
@@ -64,25 +123,19 @@ public class AppTest extends TestCase
         doc.getDocumentElement().normalize();
 
         NodeList nodeList = doc.getElementsByTagName("owl:Class");
-        List<Class> classes = new ArrayList<>();
         for (int i =0; i < nodeList.getLength(); i++) {
             classes.add(new Class((Element) nodeList.item(i)));
         }
 
         nodeList = doc.getElementsByTagName("owl:ObjectProperty");
-        List<RelationShip> relationShips = new ArrayList<>();
         for (int i =0; i < nodeList.getLength(); i++) {
-            relationShips.add(new RelationShip(nodeList.item(i),classes));
+            rels.add(new RelationShip(nodeList.item(i),classes));
         }
-
-        classes.forEach(System.out::println);
-        relationShips.forEach(System.out::println);
-
 
     }
 
 
-    protected String executeCommand(String command) {
+    private String executeCommand(String command) {
         StringBuilder output = new StringBuilder();
         Process p;
         try {

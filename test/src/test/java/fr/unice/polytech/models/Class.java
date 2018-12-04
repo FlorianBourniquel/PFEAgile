@@ -2,6 +2,8 @@ package fr.unice.polytech.models;
 
 import org.w3c.dom.Element;
 
+import java.util.Objects;
+
 public class Class  {
 
     private String name;
@@ -23,5 +25,13 @@ public class Class  {
         return "Class{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Class)) return false;
+        Class aClass = (Class) o;
+        return Objects.equals(name, aClass.name);
     }
 }

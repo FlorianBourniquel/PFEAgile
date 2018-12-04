@@ -1,1 +1,1 @@
-As a Visitor, I can log in.
+As a Visitor, I can create a new account.
