@@ -5,6 +5,7 @@ import {CmdRequestModel} from '../models/CmdRequestModel';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {UserStory} from '../models/UserStory';
 import {Sprint} from '../models/Sprint';
+import {StoryWithCompexity} from '../models/StoryWithCompexity';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,17 @@ export class BackendApiService {
 
   loadBacklogByComplexity(sprintName: string) {
     const data = new CmdRequestModel('sort_backlog_by_complexity', [sprintName]);
-    this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe(x => { this.backlog.next(x.body); });
+    this.http.post<StoryWithCompexity[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
+      .subscribe(x => {
+        const stories = x.body.map( e => {
+          const s = e.userStory;
+          s.complexity = new Map<string, number>();
+          s.complexity.set('nbClassesAdded', e.nbClassesAdded);
+          return s;
+        });
+        this.backlog.next(stories);
+        },
+        error1 => console.log(error1));
   }
 
   public loadBacklog(): void {
@@ -85,7 +95,7 @@ export class BackendApiService {
       .subscribe( x => { console.log(x.body); this.scope.next('d'); });
   }
 
-  public visualiseImpact( sprint,us, mode): void {
+  public visualiseImpact( sprint, us, mode): void {
     const data = new CmdRequestModel('visualise_impact', [sprint, mode, us]);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
       .subscribe( x => { console.log(x.body); this.scope.next('d'); });

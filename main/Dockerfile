@@ -1,4 +1,4 @@
-FROM acedesign/visualnarrator
+FROM florianbourniquel/visualnarrator
 
 RUN apt-get update 
 

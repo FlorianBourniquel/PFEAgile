@@ -2,9 +2,13 @@
 <mat-list role="list"  *ngFor="let us of backlog">
   <mat-list-item role="listitem">
     <span>{{us.name}}</span>
+
     <span *ngIf="us.displayRatio" style="background-color: #81d4fa; margin-left:2.5rem;margin-right: 0.3rem;padding: 0.2rem; border-radius: 4px; font-size: 90%;"> SP: {{us.storyPoints}}</span>
     <span *ngIf="us.displayRatio" style="background-color: #ff1744; margin-right: 0.3rem;padding: 0.2rem; border-radius: 4px;font-size: 90%;">  BV: {{us.businessValue}} </span>
     <span *ngIf="us.displayRatio" style="background-color: #00e676; margin-right:2rem; padding: 0.2rem; border-radius: 4px;font-size: 90%;"> Ratio: {{us.agileRatio}} </span>
+
+    <span *ngIf="us.complexity" style="background-color: #81d4fa; margin-left:2.5rem;margin-right: 0.3rem;padding: 0.2rem; border-radius: 4px; font-size: 90%;"> + Classes: {{us.complexity.get('nbClassesAdded')}}</span>
+
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
     </button>
