@@ -29,7 +29,8 @@ public class Main  extends Shell<Environment>
                 AddStory.class,
                 RemoveStory.class,
                 SortBacklogByComplexity.class,
-                RemoveFromBacklog.class
+                RemoveFromBacklog.class,
+                ChangeClassStatus.class
         );
     }
 

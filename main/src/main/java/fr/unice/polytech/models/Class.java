@@ -23,7 +23,7 @@ public class Class extends Node {
 
     @Override
     public String toNode(String var) {
-        return "("+var+":Class{name:\""+name+"\"})";
+        return "("+var+":Class{name:\""+name+"\", status:\"OK\"})";
     }
 
     @Override

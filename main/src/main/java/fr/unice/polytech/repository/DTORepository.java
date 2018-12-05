@@ -1,9 +1,7 @@
 package fr.unice.polytech.repository;
 
+import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.graphviz.Class;
-import fr.unice.polytech.graphviz.Method;
-import fr.unice.polytech.graphviz.Sprint;
-import fr.unice.polytech.graphviz.UserStory;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Value;
@@ -78,6 +76,13 @@ public class DTORepository {
 
                 return res;
             });
+        }
+    }
+
+    public void changeStatus(String className, ClassStatus classStatus) {
+        try (Session session = db.getDriver().session()) {
+            session.writeTransaction(
+                    tx -> tx.run("MATCH (c:Class {name:\"" + className + "\"}) SET c.status=\"" + classStatus.name() + "\""));
         }
     }
 
@@ -161,7 +166,10 @@ public class DTORepository {
 
             UserStory story = createUserStoryFromRequest(s.next().get("s"));
 
-            story.fill(this.getDb().getDriver().session());
+            this.fill(story);
+
+            story.getMethods().forEach(this::fill);
+            story.getClasses().forEach(this::fill);
 
             return story;
         }
