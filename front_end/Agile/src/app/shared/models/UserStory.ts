@@ -6,4 +6,5 @@ export interface UserStory {
    storyPoints: number;
    text: string;
    displayRatio: boolean;
+   complexity: Map<string, number>;
 }
