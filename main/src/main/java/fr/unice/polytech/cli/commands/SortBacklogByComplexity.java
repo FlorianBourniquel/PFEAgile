@@ -3,6 +3,7 @@ package fr.unice.polytech.cli.commands;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
+import fr.unice.polytech.graphviz.StoryWithComplexity;
 import fr.unice.polytech.graphviz.UserStory;
 import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.web.CmdException;
@@ -27,7 +28,9 @@ public class SortBacklogByComplexity extends Command<Environment> implements Web
 
     @Override
     public Response execResponse() throws CmdException {
-        Map<UserStory,Integer> resp = this.executeWithResult().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        List<StoryWithComplexity> resp = this.executeWithResult()
+                .map( e -> new StoryWithComplexity(e.getKey(),e.getValue()))
+                .collect(Collectors.toList());
         return Response.ok(resp).build();
     }
 
