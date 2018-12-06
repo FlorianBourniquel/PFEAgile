@@ -1,10 +1,12 @@
-FROM acedesign/visualnarrator
+FROM florianbourniquel/visualnarrator
 
-RUN apt update -y
+RUN apt-get update
 
 RUN apt-get install -y openjdk-8-jdk
 
 RUN apt-get install -y maven
+
+RUN apt-get install -y apt-utils graphviz
 
 RUN mkdir /app
 
