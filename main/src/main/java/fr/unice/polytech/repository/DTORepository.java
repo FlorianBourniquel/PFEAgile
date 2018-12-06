@@ -186,4 +186,27 @@ public class DTORepository {
             );
         }
     }
+
+    public Sprint getLastSprint() {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run("MATCH (n:Sprint) where not (n)-[:NEXT]->(:Sprint) return n"));
+            if (s.hasNext()) {
+                return s.list(r -> {
+                    Sprint res = new Sprint(r.get("n").get("name").asString());
+                    this.fill(res);
+
+                    res.getStoryList().forEach(story -> {
+                        this.fill(story);
+
+                        story.getMethods().forEach(this::fill);
+                        story.getClasses().forEach(this::fill);
+                    });
+
+                    return res;
+                }).get(0);
+            } else
+                return null;
+        }
+    }
 }

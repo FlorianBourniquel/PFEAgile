@@ -10,6 +10,7 @@ import java.util.Optional;
 public class Sprint extends Node{
 
     private List<UserStory> storyList;
+    private Sprint nextSprint;
 
     public Sprint(String name) {
         super(name);
@@ -28,6 +29,14 @@ public class Sprint extends Node{
 
         for (UserStory story : this.storyList) {
             story.fill(session);
+        }
+
+        StatementResult findNextSprint = session.writeTransaction(
+                tx -> tx.run(
+                        "MATCH (s)<-[:NEXT]-(n:Sprint {name:\"" + this.getName() + "\"}) RETURN s"));
+        if (findNextSprint.hasNext()) {
+            this.nextSprint = findNextSprint.list(story -> new Sprint(story.get("s").get("name").asString())).get(0);
+            nextSprint.fill(session);
         }
     }
 
@@ -67,5 +76,13 @@ public class Sprint extends Node{
                 .stream()
                 .mapToInt(UserStory::getBusinessValue)
                 .sum();
+    }
+
+    public Sprint getNextSprint() {
+        return nextSprint;
+    }
+
+    public void setNextSprint(Sprint nextSprint) {
+        this.nextSprint = nextSprint;
     }
 }

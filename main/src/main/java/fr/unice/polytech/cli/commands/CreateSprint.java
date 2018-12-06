@@ -92,6 +92,16 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
         }
 
         DTORepository.get().executeQuery(resBuilder.toString());
+
+        Sprint lastSprint = DTORepository.get().getLastSprint();
+        if (lastSprint != null) {
+            resBuilder = new StringBuilder();
+            resBuilder.append("MATCH (n:Sprint {name:'").append(this.sprintName).append("'}),");
+            resBuilder.append(" (s:Sprint {name:'").append(lastSprint.getName()).append("'})");
+            resBuilder.append("CREATE (s)-[:NEXT]->(n)");
+            DTORepository.get().executeQuery(resBuilder.toString());
+        }
+
     }
 
     private String checkIfSprintLoadHigherThanTheAverage() {
