@@ -147,6 +147,14 @@ public class DTORepository {
                         "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
 
         sprint.setStoryList(findStories.list(story -> createUserStoryFromRequest(story.get("s"))));
+
+        StatementResult findNextSprint =  db.getDriver().session().writeTransaction(
+                tx -> tx.run(
+                        "MATCH (s)<-[:NEXT]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
+        if (findNextSprint.hasNext()) {
+            sprint.setNextSprint(findNextSprint.list(nextSprint -> new Sprint(nextSprint.get("s").get("name").asString())).get(0));
+           fill(sprint.getNextSprint());
+        }
     }
 
     public void fill(UserStory story){
@@ -226,6 +234,17 @@ public class DTORepository {
                 }).get(0);
             } else
                 return null;
+        }
+    }
+
+    public int CheckNumberOfWithDraw(UserStory userStory) {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run(
+                            "MATCH (sp:Sprint)-[:WITHDRAW]-(:Story {name:\"" + userStory.getName() + "\"})" +
+                                    "RETURN sp")
+            );
+            return s.list().size();
         }
     }
 }

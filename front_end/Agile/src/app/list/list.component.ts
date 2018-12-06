@@ -37,4 +37,8 @@ export class ListComponent implements OnInit {
   onClickVisualiseImpact(us: UserStory) {
     this.backendApiService.visualiseImpact( this.sprint.name , us.name, false);
   }
+
+  onClickedMoveStoryToNextSprint(us: UserStory) {
+    this.cmdProcessor.execCmd('move_story_to_next_sprint', [this.sprint.name, us.name]);
+  }
 }

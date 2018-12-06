@@ -12,6 +12,7 @@ import {CreateSprintService} from '../commands/create-sprint.service';
 import {InitBacklogService} from '../commands/init-backlog.service';
 import {RemoveFromBacklogService} from "../commands/remove-from-backlog.service";
 import {ChangeStatusService} from "../commands/change-status.service";
+import {MoveStoryToNextSprintServiceService} from '../commands/move_story_to_next_sprint.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,8 @@ export class CmdProcessorService {
               private cs: CreateSprintService,
               private ib: InitBacklogService,
               private rb: RemoveFromBacklogService,
-              private cc: ChangeStatusService) {
+              private cc: ChangeStatusService,
+              private mv: MoveStoryToNextSprintServiceService) {
 
     this._cmdOutput$ = new BehaviorSubject<string>('');
     this.base_url = URLBACKEND + '/main';
@@ -45,6 +47,7 @@ export class CmdProcessorService {
     this.addCommand(ib);
     this.addCommand(rb);
     this.addCommand(cc);
+    this.addCommand(mv);
   }
 
   public execCmd(cmd: string, args: string[]) {
