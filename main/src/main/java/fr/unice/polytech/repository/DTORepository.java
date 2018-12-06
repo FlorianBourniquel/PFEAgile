@@ -58,6 +58,20 @@ public class DTORepository {
         }
     }
 
+    public List<Class> getClassesIn(List<String> classesNames) {
+        try (Session session = db.getDriver().session()) {
+            String names =  classesNames.stream().map(x -> "'"+x+"'").collect(Collectors.joining(","));
+
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run("WITH ["+names+"] as names\n" +
+                            "MATCH (s:Story), (c:Class)\n" +
+                            "WHERE s.name in names\n" +
+                            "AND (s)-[:INVOLVES]->(c)\n" +
+                            "RETURN c"));
+            return s.list( x -> this.createClassFromRequest(x.get("c")));
+        }
+    }
+
     public List<Sprint> getAllSprints() {
         try (Session session = db.getDriver().session()) {
             StatementResult s = session.writeTransaction(
@@ -101,6 +115,11 @@ public class DTORepository {
         return userStory;
     }
 
+    private Class createClassFromRequest(Value classValue) {
+        Class res = new Class(classValue.get("name").asString());
+        res.setClassStatus(ClassStatus.valueOf(classValue.get("status").asString()));
+        return res;
+    }
 
     public Sprint getSprintWithUserStories(String sprintName){
        Sprint sprint = getSprint(sprintName);
