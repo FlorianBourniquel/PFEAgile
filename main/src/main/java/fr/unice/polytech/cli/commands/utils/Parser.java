@@ -21,15 +21,15 @@ public class  Parser {
         List<String> linesNode = new LinkedList<>();
         List<String> linesEdge = new LinkedList<>();
 
-        linesNode.add("id,type,type.label,size,node.color,filter");
+        linesNode.add("id,type,type.label,size,node.color,filter,shape");
         linesEdge.add("from,to,type,weight");
 
         for (Sprint sprint : sprints) {
-            linesNode.add(sprint.getName() + "," + 1 + "," + "Sprint" + "," + 10 + "," + sprint.getColorEnum().getColor() + "," + "Sprint&US");
+            linesNode.add(sprint.getName() + "," + 1 + "," + "Sprint" + "," + 10 + "," + sprint.getColorEnum().getColor() + "," + "Sprint&US" + "," + "dot");
         }
         for (Sprint sprint : sprints) {
             for (UserStory userStory : sprint.getStoryList()) {
-                linesNode.add(userStory.getName() + "," + 2 + "," + "USERSTORY" + "," + 10 + "," + userStory.getColorEnum().getColor()+ "," + "Sprint&US");
+                linesNode.add(userStory.getName() + "," + 2 + "," + "USERSTORY" + "," + 10 + "," + userStory.getColorEnum().getColor()+ "," + "Sprint&US" + "," + "dot");
             }
         }
 
@@ -44,10 +44,10 @@ public class  Parser {
         }
 
         for (Class aClass : classes) {
-            linesNode.add(aClass.getName() + "," + 3 + "," + "CLASS" + "," + 10 + "," + aClass.getColorEnum().getColor() + "," + "Class&Method");
+            linesNode.add(aClass.getName() + "," + 3 + "," + "CLASS" + "," + 10 + "," + aClass.getColorEnum().getColor() + "," + "Class&Method" + "," + aClass.getShape());
         }
         for (Method method : methods) {
-            linesNode.add(method.getName() + "," + 4 + "," + "METHOD" + "," + 10 + "," + method.getColorEnum().getColor() + "," + "Class&Method");
+            linesNode.add(method.getName() + "," + 4 + "," + "METHOD" + "," + 10 + "," + method.getColorEnum().getColor() + "," + "Class&Method" + "," + "dot");
         }
 
         for (Sprint sprint : sprints) {
@@ -87,7 +87,7 @@ public class  Parser {
         linesEdge.add("from,to,type,weight");
 
         for (UserStory userStory : userStories) {
-            linesNode.add(userStory.getName() + "," + 2 + "," + "USERSTORY" + "," + 10 + "," + userStory.getColorEnum().getColor()+ "," + "Sprint&US");
+            linesNode.add(userStory.getName() + "," + 2 + "," + "USERSTORY" + "," + 10 + "," + userStory.getColorEnum().getColor()+ "," + "Sprint&US" + "," + "dot");
         }
 
         //Fill set Class and Method
@@ -99,10 +99,10 @@ public class  Parser {
         }
 
         for (Class aClass : classes) {
-            linesNode.add(aClass.getName() + "," + 3 + "," + "CLASS" + "," + 10 + "," + aClass.getColorEnum().getColor() + "," + "Class&Method");
+            linesNode.add(aClass.getName() + "," + 3 + "," + "CLASS" + "," + 10 + "," + aClass.getColorEnum().getColor() + "," + "Class&Method" + "," + aClass.getShape());
         }
         for (Method method : methods) {
-            linesNode.add(method.getName() + "," + 4 + "," + "METHOD" + "," + 10 + "," + method.getColorEnum().getColor() + "," + "Class&Method");
+            linesNode.add(method.getName() + "," + 4 + "," + "METHOD" + "," + 10 + "," + method.getColorEnum().getColor() + "," + "Class&Method" + "," + "dot");
         }
 
         for (UserStory userStory : userStories) {

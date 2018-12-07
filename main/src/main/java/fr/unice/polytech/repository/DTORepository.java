@@ -162,7 +162,7 @@ public class DTORepository {
                 tx -> tx.run(
                         "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
 
-        story.setClasses(findClasses.list(classElement -> new Class(classElement.get("c").get("name").asString())));
+        story.setClasses(findClasses.list(classElement -> createClassFromRequest(classElement.get("c"))));
 
         StatementResult findMethods = this.getDb().getDriver().session().writeTransaction(
                 tx -> tx.run(
