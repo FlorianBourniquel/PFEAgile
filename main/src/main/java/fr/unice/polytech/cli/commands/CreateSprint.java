@@ -71,6 +71,7 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
         if(error){
             return;
         }
+        Sprint lastSprint = DTORepository.get().getLastSprint();
         System.out.println("User requested to create a sprint named " + this.sprintName + " and containing " + this.storyIds.size() + " stories.");
 
         StringBuilder resBuilder = new StringBuilder();
@@ -99,7 +100,7 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
 
         DTORepository.get().executeQuery(resBuilder.toString());
 
-        Sprint lastSprint = DTORepository.get().getLastSprint();
+
         if (lastSprint != null) {
             resBuilder = new StringBuilder();
             resBuilder.append("MATCH (n:Sprint {name:'").append(this.sprintName).append("'}),");

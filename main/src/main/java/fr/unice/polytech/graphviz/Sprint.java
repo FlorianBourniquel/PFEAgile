@@ -35,7 +35,7 @@ public class Sprint extends Node{
                 tx -> tx.run(
                         "MATCH (s)<-[:NEXT]-(n:Sprint {name:\"" + this.getName() + "\"}) RETURN s"));
         if (findNextSprint.hasNext()) {
-            this.nextSprint = findNextSprint.list(story -> new Sprint(story.get("s").get("name").asString())).get(0);
+            this.nextSprint = findNextSprint.list(nextSprint -> new Sprint(nextSprint.get("s").get("name").asString())).get(0);
             nextSprint.fill(session);
         }
     }
