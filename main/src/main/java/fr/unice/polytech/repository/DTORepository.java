@@ -173,7 +173,7 @@ public class DTORepository {
                 tx -> tx.run(
                         "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
 
-        story.setClasses(findClasses.list(classElement -> new Class(classElement.get("c").get("name").asString())));
+        story.setClasses(findClasses.list(classElement -> createClassFromRequest(classElement.get("c"))));
 
         StatementResult findMethods = this.getDb().getDriver().session().writeTransaction(
                 tx -> tx.run(
@@ -215,6 +215,11 @@ public class DTORepository {
 
     public void removeUSFromBacklog(String remove) {
         try (Session session = db.getDriver().session()) {
+            session.writeTransaction(
+                    tx -> tx.run(
+                            "MATCH (sp:Sprint) -[c:WITHDRAW]-> (s:Story {name:\"" + remove + "\"})\n" +
+                                    "DELETE c")
+            );
             session.writeTransaction(
                     tx -> tx.run(
                             "MATCH (s:Story {name:\"" + remove + "\"})-[r]-(a)\n" +

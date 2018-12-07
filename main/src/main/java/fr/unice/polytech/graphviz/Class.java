@@ -35,6 +35,13 @@ public class Class extends Node {
         this.classStatus = classStatus;
     }
 
+    public String getShape() {
+        if (classStatus == ClassStatus.OK)
+            return "dot";
+        else
+            return "diamond";
+    }
+
     @Override
     public void fill(Session session) {
         StatementResult findRelationShip = session.writeTransaction(
