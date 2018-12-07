@@ -49,20 +49,13 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
     private void visualiseRemoveStories() throws IOException {
         super.execute();
 
-        try (Session session = DTORepository.get().getDb().getDriver().session()) {
+        Sprint sprint = this.initSprint();
 
-            Sprint sprint = this.initSprint();
+        List<UserStory> stories = DTORepository.get().getStoriesIn(this.storyIds);
 
-            for (String story :
-                    this.storyIds) {
-                StatementResult findStory = session.writeTransaction(
-                        tx -> tx.run(
-                                "MATCH (s:Story {name :\"" + story + "\"}) return s"));
-
-                List<UserStory> stories = findStory.list(s -> new UserStory(story));
-
-                stories.forEach(s -> {
-                    s.fill(session);
+        stories.forEach(
+                s -> {
+                    DTORepository.get().fill(s);
                     sprint.getStoryList().remove(s);
 
                     for (Class classElement: s.getClasses()) {
@@ -87,11 +80,10 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
 
                     sprint.getStoryList().add(s);
                     s.setColorEnum(ColorEnum.REMOVED);
-                });
-            }
+                }
+        );
 
-            Parser.parseSprints(Collections.singletonList(sprint), "/data/node.csv","/data/edge.csv");
-        }
+        Parser.parseSprints(Collections.singletonList(sprint), "/data/node.csv","/data/edge.csv");
     }
 
     private void visualiseAddStories() throws IOException {
