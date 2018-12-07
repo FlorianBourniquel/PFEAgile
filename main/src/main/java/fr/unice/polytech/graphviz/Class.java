@@ -41,14 +41,4 @@ public class Class extends Node {
         else
             return "diamond";
     }
-
-    @Override
-    public void fill(Session session) {
-        StatementResult findRelationShip = session.writeTransaction(
-                tx -> tx.run(
-                        "MATCH (r:RelationShip)<-[:CAN]-(n:Class {name:\"" + this.getName() + "\"}) RETURN r"));
-
-        this.methodList = findRelationShip.list(methodElement -> new Method(methodElement.get("r").get("name").asString()));
-
-    }
 }

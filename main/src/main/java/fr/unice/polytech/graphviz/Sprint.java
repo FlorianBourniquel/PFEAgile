@@ -19,27 +19,6 @@ public class Sprint extends Node{
         colorEnum = ColorEnum.SPRINT;
     }
 
-    @Override
-    public void fill(Session session) {
-        StatementResult findStories = session.writeTransaction(
-                tx -> tx.run(
-                        "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + this.getName() + "\"}) RETURN s"));
-
-        this.storyList = findStories.list(story -> new UserStory(story.get("s").get("name").asString()));
-
-        for (UserStory story : this.storyList) {
-            story.fill(session);
-        }
-
-        StatementResult findNextSprint = session.writeTransaction(
-                tx -> tx.run(
-                        "MATCH (s)<-[:NEXT]-(n:Sprint {name:\"" + this.getName() + "\"}) RETURN s"));
-        if (findNextSprint.hasNext()) {
-            this.nextSprint = findNextSprint.list(nextSprint -> new Sprint(nextSprint.get("s").get("name").asString())).get(0);
-            nextSprint.fill(session);
-        }
-    }
-
     public List<UserStory> getStoryList() {
         return storyList;
     }

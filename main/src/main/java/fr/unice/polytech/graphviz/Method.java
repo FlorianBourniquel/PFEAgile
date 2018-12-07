@@ -23,14 +23,4 @@ public class Method extends Node {
     public void setClassList(List<Class> classList) {
         this.classList = classList;
     }
-
-    @Override
-    public void fill(Session session) {
-        StatementResult findRelationShip = session.writeTransaction(
-                tx -> tx.run(
-                        "MATCH (r:Class)<-[:TARGET]-(n:RelationShip {name:\"" + this.getName() + "\"}) RETURN r"));
-
-        this.classList = findRelationShip.list(classElement -> new Class(classElement.get("r").get("name").asString()));
-
-    }
 }
