@@ -1,17 +1,17 @@
 package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.commands.utils.Parser;
-import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.graphviz.Class;
+import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.web.CmdException;
 import fr.unice.polytech.web.WebCommand;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class VisualiseImpact extends AbstractSprintCommand implements WebCommand{
 
@@ -59,6 +59,8 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
                     sprint.getStoryList().remove(s);
 
                     for (Class classElement: s.getClasses()) {
+                        DTORepository.get().fill(classElement);
+
                         Optional<Class> classOptional = sprint.containsDomainElement(classElement);
 
                         if(classOptional.isPresent()){
@@ -69,6 +71,8 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
                     }
 
                     for (Method methodElement: s.getMethods()) {
+                        DTORepository.get().fill(methodElement);
+
                         Optional<Method> methodOptional = sprint.containsDomainElement(methodElement);
 
                         if(methodOptional.isPresent()){
@@ -89,48 +93,39 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
     private void visualiseAddStories() throws IOException {
         super.execute();
 
-        try (Session session = DTORepository.get().getDb().getDriver().session()) {
+        Sprint sprint = this.initSprint();
 
-            Sprint sprint = this.initSprint();
+        List<UserStory> stories = DTORepository.get().getStoriesIn(this.storyIds);
 
-            for (String story : this.storyIds) {
-                StatementResult findStory = session.writeTransaction(
-                        tx -> tx.run(
-                                "MATCH (s:Story {name :\"" + story + "\"}) return s"));
+        stories.forEach(s -> {
+            DTORepository.get().fill(s);
 
-                List<UserStory> stories = findStory.list(s -> new UserStory(story));
+            for (Class classElement: s.getClasses()) {
+                Optional<Class> classOptional = sprint.containsDomainElement(classElement);
 
-                stories.forEach(s -> {
-                    s.fill(session);
-
-                    for (Class classElement: s.getClasses()) {
-                        Optional<Class> classOptional = sprint.containsDomainElement(classElement);
-
-                        if(classOptional.isPresent()){
-                            classOptional.get().setColorEnum(ColorEnum.MODIFIED);
-                        } else {
-                            classElement.setColorEnum(ColorEnum.ADDED);
-                        }
-                    }
-
-                    for (Method methodElement:
-                            s.getMethods()) {
-                        Optional<Method> methodOptional = sprint.containsDomainElement(methodElement);
-
-                        if(methodOptional.isPresent()){
-                            methodOptional.get().setColorEnum(ColorEnum.MODIFIED);
-                        } else {
-                            methodElement.setColorEnum(ColorEnum.ADDED);
-                        }
-                    }
-
-                    s.setColorEnum(ColorEnum.ADDED);
-                    sprint.getStoryList().add(s);
-                });
+                if(classOptional.isPresent()){
+                    classOptional.get().setColorEnum(ColorEnum.MODIFIED);
+                } else {
+                    classElement.setColorEnum(ColorEnum.ADDED);
+                }
             }
 
-            Parser.parseSprints(Collections.singletonList(sprint), "/data/node.csv","/data/edge.csv");
-        }
+            for (Method methodElement:
+                    s.getMethods()) {
+                Optional<Method> methodOptional = sprint.containsDomainElement(methodElement);
+
+                if(methodOptional.isPresent()){
+                    methodOptional.get().setColorEnum(ColorEnum.MODIFIED);
+                } else {
+                    methodElement.setColorEnum(ColorEnum.ADDED);
+                }
+            }
+
+            s.setColorEnum(ColorEnum.ADDED);
+            sprint.getStoryList().add(s);
+        });
+
+        Parser.parseSprints(Collections.singletonList(sprint), "/data/node.csv","/data/edge.csv");
     }
 
     private Sprint initSprint(){
