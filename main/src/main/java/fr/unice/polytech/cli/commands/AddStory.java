@@ -1,6 +1,7 @@
 package fr.unice.polytech.cli.commands;
 
 import fr.unice.polytech.cli.framework.Command;
+import fr.unice.polytech.cli.warnings.CriticalClassWarning;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
@@ -22,7 +23,11 @@ public class AddStory extends Command<Environment> implements WebCommand{
 
     @Override
     public Response execResponse() throws CmdException {
-        return Response.ok(executeWithResponse()).build();
+        String res = executeWithResponse();
+        res += "\n";
+        res += new CriticalClassWarning().check(storyNames);
+
+        return Response.ok(res).build();
     }
 
     @Override

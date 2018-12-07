@@ -1,7 +1,7 @@
 package fr.unice.polytech.cli.commands;
 
-import fr.unice.polytech.graphviz.Class;
-import fr.unice.polytech.graphviz.ClassStatus;
+import fr.unice.polytech.cli.warnings.CriticalClassWarning;
+import fr.unice.polytech.cli.warnings.SprintLoadWarning;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
 import fr.unice.polytech.repository.DTORepository;
@@ -10,7 +10,6 @@ import fr.unice.polytech.web.WebCommand;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +24,9 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
     @Override
     public Response execResponse() throws CmdException {
         try {
-            String res = this.checkIfSprintLoadHigherThanTheAverage();
+            String res = new SprintLoadWarning().check(this.storyIds, this.backlog);
             res += "\"";
-            res += this.checkIfClassAreCriticals();
+            res += new CriticalClassWarning().check(this.storyIds);
 
 
             execute();
@@ -89,8 +88,8 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
             }
         }
 
-        System.out.println(checkIfSprintLoadHigherThanTheAverage());
-        System.out.println(checkIfClassAreCriticals());
+        System.out.println(new SprintLoadWarning().check(this.storyIds, this.backlog));
+        System.out.println(new CriticalClassWarning().check(this.storyIds));
 
         resBuilder.append("\nMERGE (n:Sprint {name:'").append(this.sprintName).append("'})");
 
@@ -109,48 +108,6 @@ public class CreateSprint extends AbstractSprintCommand implements WebCommand {
             DTORepository.get().executeQuery(resBuilder.toString());
         }
 
-    }
-
-    private String checkIfSprintLoadHigherThanTheAverage() {
-        List<Sprint> list = DTORepository.get().getAllSprints();
-
-        if(list.size() > 0) {
-            Double averagePrevPrintsStoryPoints = list.stream()
-                    .mapToInt(Sprint::calculateTotalStoryPoints).average().getAsDouble();
-
-            int averageNewSprintStoryPoints = this.backlog
-                    .stream().filter(x -> storyIds.contains(x.getName()))
-                    .mapToInt(UserStory::getStoryPoints).sum();
-
-            if (averageNewSprintStoryPoints > averagePrevPrintsStoryPoints) {
-                return "[WARNING] this sprint has more story points (" + averageNewSprintStoryPoints + ") than the average (" + averagePrevPrintsStoryPoints + ")";
-            } else {
-                return "This sprint contains the average story points from all the other sprints";
-            }
-        } else {
-            return "This sprint is the first one, can't establish sprint load stats";
-        }
-    }
-
-    private String checkIfClassAreCriticals() {
-        List<Class> classes = DTORepository.get().getClassesIn(this.storyIds);
-
-        List<Class> riskyClasses = new ArrayList<>();
-
-        classes.forEach(aClass -> {
-            if (aClass.getClassStatus() != ClassStatus.OK){
-                riskyClasses.add(aClass);
-            }
-        });
-
-        if(riskyClasses.isEmpty()){
-            return "This sprint contains no risky classes";
-        } else {
-            List<String> temp = riskyClasses.stream().map(c -> c.getName() + "(marked as " + c.getClassStatus() + ")").collect(Collectors.toList());
-            String sts = temp.stream().collect(Collectors.joining(", "));
-
-            return "This sprint will modify the classes " + sts;
-        }
     }
 
     @Override
