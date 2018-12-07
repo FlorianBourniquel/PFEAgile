@@ -133,8 +133,7 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
 
         res.setColorEnum(ColorEnum.MODIFIED);
 
-        for (UserStory story :
-                res.getStoryList()) {
+        for (UserStory story : res.getStoryList()) {
             story.setColorEnum(ColorEnum.DEFAULT);
             story.getClasses().forEach(c -> c.setColorEnum(ColorEnum.DEFAULT));
             story.getMethods().forEach(m -> m.setColorEnum(ColorEnum.DEFAULT));
