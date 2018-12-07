@@ -1,6 +1,6 @@
 package fr.unice.polytech.graphviz;
 
-public class WhatIfStats {
+public class WhatIfStats extends WarnableObject {
 
     private int beforeBusiness;
     private int beforePoints;
