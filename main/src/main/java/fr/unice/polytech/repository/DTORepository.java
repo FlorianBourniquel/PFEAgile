@@ -41,7 +41,18 @@ public class DTORepository {
             if(!s.hasNext()){
                 return null;
             }
-            return new Sprint(s.next().get("sp").get("name").asString());
+
+            Sprint res = new Sprint(s.next().get("spr").get("name").asString());
+            this.fill(res);
+
+            res.getStoryList().forEach(story -> {
+                this.fill(story);
+
+                story.getMethods().forEach(this::fill);
+                story.getClasses().forEach(this::fill);
+            });
+
+            return res;
         }
     }
 
