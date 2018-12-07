@@ -206,6 +206,11 @@ public class DTORepository {
         try (Session session = db.getDriver().session()) {
             session.writeTransaction(
                     tx -> tx.run(
+                            "MATCH (sp:Sprint) -[c:WITHDRAW]-> (s:Story {name:\"" + remove + "\"})\n" +
+                                    "DELETE c")
+            );
+            session.writeTransaction(
+                    tx -> tx.run(
                             "MATCH (s:Story {name:\"" + remove + "\"})-[r]-(a)\n" +
                                     "WHERE SIZE(()-[:INVOLVES]->(a)) < 2\n" +
                                     "AND SIZE(()-[:HAS_FOR_ROLE]->(a)) < 2\n" +

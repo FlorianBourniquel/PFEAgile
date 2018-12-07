@@ -50,7 +50,8 @@ public class InitBacklog extends Command<Environment> implements WebCommand {
 			response = executeWithResponse();
 		} catch (IOException | OWLOntologyStorageException | SAXException | ParserConfigurationException | OWLOntologyCreationException | InterruptedException e) {
 			e.printStackTrace();
-			throw  new CmdException("Erreur lors de l'initialisation du backlog");
+
+			throw new CmdException("Erreur lors de l'initialisation du backlog");
 		}
 		return Response.ok(response).build();
 	}
@@ -83,7 +84,6 @@ public class InitBacklog extends Command<Environment> implements WebCommand {
 				.map(Path::toFile)
 				.collect(Collectors.toList());
 		Inserter inserter = new Inserter(DTORepository.get());
-
 		for (int i = 0; i < stories.size(); i++) {
 			inserter.insert(stories.get(i),models.get(i),i, entries.get(i));
 		}
