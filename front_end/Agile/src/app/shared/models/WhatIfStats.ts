@@ -4,4 +4,5 @@ export interface WhatIfStats {
   beforePoints: number;
   afterBusiness: number;
   afterPoints: number;
+  warnings: string[];
 }
