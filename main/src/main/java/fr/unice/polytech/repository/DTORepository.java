@@ -42,7 +42,7 @@ public class DTORepository {
                 return null;
             }
 
-            Sprint res = new Sprint(s.next().get("spr").get("name").asString());
+            Sprint res = new Sprint(s.next().get("sp").get("name").asString());
             this.fill(res);
 
             res.getStoryList().forEach(story -> {

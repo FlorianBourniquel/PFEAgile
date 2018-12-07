@@ -51,7 +51,7 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
 
         try (Session session = DTORepository.get().getDb().getDriver().session()) {
 
-            Sprint sprint = this.initSprint(session);
+            Sprint sprint = this.initSprint();
 
             for (String story :
                     this.storyIds) {
@@ -99,7 +99,7 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
 
         try (Session session = DTORepository.get().getDb().getDriver().session()) {
 
-            Sprint sprint = this.initSprint(session);
+            Sprint sprint = this.initSprint();
 
             for (String story : this.storyIds) {
                 StatementResult findStory = session.writeTransaction(
@@ -141,24 +141,19 @@ public class VisualiseImpact extends AbstractSprintCommand implements WebCommand
         }
     }
 
-    private Sprint initSprint(Session session){
-        StatementResult findSprint = session.writeTransaction(
-                tx -> tx.run(
-                        "MATCH (s:Sprint {name : \"" + this.sprintName + "\"}) return s"));
+    private Sprint initSprint(){
+        Sprint res = DTORepository.get().getSprint(this.sprintName);
 
-        Sprint sprint = new Sprint(findSprint.next().get("s").get("name").asString());
-
-        sprint.setColorEnum(ColorEnum.MODIFIED);
-        sprint.fill(session);
+        res.setColorEnum(ColorEnum.MODIFIED);
 
         for (UserStory story :
-                sprint.getStoryList()) {
+                res.getStoryList()) {
             story.setColorEnum(ColorEnum.DEFAULT);
             story.getClasses().forEach(c -> c.setColorEnum(ColorEnum.DEFAULT));
             story.getMethods().forEach(m -> m.setColorEnum(ColorEnum.DEFAULT));
         }
 
-        return sprint;
+        return res;
     }
 
     @Override
