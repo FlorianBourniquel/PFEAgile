@@ -23,8 +23,13 @@ export class WhatIfIAddService extends Command{
   }
 
   printResponse(result: WhatIfStats) {
-    const output = '[Actuellement] --> Business Value : ' + result.beforeBusiness + ' - Story Points : ' + result.beforePoints
-    + '<br>' + '[Apres Ajout]  --> Business Value : ' + result.afterBusiness + ' - Story Points : ' + result.afterPoints;
+    let output = '[Actuellement] --> Business Value : ' + result.beforeBusiness + ' - Story Points : ' + result.beforePoints
+    + '<br>' + '[Apres Ajout]  --> Business Value : ' + result.afterBusiness + ' - Story Points : ' + result.afterPoints
+    + '<br>';
+
+    result.warnings.forEach(function (value) {
+      output += ('<br>' + value);
+    });
 
     this.displayOutput(output);
   }

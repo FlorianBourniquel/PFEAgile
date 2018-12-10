@@ -92,12 +92,18 @@ public class RemoveStory extends Command<Environment> implements WebCommand{
             sb.append("DELETE c"+i).append("\n");
         }
 
-        if(sprint.getStoryList().size() == toDelete.size()){
-            sb.append("DELETE sp");
-        }
-
         String query = sb.toString();
         DTORepository.get().executeQuery(query);
+        sb = new StringBuilder();
+
+        if(sprint.getStoryList().size() == toDelete.size() && sprint.getNextSprint() == null){
+            sb.append("MATCH (sp:Sprint{name:"+ss(sprint.getName())+"}) ");
+            sb.append("DETACH DELETE sp");
+            query = sb.toString();
+            DTORepository.get().executeQuery(query);
+        }
+
+
     }
 
 

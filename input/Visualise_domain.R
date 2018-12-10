@@ -97,7 +97,7 @@ vis.links <- links
 # 'database', 'box', 'text', 'image', 'circularImage', 'diamond',
 # 'dot', 'star', 'triangle', 'triangleDown', 'square', and 'icon'
 
-vis.nodes$shape  <- "dot"
+vis.nodes$shape  <- vis.nodes$shape
 vis.nodes$shadow <- TRUE # Nodes will drop shadow
 vis.nodes$title  <- vis.nodes$type.label # Text on click
 vis.nodes$label  <- vis.nodes$id # Node label

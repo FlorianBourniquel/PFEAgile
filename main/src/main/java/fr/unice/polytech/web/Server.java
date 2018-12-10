@@ -37,6 +37,8 @@ public class Server {
                 VisualiseModel.class,
                 VisualiseImpact.class,
                 RemoveFromBacklog.class,
+                ChangeClassStatus.class,
+                MoveStoryToNextSprint.class,
                 ListStoriesInvolvingClass.class
         );
 

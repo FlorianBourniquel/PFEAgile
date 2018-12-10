@@ -10,10 +10,13 @@ public class Class extends Node {
 
     private List<Method> methodList;
 
+    private ClassStatus classStatus;
+
     public Class(String name) {
         super(name);
         this.methodList = new ArrayList<>();
         colorEnum = ColorEnum.CLASS;
+        classStatus = ClassStatus.OK;
     }
 
     public List<Method> getMethodList() {
@@ -24,13 +27,18 @@ public class Class extends Node {
         this.methodList = methodList;
     }
 
-    @Override
-    public void fill(Session session) {
-        StatementResult findRelationShip = session.writeTransaction(
-                tx -> tx.run(
-                        "MATCH (r:RelationShip)<-[:CAN]-(n:Class {name:\"" + this.getName() + "\"}) RETURN r"));
+    public ClassStatus getClassStatus() {
+        return classStatus;
+    }
 
-        this.methodList = findRelationShip.list(methodElement -> new Method(methodElement.get("r").get("name").asString()));
+    public void setClassStatus(ClassStatus classStatus) {
+        this.classStatus = classStatus;
+    }
 
+    public String getShape() {
+        if (classStatus == ClassStatus.OK)
+            return "dot";
+        else
+            return "diamond";
     }
 }

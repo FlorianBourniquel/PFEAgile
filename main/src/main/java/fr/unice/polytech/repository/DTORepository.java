@@ -1,9 +1,7 @@
 package fr.unice.polytech.repository;
 
+import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.graphviz.Class;
-import fr.unice.polytech.graphviz.Method;
-import fr.unice.polytech.graphviz.Sprint;
-import fr.unice.polytech.graphviz.UserStory;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Value;
@@ -43,7 +41,18 @@ public class DTORepository {
             if(!s.hasNext()){
                 return null;
             }
-            return new Sprint(s.next().get("sp").get("name").asString());
+
+            Sprint res = new Sprint(s.next().get("sp").get("name").asString());
+            this.fill(res);
+
+            res.getStoryList().forEach(story -> {
+                this.fill(story);
+
+                story.getMethods().forEach(this::fill);
+                story.getClasses().forEach(this::fill);
+            });
+
+            return res;
         }
     }
 
@@ -57,6 +66,20 @@ public class DTORepository {
                             "WHERE s.name in names\n" +
                             "RETURN s"));
             return  s.list( x -> this.createUserStoryFromRequest(x.get("s")));
+        }
+    }
+
+    public List<Class> getClassesIn(List<String> classesNames) {
+        try (Session session = db.getDriver().session()) {
+            String names =  classesNames.stream().map(x -> "'"+x+"'").collect(Collectors.joining(","));
+
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run("WITH ["+names+"] as names\n" +
+                            "MATCH (s:Story), (c:Class)\n" +
+                            "WHERE s.name in names\n" +
+                            "AND (s)-[:INVOLVES]->(c)\n" +
+                            "RETURN c"));
+            return s.list( x -> this.createClassFromRequest(x.get("c")));
         }
     }
 
@@ -78,6 +101,13 @@ public class DTORepository {
 
                 return res;
             });
+        }
+    }
+
+    public void changeStatus(String className, ClassStatus classStatus) {
+        try (Session session = db.getDriver().session()) {
+            session.writeTransaction(
+                    tx -> tx.run("MATCH (c:Class {name:\"" + className + "\"}) SET c.status=\"" + classStatus.name() + "\""));
         }
     }
 
@@ -105,6 +135,11 @@ public class DTORepository {
         return userStory;
     }
 
+    private Class createClassFromRequest(Value classValue) {
+        Class res = new Class(classValue.get("name").asString());
+        res.setClassStatus(ClassStatus.valueOf(classValue.get("status").asString()));
+        return res;
+    }
 
     public Sprint getSprintWithUserStories(String sprintName){
        Sprint sprint = getSprint(sprintName);
@@ -132,6 +167,14 @@ public class DTORepository {
                         "MATCH (s)<-[:CONTAINS]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
 
         sprint.setStoryList(findStories.list(story -> createUserStoryFromRequest(story.get("s"))));
+
+        StatementResult findNextSprint =  db.getDriver().session().writeTransaction(
+                tx -> tx.run(
+                        "MATCH (s)<-[:NEXT]-(n:Sprint {name:\"" + sprint.getName() + "\"}) RETURN s"));
+        if (findNextSprint.hasNext()) {
+            sprint.setNextSprint(findNextSprint.list(nextSprint -> new Sprint(nextSprint.get("s").get("name").asString())).get(0));
+           fill(sprint.getNextSprint());
+        }
     }
 
     public void fill(UserStory story){
@@ -139,7 +182,7 @@ public class DTORepository {
                 tx -> tx.run(
                         "MATCH (c:Class)<-[:INVOLVES]-(n:Story {name:\"" + story.getName() + "\"}) RETURN c"));
 
-        story.setClasses(findClasses.list(classElement -> new Class(classElement.get("c").get("name").asString())));
+        story.setClasses(findClasses.list(classElement -> createClassFromRequest(classElement.get("c"))));
 
         StatementResult findMethods = this.getDb().getDriver().session().writeTransaction(
                 tx -> tx.run(
@@ -170,7 +213,10 @@ public class DTORepository {
 
             UserStory story = createUserStoryFromRequest(s.next().get("s"));
 
-            story.fill(this.getDb().getDriver().session());
+            this.fill(story);
+
+            story.getMethods().forEach(this::fill);
+            story.getClasses().forEach(this::fill);
 
             return story;
         }
@@ -180,11 +226,50 @@ public class DTORepository {
         try (Session session = db.getDriver().session()) {
             session.writeTransaction(
                     tx -> tx.run(
+                            "MATCH (sp:Sprint) -[c:WITHDRAW]-> (s:Story {name:\"" + remove + "\"})\n" +
+                                    "DELETE c")
+            );
+            session.writeTransaction(
+                    tx -> tx.run(
                             "MATCH (s:Story {name:\"" + remove + "\"})-[r]-(a)\n" +
                                     "WHERE SIZE(()-[:INVOLVES]->(a)) < 2\n" +
                                     "AND SIZE(()-[:HAS_FOR_ROLE]->(a)) < 2\n" +
                                     "DETACH DELETE s,a")
             );
+        }
+    }
+
+    public Sprint getLastSprint() {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run("MATCH (n:Sprint) where not (n)-[:NEXT]->(:Sprint) return n"));
+            if (s.hasNext()) {
+                return s.list(r -> {
+                    Sprint res = new Sprint(r.get("n").get("name").asString());
+                    this.fill(res);
+
+                    res.getStoryList().forEach(story -> {
+                        this.fill(story);
+
+                        story.getMethods().forEach(this::fill);
+                        story.getClasses().forEach(this::fill);
+                    });
+
+                    return res;
+                }).get(0);
+            } else
+                return null;
+        }
+    }
+
+    public int CheckNumberOfWithDraw(UserStory userStory) {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run(
+                            "MATCH (sp:Sprint)-[:WITHDRAW]-(:Story {name:\"" + userStory.getName() + "\"})" +
+                                    "RETURN sp")
+            );
+            return s.list().size();
         }
     }
 
@@ -205,4 +290,5 @@ public class DTORepository {
             return s.list(r -> createUserStoryFromRequest(r.get("s")));
         }
     }
+
 }

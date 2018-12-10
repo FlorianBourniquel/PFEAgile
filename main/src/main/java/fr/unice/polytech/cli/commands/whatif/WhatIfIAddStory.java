@@ -1,6 +1,7 @@
 package fr.unice.polytech.cli.commands.whatif;
 
 import fr.unice.polytech.cli.framework.Command;
+import fr.unice.polytech.cli.warnings.CriticalClassWarning;
 import fr.unice.polytech.environment.Environment;
 import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.graphviz.UserStory;
@@ -37,8 +38,12 @@ public class WhatIfIAddStory extends Command<Environment> implements WebCommand{
         try {
             stats = execWithResponse();
 
-            print("[Actuellement] --> Business Value : " + stats.getBeforeBusiness() + " - Story Points : " + stats.getBeforePoints()
-                    + "\n[Apres Ajout]  --> Business Value : " + stats.getAfterBusiness() + " - Story Points : " + stats.getAfterPoints());
+            String res =
+                    "[Actuellement] --> Business Value : " + stats.getBeforeBusiness() + " - Story Points : " + stats.getBeforePoints()
+                    + "\n[Apres Ajout]  --> Business Value : " + stats.getAfterBusiness() + " - Story Points : " + stats.getAfterPoints()
+                    + stats.printWarnings();
+
+            print(res);
         } catch (IOException e) {
             print(e.getMessage());
         }
@@ -69,7 +74,11 @@ public class WhatIfIAddStory extends Command<Environment> implements WebCommand{
         int newBv = stories.stream().mapToInt(UserStory::getBusinessValue).sum() + sprint.calculateTotalBusinessValue();
         int newSp = stories.stream().mapToInt(UserStory::getStoryPoints).sum() + sprint.calculateTotalStoryPoints();
 
-        return new WhatIfStats(sprint.calculateTotalBusinessValue(), sprint.calculateTotalStoryPoints(), newBv, newSp);
+        WhatIfStats res = new WhatIfStats(sprint.calculateTotalBusinessValue(), sprint.calculateTotalStoryPoints(), newBv, newSp);
+
+        res.addWarning(new CriticalClassWarning().check(this.storyNames));
+
+        return res;
     }
 
     @Override

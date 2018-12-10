@@ -3,7 +3,6 @@ package fr.unice.polytech.cli.commands;
 import fr.unice.polytech.cli.commands.utils.Parser;
 import fr.unice.polytech.cli.framework.Command;
 import fr.unice.polytech.environment.Environment;
-import fr.unice.polytech.graphviz.Sprint;
 import fr.unice.polytech.repository.DTORepository;
 import fr.unice.polytech.web.CmdException;
 import fr.unice.polytech.web.WebCommand;
@@ -45,11 +44,7 @@ public class VisualiseModelSprint extends Command<Environment> implements WebCom
 
     @Override
     public void execute() throws IOException {
-        Sprint sprint = DTORepository.get().getSprint(wantedSprint);
-
-        sprint.fill(DTORepository.get().getDb().getDriver().session());
-
-        Parser.parseSprints(Collections.singletonList(sprint),"/data/node.csv","/data/edge.csv");
+        Parser.parseSprints(Collections.singletonList(DTORepository.get().getSprint(wantedSprint)),"/data/node.csv","/data/edge.csv");
     }
 
     @Override
