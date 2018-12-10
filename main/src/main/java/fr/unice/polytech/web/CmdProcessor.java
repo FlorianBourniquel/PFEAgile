@@ -28,10 +28,10 @@ public class CmdProcessor {
     }
 
 
-    Response executeCmd(String name, List<String> args) throws CmdException, IllegalAccessException, InstantiationException {
+    Response executeCmd(String name, List<String> args) throws CmdException, IllegalAccessException, InstantiationException, UnknownCmdException {
         String identifier = commands.keySet().stream()
                 .filter(x -> x.equals(name))
-                .findFirst().orElseThrow(() -> new CmdException("Commande inconnue"));
+                .findFirst().orElseThrow(UnknownCmdException::new);
 
         WebCommand x = commands.get(identifier).newInstance();
         try {

@@ -88,6 +88,15 @@ public class DTORepository {
         }
     }
 
+
+    public List<UserStory> getStoriesInvolvingClass(Class cl){
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(tx -> tx.run("MATCH (s:Story) -[:INVOLVES]-> (:Class{name:\""+ cl.getName()+"\"}) return s"));
+            return s.list(r -> createUserStoryFromRequest(r.get("s")));
+        }
+    }
+
+
     private UserStory createUserStoryFromRequest(Value value){
         UserStory userStory = new UserStory(value.get("name").asString());
         userStory.setBusinessValue(value.get("business_value").asInt());
@@ -176,6 +185,24 @@ public class DTORepository {
                                     "AND SIZE(()-[:HAS_FOR_ROLE]->(a)) < 2\n" +
                                     "DETACH DELETE s,a")
             );
+        }
+    }
+
+    public Class getClassByName(String className) {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(tx -> tx.run("MATCH (cl:Class{name:\""+className+"\"}) RETURN cl"));
+            if(!s.hasNext()){
+                return null;
+            }
+            return new Class(s.next().get("cl").get("name").asString());
+        }
+    }
+
+    public List<UserStory> getStoriesInvolvingClassInSprint(Class cl, Sprint sprint) {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run("MATCH (:Sprint{name:\""+ sprint.getName()+"\"}) -[:CONTAINS]-> (s:Story) -[:INVOLVES]-> (:Class{name:\""+ cl.getName()+"\"}) return s"));
+            return s.list(r -> createUserStoryFromRequest(r.get("s")));
         }
     }
 }

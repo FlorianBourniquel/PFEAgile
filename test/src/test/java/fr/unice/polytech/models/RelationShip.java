@@ -65,4 +65,9 @@ public class RelationShip {
                 Objects.equals(destination, that.destination);
     }
 
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, source, destination);
+    }
 }

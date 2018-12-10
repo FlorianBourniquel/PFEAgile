@@ -36,7 +36,8 @@ public class Server {
                 VisualiseModelUS.class,
                 VisualiseModel.class,
                 VisualiseImpact.class,
-                RemoveFromBacklog.class
+                RemoveFromBacklog.class,
+                ListStoriesInvolvingClass.class
         );
 
         try {

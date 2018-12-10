@@ -18,9 +18,11 @@ public class MainController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response main(CmdRequest request) {
         try {
-            return  CmdProcessor.get().executeCmd(request.getCmd(),request.getArgs());
+            return CmdProcessor.get().executeCmd(request.getCmd(), request.getArgs());
         } catch (IllegalAccessException | InstantiationException e) {
             return Response.serverError().entity("Erreur interne lors de la construction de la commande").build();
+        } catch (UnknownCmdException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Unknown command").build();
         } catch (CmdException e) {
             return Response.serverError().entity(e.getMessage()).build();
         }

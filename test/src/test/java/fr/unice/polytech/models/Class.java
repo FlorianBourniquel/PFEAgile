@@ -34,4 +34,10 @@ public class Class  {
         Class aClass = (Class) o;
         return Objects.equals(name, aClass.name);
     }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name);
+    }
 }

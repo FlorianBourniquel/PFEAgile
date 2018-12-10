@@ -24,6 +24,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -45,7 +47,7 @@ public class AppTest extends TestCase
     public void testApp() throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException
     {
 
-        System.out.println("Parsing multi");
+       System.out.println("Parsing multi");
         List<Class> classesFromMulti = new ArrayList<>();
         List<RelationShip> relsFromMulti = new ArrayList<>();
         parseMulti(classesFromMulti,relsFromMulti);
@@ -55,13 +57,13 @@ public class AppTest extends TestCase
         List<RelationShip> relsFromSingle = new ArrayList<>();
         parseSingle(classesFromSingle,relsFromSingle);
 
-        classesFromMulti.sort(Comparator.comparing(Class::getName));
-        classesFromSingle.sort(Comparator.comparing(Class::getName));
+        classesFromMulti = classesFromMulti.stream().distinct().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
+        classesFromSingle = classesFromSingle.stream().distinct().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
         assertEquals(classesFromMulti, classesFromSingle);
 
-        relsFromSingle.sort(Comparator.comparing(RelationShip::getName));
-        relsFromMulti.sort(Comparator.comparing(RelationShip::getName));
-        assertEquals(relsFromSingle, relsFromMulti);
+        relsFromMulti = relsFromMulti.stream().distinct().sorted(Comparator.comparing(RelationShip::getName)).collect(Collectors.toList());
+        relsFromSingle = relsFromSingle.stream().distinct().sorted(Comparator.comparing(RelationShip::getName)).collect(Collectors.toList());
+        assertEquals(relsFromMulti,relsFromSingle);
 
     }
 
@@ -104,9 +106,15 @@ public class AppTest extends TestCase
 
     private void parseSingle(List<Class> classes, List<RelationShip> rels) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
         System.out.println(executeCommand("./../scripts/parse_stories_single.sh"));
+        Pattern p = Pattern.compile("\\d+");
         List<File> models =Files.walk(Paths.get("/usr/src/app/output/System/ontology"))
                 .filter(Files::isRegularFile)
-                .sorted(Comparator.comparing(Path::getFileName))
+                .sorted(Comparator.comparingInt(o -> {
+                    Matcher m = p.matcher(o.getFileName().toString());
+                    m.find();
+                    return Integer.valueOf(m.group());
+                }))
+
                 .map(Path::toFile)
                 .collect(Collectors.toList());
         File model = models.get(models.size() -1);
