@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, ɵunv} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {URLBACKEND} from '../constants/urls';
 import {CmdRequestModel} from '../models/CmdRequestModel';
@@ -15,13 +15,13 @@ export class BackendApiService {
   private base_url: string;
   private _sprints: BehaviorSubject <Sprint[]>;
   private _backlog: BehaviorSubject <UserStory[]>;
-  private _scope: BehaviorSubject <String>;
+  private _scope: BehaviorSubject <Sprint>;
 
   constructor(private http: HttpClient) {
     this.base_url = URLBACKEND + '/main';
     this._sprints = new BehaviorSubject([]);
     this._backlog = new BehaviorSubject([]);
-    this._scope = new BehaviorSubject('');
+    this._scope = new BehaviorSubject(undefined);
   }
 
   loadBacklogByComplexity(sprintName: string) {
@@ -42,7 +42,7 @@ export class BackendApiService {
   public loadBacklog(): void {
     const data = new CmdRequestModel('list_backlog', []);
     this.http.post<UserStory[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe(x => { this.backlog.next(x.body);});
+      .subscribe(x => { this.backlog.next(x.body); });
   }
 
   public loadBacklogByValue(): void {
@@ -73,7 +73,7 @@ export class BackendApiService {
   }
 
 
-  get scope(): BehaviorSubject<String> {
+  get scope(): BehaviorSubject<Sprint> {
     return this._scope;
   }
 
@@ -83,21 +83,21 @@ export class BackendApiService {
   }
 
   public changeScope(s): void {
-    const data = new CmdRequestModel('visualise_domain_sprint', [s]);
+    const data = new CmdRequestModel('visualise_domain_sprint', [s.name]);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe( x => { console.log(x.body); this.scope.next('d'); });
+      .subscribe( x => { console.log(x.body); this.scope.next(s); });
 
   }
 
   public changeScopeAll(): void {
     const data = new CmdRequestModel('visualise_domain', []);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe( x => { console.log(x.body); this.scope.next('d'); });
+      .subscribe( x => { console.log(x.body); this.scope.next(undefined); });
   }
 
   public visualiseImpact( sprint, us, mode): void {
-    const data = new CmdRequestModel('visualise_impact', [sprint, mode, us]);
+    const data = new CmdRequestModel('visualise_impact', [sprint.name, mode, us]);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe( x => { console.log(x.body); this.scope.next('d'); });
+      .subscribe( x => { console.log(x.body); this.scope.next(sprint); });
   }
 }

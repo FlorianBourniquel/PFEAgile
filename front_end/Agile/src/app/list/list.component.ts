@@ -12,7 +12,6 @@ import {CmdProcessorService} from '../shared/services/cmd-processor/cmd-processo
 })
 export class ListComponent implements OnInit {
   sprints: Sprint[] = [];
-  sprint: Sprint;
   constructor(private backendApiService: BackendApiService, private cmdProcessor: CmdProcessorService) { }
 
   ngOnInit() {
@@ -21,24 +20,22 @@ export class ListComponent implements OnInit {
   }
 
   sprintClick(sprint: Sprint) {
-    this.sprint = sprint;
-    this.backendApiService.changeScope(this.sprint.name);
+    this.backendApiService.changeScope(sprint);
   }
 
   allDomain() {
-    this.sprint = undefined;
     this.backendApiService.changeScopeAll();
   }
 
   onRemoveUsClicked(us: UserStory) {
-    this.cmdProcessor.execCmd('remove_story', [this.sprint.name, us.name]);
+    this.cmdProcessor.execCmd('remove_story', [this.backendApiService.scope.getValue().name, us.name]);
   }
 
   onClickVisualiseImpact(us: UserStory) {
-    this.backendApiService.visualiseImpact( this.sprint.name , us.name, false);
+    this.backendApiService.visualiseImpact( this.backendApiService.scope.getValue() , us.name, false);
   }
 
   onClickedMoveStoryToNextSprint(us: UserStory) {
-    this.cmdProcessor.execCmd('move_story_to_next_sprint', [this.sprint.name, us.name]);
+    this.cmdProcessor.execCmd('move_story_to_next_sprint', [this.backendApiService.scope.getValue().name, us.name]);
   }
 }
