@@ -32,7 +32,8 @@ public class Main  extends Shell<Environment>
                 RemoveFromBacklog.class,
                 ChangeClassStatus.class,
                 MoveStoryToNextSprint.class,
-                ListStoriesInvolvingClass.class
+                ListStoriesInvolvingClass.class,
+                VisualiseImpactNextSprint.class
         );
     }
 
