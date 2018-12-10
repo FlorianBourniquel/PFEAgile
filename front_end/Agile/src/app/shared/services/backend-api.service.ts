@@ -1,8 +1,8 @@
-import {Injectable, ɵunv} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import {URLBACKEND} from '../constants/urls';
 import {CmdRequestModel} from '../models/CmdRequestModel';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {UserStory} from '../models/UserStory';
 import {Sprint} from '../models/Sprint';
 import {StoryWithCompexity} from '../models/StoryWithCompexity';
@@ -99,5 +99,11 @@ export class BackendApiService {
     const data = new CmdRequestModel('visualise_impact', [sprint.name, mode, us]);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
       .subscribe( x => { console.log(x.body); this.scope.next(sprint); });
+  }
+
+  visualiseImpactNextSprint(value: Sprint, name: string) {
+    const data = new CmdRequestModel('visualise_impact_next_sprint', [value.name, name]);
+    this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
+      .subscribe( x => { console.log(x.body); this.scope.next(value);});
   }
 }

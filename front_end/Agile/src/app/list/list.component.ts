@@ -51,15 +51,15 @@ export class ListComponent implements OnInit {
   }
 
   confirmPostpone() {
-
     if (this.count == 0) {
       this.backendApiService.visualiseImpact( this.backendApiService.scope.getValue() , this.toMoveUS.name, false);
     } else if(this.count == 1) {
-      this.backendApiService.visualiseImpact( this.backendApiService.scope.getValue() , this.toMoveUS.name, false);
+      this.backendApiService.visualiseImpactNextSprint( this.backendApiService.scope.getValue() , this.toMoveUS.name);
     } else {
       this.hideButton();
       this.cmdProcessor.execCmd('move_story_to_next_sprint', [this.backendApiService.scope.getValue().name, this.toMoveUS.name]);
     }
+
     this.count++;
   }
 

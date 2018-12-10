@@ -74,7 +74,7 @@ public class VisualiseImpactNextSprint extends AbstractSprintCommand implements 
         Parser.parseSprints(Collections.singletonList(sprint), "/data/node.csv","/data/edge.csv");
     }
 
-    private Sprint initSprint(){
+    private Sprint initSprint() {
         Sprint res = DTORepository.get().getNextSprint(this.sprintName);
 
         res.setColorEnum(ColorEnum.MODIFIED);
@@ -90,8 +90,8 @@ public class VisualiseImpactNextSprint extends AbstractSprintCommand implements 
 
     @Override
     protected void check() throws IOException {
-        if(DTORepository.get().getSprint(this.sprintName) == null) {
-            throw new IOException("The sprint named " + this.sprintName + " wasn't found.");
+        if(DTORepository.get().getSprint(this.sprintName) == null && DTORepository.get().getNextSprint(this.sprintName) == null) {
+            throw new IOException("The sprint named " + this.sprintName + " wasn't found or do not have a following sprint.");
         }
     }
 
