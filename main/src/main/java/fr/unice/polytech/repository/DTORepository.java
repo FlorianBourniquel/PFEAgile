@@ -1,7 +1,7 @@
 package fr.unice.polytech.repository;
 
-import fr.unice.polytech.graphviz.*;
 import fr.unice.polytech.graphviz.Class;
+import fr.unice.polytech.graphviz.*;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Value;
@@ -56,6 +56,27 @@ public class DTORepository {
         }
     }
 
+    public Sprint getNextSprint(String sprintName) {
+        try (Session session = db.getDriver().session()) {
+            StatementResult s = session.writeTransaction(
+                    tx -> tx.run("MATCH (:Sprint {name:\"" + sprintName + "\"})-[:NEXT]->(sp:Sprint) return sp"));
+            if(!s.hasNext()){
+                return null;
+            }
+
+            Sprint res = new Sprint(s.next().get("sp").get("name").asString());
+            this.fill(res);
+
+            res.getStoryList().forEach(story -> {
+                this.fill(story);
+
+                story.getMethods().forEach(this::fill);
+                story.getClasses().forEach(this::fill);
+            });
+
+            return res;
+        }
+    }
 
     public List<UserStory> getStoriesIn(List<String> storyNames) {
         try (Session session = db.getDriver().session()) {
@@ -290,5 +311,4 @@ public class DTORepository {
             return s.list(r -> createUserStoryFromRequest(r.get("s")));
         }
     }
-
 }

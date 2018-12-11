@@ -12,6 +12,9 @@ import {CmdProcessorService} from '../shared/services/cmd-processor/cmd-processo
 })
 export class ListComponent implements OnInit {
   sprints: Sprint[] = [];
+  showButton: boolean = false;
+  count: number = 0;
+  toMoveUS: UserStory;
   constructor(private backendApiService: BackendApiService, private cmdProcessor: CmdProcessorService) { }
 
   ngOnInit() {
@@ -21,10 +24,12 @@ export class ListComponent implements OnInit {
 
   sprintClick(sprint: Sprint) {
     this.backendApiService.changeScope(sprint);
+    this.hideButton();
   }
 
   allDomain() {
     this.backendApiService.changeScopeAll();
+    this.hideButton();
   }
 
   onRemoveUsClicked(us: UserStory) {
@@ -36,6 +41,29 @@ export class ListComponent implements OnInit {
   }
 
   onClickedMoveStoryToNextSprint(us: UserStory) {
-    this.cmdProcessor.execCmd('move_story_to_next_sprint', [this.backendApiService.scope.getValue().name, us.name]);
+    this.showButton = true;
+    this.toMoveUS = us;
+    this.backendApiService.visualiseImpact( this.backendApiService.scope.getValue() , this.toMoveUS.name, false);
+  }
+
+  dismissPostpone() {
+    this.allDomain();
+    this.hideButton();
+  }
+
+  confirmPostpone() {
+    this.count++;
+
+    if(this.count == 1) {
+      this.backendApiService.visualiseImpactNextSprint( this.backendApiService.scope.getValue() , this.toMoveUS.name);
+    } else {
+      this.hideButton();
+      this.cmdProcessor.execCmd('move_story_to_next_sprint', [this.backendApiService.scope.getValue().name, this.toMoveUS.name]);
+    }
+  }
+
+  hideButton(){
+    this.showButton = false;
+    this.count = 0;
   }
 }

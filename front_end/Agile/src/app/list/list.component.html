@@ -31,5 +31,10 @@
       </mat-list-item>
     </mat-list>
 
+    <div *ngIf="showButton" class="example-button-row">
+      <button style="alignment: center; width: 50%;" mat-flat-button color="warn" (click)="dismissPostpone()">Dismiss</button>
+      <button style="alignment: center; width: 50%;" mat-flat-button color="primary" (click)="confirmPostpone()">Confirm</button>
+    </div>
+
   </mat-expansion-panel>
 </mat-accordion>

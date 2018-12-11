@@ -39,7 +39,8 @@ public class Server {
                 RemoveFromBacklog.class,
                 ChangeClassStatus.class,
                 MoveStoryToNextSprint.class,
-                ListStoriesInvolvingClass.class
+                ListStoriesInvolvingClass.class,
+                VisualiseImpactNextSprint.class
         );
 
         try {
