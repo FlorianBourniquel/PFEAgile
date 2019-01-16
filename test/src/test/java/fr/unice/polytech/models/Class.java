@@ -22,9 +22,7 @@ public class Class  {
 
     @Override
     public String toString() {
-        return "Class{" +
-                "name='" + name + '\'' +
-                '}';
+        return "Class : " + name ;
     }
 
     @Override

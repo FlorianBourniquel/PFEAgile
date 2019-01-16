@@ -48,11 +48,7 @@ public class RelationShip {
 
     @Override
     public String toString() {
-        return "RelationShip{" +
-                "name='" + name + '\'' +
-                ", source=" + source +
-                ", destination=" + destination +
-                '}';
+        return "Relationship : " + source.getName() +"-["+ name + "]->"+ destination.getName();
     }
 
     @Override

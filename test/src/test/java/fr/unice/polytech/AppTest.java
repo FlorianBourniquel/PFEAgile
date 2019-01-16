@@ -60,40 +60,38 @@ public class AppTest extends TestCase
         classesFromMulti = classesFromMulti.stream().distinct().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
         classesFromSingle = classesFromSingle.stream().distinct().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
 
-        //System.out.println("Classes from multi");
-        //classesFromMulti.forEach(System.out::println);
+        relsFromMulti = relsFromMulti.stream().distinct().sorted(Comparator.comparing(RelationShip::getName)).collect(Collectors.toList());
+        relsFromSingle = relsFromSingle.stream().distinct().sorted(Comparator.comparing(RelationShip::getName)).collect(Collectors.toList());
 
-        //System.out.println("\nClasses from single");
-        //classesFromSingle.forEach(System.out::println);
 
+        //CLasses lost from single parsing
         List<Class> finalClassesFromMulti = classesFromMulti;
         List<Class> lostFromSingle = classesFromSingle
                 .stream()
                 .filter(x -> !finalClassesFromMulti.contains(x)).collect(Collectors.toList());
         int percentage = (int) (( (float) lostFromSingle.size() / (float) classesFromSingle.size() ) *100);
-        System.out.println("\nClasses lost from single [ " + percentage + "% ]");
-        lostFromSingle.forEach(System.out::println);
+        System.out.println("\nClasses lost from single parsing[ " + percentage + "% ]");
+        lostFromSingle.forEach(x -> System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalClassesFromMulti))));
 
-
+        //Classes in multi parsing but not in single parsing
         List<Class> finalClassesFromSingle = classesFromSingle;
         List<Class> inMultiNotInSingle = classesFromMulti
                 .stream()
                 .filter(x -> !finalClassesFromSingle.contains(x)).collect(Collectors.toList());
         percentage = (int) (( (float) inMultiNotInSingle.size() / (float) classesFromMulti.size() ) *100);
-        System.out.println("\nClasses in multi but not in single [ " + percentage + "% ]");
-        inMultiNotInSingle.forEach(System.out::println);
+        System.out.println("\nClasses in multi but not in single parsing [ " + percentage + "% ]");
+        inMultiNotInSingle.forEach(x -> System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalClassesFromSingle))));
 
-
-        relsFromMulti = relsFromMulti.stream().distinct().sorted(Comparator.comparing(RelationShip::getName)).collect(Collectors.toList());
-        relsFromSingle = relsFromSingle.stream().distinct().sorted(Comparator.comparing(RelationShip::getName)).collect(Collectors.toList());
-
+        //Relationships lost from single parsing
         List<RelationShip> finalRelsFromMulti = relsFromMulti;
         List<RelationShip> relsLostFromSingle = relsFromSingle
                 .stream()
                 .filter(r -> !finalRelsFromMulti.contains(r)).collect(Collectors.toList());
         percentage = (int) (( (float) relsLostFromSingle.size() / (float) relsFromSingle.size() ) *100);
         System.out.println("\nRelationShips lost from single [ " + percentage + "% ]");
-        relsLostFromSingle.forEach(System.out::println);
+        relsLostFromSingle.forEach(x -> System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalRelsFromMulti))));
+
+
 
         List<RelationShip> finalRelsFromSingle = relsFromSingle;
         List<RelationShip> relsInMultiNotInSingle = relsFromMulti
@@ -102,9 +100,12 @@ public class AppTest extends TestCase
                 .collect(Collectors.toList());
         percentage = (int) (( (float) relsInMultiNotInSingle.size() / (float) relsFromMulti.size() ) *100);
         System.out.println("\nRelationShip in multi but not in single [ " + percentage + "% ]");
-        relsInMultiNotInSingle.forEach(System.out::println);
+
+        relsInMultiNotInSingle.forEach(x -> System.out.println( "\t" +x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalRelsFromSingle))));
+
         System.out.println("\n");
-        
+
+
 
     }
 
@@ -150,7 +151,6 @@ public class AppTest extends TestCase
     }
 
 
-
     private void parseSingle(List<Class> classes, List<RelationShip> rels) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
         //System.out.println(executeCommand("./../scripts/parse_stories_single.sh"));
         Pattern p = Pattern.compile("\\d+");
@@ -189,7 +189,6 @@ public class AppTest extends TestCase
 
     }
 
-
     private String executeCommand(String command) {
         StringBuilder output = new StringBuilder();
         Process p;
@@ -206,6 +205,60 @@ public class AppTest extends TestCase
         }
 
         return output.toString();
+    }
 
+
+    private int levenshteinDistance (CharSequence lhs, CharSequence rhs) {
+        int len0 = lhs.length() + 1;
+        int len1 = rhs.length() + 1;
+
+        // the array of distances
+        int[] cost = new int[len0];
+        int[] newcost = new int[len0];
+
+        // initial cost of skipping prefix in String s0
+        for (int i = 0; i < len0; i++) cost[i] = i;
+
+        // dynamically computing the array of distances
+
+        // transformation cost for each letter in s1
+        for (int j = 1; j < len1; j++) {
+            // initial cost of skipping prefix in String s1
+            newcost[0] = j;
+
+            // transformation cost for each letter in s0
+            for(int i = 1; i < len0; i++) {
+                // matching current letters in both strings
+                int match = (lhs.charAt(i - 1) == rhs.charAt(j - 1)) ? 0 : 1;
+
+                // computing cost for each transformation
+                int cost_replace = cost[i - 1] + match;
+                int cost_insert  = cost[i] + 1;
+                int cost_delete  = newcost[i - 1] + 1;
+
+                // keep minimum cost
+                newcost[i] = Math.min(Math.min(cost_insert, cost_delete), cost_replace);
+            }
+
+            // swap cost/newcost arrays
+            int[] swap = cost; cost = newcost; newcost = swap;
+        }
+
+        // the distance is the cost for transforming all letters in both strings
+        return cost[len0 - 1];
+    }
+
+
+    private int minimalLevenshteinDistance(RelationShip relationShip, List<RelationShip> relationShips) {
+        return relationShips.stream()
+                .mapToInt(x -> levenshteinDistance(x.getName(), relationShip.getName()))
+                .min().getAsInt();
+    }
+
+
+    private int minimalLevenshteinDistance(Class clazz, List<Class> clazzes) {
+        return clazzes.stream()
+                .mapToInt(x -> levenshteinDistance(x.getName(), clazz.getName()))
+                .min().getAsInt();
     }
 }
