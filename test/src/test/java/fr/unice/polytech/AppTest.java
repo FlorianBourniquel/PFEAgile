@@ -47,12 +47,12 @@ public class AppTest extends TestCase
     public void testApp() throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException
     {
 
-       //System.out.println("Parsing multi");
+        System.out.println("Parsing multi");
         List<Class> classesFromMulti = new ArrayList<>();
         List<RelationShip> relsFromMulti = new ArrayList<>();
         parseMulti(classesFromMulti,relsFromMulti);
 
-        //System.out.println("Parsing single");
+        System.out.println("Parsing single");
         List<Class> classesFromSingle = new ArrayList<>();
         List<RelationShip> relsFromSingle = new ArrayList<>();
         parseSingle(classesFromSingle,relsFromSingle);
@@ -71,7 +71,11 @@ public class AppTest extends TestCase
                 .filter(x -> !finalClassesFromMulti.contains(x)).collect(Collectors.toList());
         int percentage = (int) (( (float) lostFromSingle.size() / (float) classesFromSingle.size() ) *100);
         System.out.println("\nClasses lost from single parsing[ " + percentage + "% ]");
-        lostFromSingle.forEach(x -> System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalClassesFromMulti))));
+        lostFromSingle.forEach(x -> {
+            final int minlev = minimalLevenshteinDistance(x, finalClassesFromMulti);
+            final boolean isComposed = finalClassesFromMulti.stream().anyMatch(a -> x.getName().toLowerCase().endsWith(a.getName().toLowerCase()));
+            System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minlev) + " : isComposed  = " + String.valueOf(isComposed));
+        });
 
         //Classes in multi parsing but not in single parsing
         List<Class> finalClassesFromSingle = classesFromSingle;
@@ -111,7 +115,7 @@ public class AppTest extends TestCase
 
 
     private void parseMulti(List<Class> classes, List<RelationShip> rels) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
-       // System.out.println(executeCommand("./../scripts/parse_stories_multi.sh"));
+        System.out.println(executeCommand("./../scripts/parse_stories_multi.sh"));
 
         Pattern p = Pattern.compile("\\d+");
         List<File> models =Files.walk(Paths.get("/usr/src/app/output/System/ontology"))
@@ -123,7 +127,7 @@ public class AppTest extends TestCase
                 }))
                 .map(Path::toFile)
                 .collect(Collectors.toList());
-        models.remove(models.size() -1);// TODO enlever quand on decommente l'execution des commandes
+        //models.remove(models.size() -1);// TODO enlever quand on decommente l'execution des commandes
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
         for (File model : models){
@@ -152,7 +156,7 @@ public class AppTest extends TestCase
 
 
     private void parseSingle(List<Class> classes, List<RelationShip> rels) throws IOException, OWLOntologyCreationException, OWLOntologyStorageException, ParserConfigurationException, SAXException {
-        //System.out.println(executeCommand("./../scripts/parse_stories_single.sh"));
+        System.out.println(executeCommand("./../scripts/parse_stories_single.sh"));
         Pattern p = Pattern.compile("\\d+");
         List<File> models =Files.walk(Paths.get("/usr/src/app/output/System/ontology"))
                 .filter(Files::isRegularFile)

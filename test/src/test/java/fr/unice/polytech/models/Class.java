@@ -30,7 +30,7 @@ public class Class  {
         if (this == o) return true;
         if (!(o instanceof Class)) return false;
         Class aClass = (Class) o;
-        return Objects.equals(name, aClass.name);
+        return Objects.equals(name.toLowerCase(), aClass.name.toLowerCase());
     }
 
     @Override
