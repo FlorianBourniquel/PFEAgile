@@ -1,7 +1,9 @@
 package fr.unice.polytech;
 
 import fr.unice.polytech.models.Class;
+import fr.unice.polytech.models.ClassStat;
 import fr.unice.polytech.models.RelationShip;
+import fr.unice.polytech.models.RelationShipStat;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -66,49 +68,41 @@ public class AppTest extends TestCase
 
         //CLasses lost from single parsing
         List<Class> finalClassesFromMulti = classesFromMulti;
-        List<Class> lostFromSingle = classesFromSingle
-                .stream()
-                .filter(x -> !finalClassesFromMulti.contains(x)).collect(Collectors.toList());
+        List<Class> lostFromSingle = classesFromSingle.stream().filter(x -> !finalClassesFromMulti.contains(x)).collect(Collectors.toList());
         int percentage = (int) (( (float) lostFromSingle.size() / (float) classesFromSingle.size() ) *100);
-        System.out.println("\nClasses lost from single parsing[ " + percentage + "% ]");
-        lostFromSingle.forEach(x -> {
-            final int minlev = minimalLevenshteinDistance(x, finalClassesFromMulti);
+        List<ClassStat> classStats = lostFromSingle.stream().map(x -> {
             final boolean isComposed = finalClassesFromMulti.stream().anyMatch(a -> x.getName().toLowerCase().endsWith(a.getName().toLowerCase()));
-            System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minlev) + " : isComposed  = " + String.valueOf(isComposed));
-        });
+            return new ClassStat(x,isComposed);
+        }).collect(Collectors.toList());
+        classStats.forEach(System.out::println);
+        int percenAfterAnalyse = (int) (( (float) classStats.stream().filter(ClassStat::isComposed).count() / (float) classesFromSingle.size() ) *100);
+        System.out.println("\nClasses lost from single parsing : [ Initialy :" + percentage + "% | After mitigation : " + percenAfterAnalyse + " ]");
+
+
 
         //Classes in multi parsing but not in single parsing
         List<Class> finalClassesFromSingle = classesFromSingle;
-        List<Class> inMultiNotInSingle = classesFromMulti
-                .stream()
-                .filter(x -> !finalClassesFromSingle.contains(x)).collect(Collectors.toList());
+        List<Class> inMultiNotInSingle = classesFromMulti.stream().filter(x -> !finalClassesFromSingle.contains(x)).collect(Collectors.toList());
         percentage = (int) (( (float) inMultiNotInSingle.size() / (float) classesFromMulti.size() ) *100);
         System.out.println("\nClasses in multi but not in single parsing [ " + percentage + "% ]");
         inMultiNotInSingle.forEach(x -> System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalClassesFromSingle))));
 
         //Relationships lost from single parsing
         List<RelationShip> finalRelsFromMulti = relsFromMulti;
-        List<RelationShip> relsLostFromSingle = relsFromSingle
-                .stream()
-                .filter(r -> !finalRelsFromMulti.contains(r)).collect(Collectors.toList());
+        List<RelationShip> relsLostFromSingle = relsFromSingle.stream().filter(r -> !finalRelsFromMulti.contains(r)).collect(Collectors.toList());
         percentage = (int) (( (float) relsLostFromSingle.size() / (float) relsFromSingle.size() ) *100);
-        System.out.println("\nRelationShips lost from single [ " + percentage + "% ]");
-        relsLostFromSingle.forEach(x -> System.out.println( "\t" + x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalRelsFromMulti))));
+        List<RelationShipStat> relsStats = relsLostFromSingle.stream().map(x -> new RelationShipStat(x,minimalLevenshteinDistance(x, finalRelsFromMulti))).collect(Collectors.toList());
+        relsStats.forEach(System.out::println);
+        percenAfterAnalyse = (int) (( (float) relsStats.stream().filter(RelationShipStat::hasMLDof1).count() / (float) relsFromSingle.size() ) *100);
+        System.out.println("\nRelationShips lost from single [ Initialy: " + percentage + "% | After mitigation +"+percenAfterAnalyse+"]");
 
 
-
+        //RelationShip in multi but not in single
         List<RelationShip> finalRelsFromSingle = relsFromSingle;
-        List<RelationShip> relsInMultiNotInSingle = relsFromMulti
-                .stream()
-                .filter( r -> ! finalRelsFromSingle.contains(r))
-                .collect(Collectors.toList());
+        List<RelationShip> relsInMultiNotInSingle = relsFromMulti.stream().filter( r -> ! finalRelsFromSingle.contains(r)).collect(Collectors.toList());
         percentage = (int) (( (float) relsInMultiNotInSingle.size() / (float) relsFromMulti.size() ) *100);
         System.out.println("\nRelationShip in multi but not in single [ " + percentage + "% ]");
-
         relsInMultiNotInSingle.forEach(x -> System.out.println( "\t" +x + " :  Minimun Levenshtein Distance = "+ String.valueOf(minimalLevenshteinDistance(x, finalRelsFromSingle))));
-
-        System.out.println("\n");
-
 
 
     }
