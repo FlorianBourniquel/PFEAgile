@@ -6,6 +6,7 @@
 - Java8 (Oracle)
 - Docker
 - Angular2 CLI
+- Chrome
 
 #Install
 

@@ -85,7 +85,7 @@ export class BackendApiService {
   public changeScope(s): void {
     const data = new CmdRequestModel('visualise_domain_sprint', [s.name]);
     this.http.post<Sprint[]>(this.base_url, data, { observe: 'response', responseType: 'json'})
-      .subscribe( x => { console.log(x.body); this.scope.next(s); });
+      .subscribe( x => { console.log(x.body); this.scope.next(s); console.log(this.scope.getValue()); });
 
   }
 
