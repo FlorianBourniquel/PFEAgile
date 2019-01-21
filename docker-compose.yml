@@ -8,13 +8,29 @@ services:
     volumes:
     - ./data:/data
     - ./input:/usr/src/app/output
+    - ./graphs:/graphs
     depends_on:
     - neodb
-    stdin_open: true
-    tty: true
+    ports:
+    - '81:8080'
+    expose:
+    - "8080"
+
+  front:
+      container_name: front_end
+      build:
+        context: ./front_end/docker
+      depends_on:
+      - main
+      ports:
+      - '80:80'
+      volumes:
+      - ./graphs:/usr/share/nginx/html/assets/graphs
+      expose:
+      - "80"
 
   neodb:
-    container_name: noedb
+    container_name: neodb
     image: 'neo4j:latest'
     ports:
     - '7474:7474'
@@ -23,3 +39,10 @@ services:
     - NEO4J_AUTH=none
     logging:
         driver: none
+  
+  #reverse_proxy:
+   # container_name: reverse_proxy
+    #build:
+     # context: ./reverse_proxy
+   # ports:
+   # - '80:80'

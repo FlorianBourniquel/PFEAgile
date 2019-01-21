@@ -1,0 +1,12 @@
+
+<form class="cli-form" (ngSubmit)="onSubmit($event)" #myForm="ngForm">
+  <mat-form-field class="cli-field" >
+    <input matInput placeholder="Command"  name="input" [(ngModel)]="input" (keyup)="keyPressed($event)">
+  </mat-form-field>
+  <p>
+    <button mat-raised-button color="primary" type="submit">Submit</button>
+  </p>
+</form>
+<div [innerHtml]="output">
+</div>
+

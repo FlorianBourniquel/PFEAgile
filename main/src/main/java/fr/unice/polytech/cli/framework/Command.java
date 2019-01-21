@@ -27,28 +27,31 @@ public abstract class Command<T> {
 		return shouldContinue();
 	}
 
-	protected static String executeCommand(String command) {
-
-		StringBuffer output = new StringBuffer();
-
+	protected String executeCommand(String command) {
+		StringBuilder output = new StringBuilder();
 		Process p;
 		try {
 			p = Runtime.getRuntime().exec(command);
 			p.waitFor();
-			BufferedReader reader =
-					new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-			String line = "";
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line;
 			while ((line = reader.readLine()) != null) {
-				output.append(line + "\n");
+				output.append(line).append("\n");
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return output.toString();
 
+	}
+
+	protected void print( Object o){
+		System.out.println("\n" + o + "\n");
+	}
+
+	protected String ss(String content){
+		return '"'+content + '"';
 	}
 
 }

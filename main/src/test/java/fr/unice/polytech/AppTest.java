@@ -1,20 +1,17 @@
 package fr.unice.polytech;
 
+import fr.unice.polytech.cli.commands.initbacklog.InitBacklog;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
+public class AppTest extends TestCase
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
+
     public AppTest( String testName )
     {
         super( testName );
@@ -28,11 +25,10 @@ public class AppTest
         return new TestSuite( AppTest.class );
     }
 
-    /**
-     * Rigourous Test :-)
-     */
+
     public void testApp()
     {
-        assertTrue( true );
+
     }
+    
 }

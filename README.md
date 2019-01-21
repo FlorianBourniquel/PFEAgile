@@ -1,6 +1,22 @@
 # Applying Software Composition to Agile Backlogs
 
+#Requirement
 
+- Maven
+- Java8 (Oracle)
+- Docker
+- Angular2 CLI
+- Chrome
+
+#Install
+
+Execute the following commands : 
+
+
+1. ./build.sh
+2. docker-compose up
+
+#Description
 
 Agile projects rely on Product Backlog Items (PBI), (e.g., stories), and iterations (e.g., sprints) associated to backlogs to drive project implementation. Thanks to recent results obtained at Utrecht University with respect to natural language processing applied to user stories, we propose in this project to define a compositional model that will support the development team (e.g., product owner, developers) when interacting with backlogs and PBIs.
 

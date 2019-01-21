@@ -1,0 +1,27 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+</div>
+
+<div style="display: flex; height: 70%" id="divID">
+  <iframe style="height: 100%; width: 80%; background-color: beige"
+          id="graphe"
+          title="graphe"
+          src="assets/graphs/network.html">
+  </iframe>
+  <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; width: 30%; overflow: auto">
+    <div style="margin: auto">
+      <app-tab></app-tab>
+    </div>
+    <div style="margin: auto">
+
+    </div>
+  </div>
+</div>
+<div style="display: flex; height: 20%">
+<app-cli style="width: 100%;"></app-cli>
+</div>
+
+<router-outlet></router-outlet>

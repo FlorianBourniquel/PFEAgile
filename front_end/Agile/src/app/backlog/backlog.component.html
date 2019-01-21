@@ -1,0 +1,61 @@
+<div class="container">
+<mat-list role="list"  *ngFor="let us of backlog">
+  <mat-list-item role="listitem">
+    <span>{{us.name}}</span>
+
+    <span *ngIf="us.displayRatio" style="background-color: #81d4fa; margin-left:2.5rem;margin-right: 0.3rem;padding: 0.2rem; border-radius: 4px; font-size: 90%;"> SP: {{us.storyPoints}}</span>
+    <span *ngIf="us.displayRatio" style="background-color: #ff1744; margin-right: 0.3rem;padding: 0.2rem; border-radius: 4px;font-size: 90%;">  BV: {{us.businessValue}} </span>
+    <span *ngIf="us.displayRatio" style="background-color: #00e676; margin-right:2rem; padding: 0.2rem; border-radius: 4px;font-size: 90%;"> Ratio: {{us.agileRatio}} </span>
+
+    <span *ngIf="us.complexity" style="background-color: #81d4fa; margin-left:2.5rem;margin-right: 0.3rem;padding: 0.2rem; border-radius: 4px; font-size: 90%;"> + Classes: {{us.complexity.get('nbClassesAdded')}}</span>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (mouseenter)="onAddStoryMouseEnter(us)" [matMenuTriggerFor]="appMenu">
+        <mat-icon>add</mat-icon>
+        <span>Add to Sprint</span>
+      </button>
+      <button mat-menu-item (mouseenter)="onAddStoryMouseEnter(us)" [matMenuTriggerFor]="sprintMenu">
+        <mat-icon>add</mat-icon>
+        <span>Visualise impact to Sprint</span>
+      </button>
+      <button mat-menu-item (mousedown)="onStoryRemove(us)">
+        <mat-icon>remove</mat-icon>
+        <span>Remove from backlog</span>
+      </button>
+    </mat-menu>
+  </mat-list-item>
+</mat-list>
+
+  <div class="bottom">
+    <div>
+      <mat-form-field>
+        <mat-select [(value)]="selected" (selectionChange)="changedValue($event)">
+          <mat-option value="byName">Sort by name</mat-option>
+          <mat-option value="byValue">Sort by value</mat-option>
+          <mat-option value="byComplexity">Sort by complexity</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-select (selectionChange)="selectedSprint($event)" [disabled]="disableSelect.value">
+          <mat-option *ngFor="let sp of sprints" value="{{sp.name}}">{{sp.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+
+<mat-menu #appMenu="matMenu">
+  <button *ngFor="let sp of sprints" mat-menu-item (click)="onChooseSprintClicked(sp)">{{sp.name}}</button>
+  <input mat-menu-item type="text" placeholder="new sprint name" [(ngModel)]="newSprintName" (click)="onAddToNewSprintClicked($event)">
+</mat-menu>
+
+
+
+<mat-menu #sprintMenu="matMenu">
+  <button *ngFor="let sp of sprints" mat-menu-item (click)="onVisualiseImpactSprintClicked(sp)">{{sp.name}}</button>
+</mat-menu>

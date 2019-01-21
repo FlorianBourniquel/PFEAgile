@@ -1,0 +1,40 @@
+<div class="example-button-row">
+  <button style="alignment: center; width: 100%;" mat-flat-button color="primary" (click)="allDomain()">All Domain</button>
+</div>
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let sprint of sprints" >
+    <mat-expansion-panel-header (click)="sprintClick(sprint)">
+      <mat-panel-title>
+        {{sprint.name}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-list role="list" *ngFor="let us of sprint.storyList">
+      <mat-list-item role="listitem">
+        {{us.name}}
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onRemoveUsClicked(us)">
+            <mat-icon>remove</mat-icon>
+            <span>remove</span>
+          </button>
+          <button mat-menu-item (click)="onClickVisualiseImpact(us)">
+            <mat-icon>remove</mat-icon>
+            <span>Visualise Impact</span>
+          </button>
+          <button mat-menu-item (click)="onClickedMoveStoryToNextSprint(us)">
+            <mat-icon>remove</mat-icon>
+            <span>Move to next Sprint</span>
+          </button>
+        </mat-menu>
+      </mat-list-item>
+    </mat-list>
+
+    <div *ngIf="showButton" class="example-button-row">
+      <button style="alignment: center; width: 50%;" mat-flat-button color="warn" (click)="dismissPostpone()">Dismiss</button>
+      <button style="alignment: center; width: 50%;" mat-flat-button color="primary" (click)="confirmPostpone()">Confirm</button>
+    </div>
+
+  </mat-expansion-panel>
+</mat-accordion>
